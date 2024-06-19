@@ -683,11 +683,15 @@ TechnoClass::TechnoClass(RTTIType rtti, int id, HousesType house)
     // IsOwnedByPlayer = (PlayerPtr == House);
     // Added for multiplayer changes. ST - 4/24/2019 10:40AM
     IsDiscoveredByPlayerMask = 0;
+#ifdef REMASTER_BUILD
     if (Session.Type == GAME_NORMAL) {
         IsOwnedByPlayer = (PlayerPtr == House);
     } else {
         IsOwnedByPlayer = House->IsHuman;
     }
+#else
+    IsOwnedByPlayer = (PlayerPtr == House);
+#endif
 }
 
 /***********************************************************************************************
