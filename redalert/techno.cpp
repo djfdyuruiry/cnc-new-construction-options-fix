@@ -162,7 +162,7 @@ const char* NewName[] = {
     "Fire Ant",
     "Feuer-Ameise",
     "Queen Ant",
-    "Ameisenk”nigin",
+    "Ameisenkï¿½nigin",
     "ATS",
     "Angriffs-U-Boot",
     "Tesla Tank",
@@ -188,7 +188,7 @@ const char* NewName[] = {
     "Scout Ant",
     "Fourmi de Reconnaissance",
     "Warrior Ant",
-    "Fourmi GuerriŠre",
+    "Fourmi Guerriï¿½re",
     "Fire Ant",
     "Fourmi Lance-Flammes",
     "Queen Ant",
@@ -204,11 +204,11 @@ const char* NewName[] = {
     "Stavros",
     "Stavros",
     "F-A Longbow",
-    "HAA (H‚licoptŠre d'Assaut Avanc‚)",
+    "HAA (Hï¿½licoptï¿½re d'Assaut Avancï¿½)",
     "Civilian Specialist",
-    "Sp‚cialiste Civil",
+    "Spï¿½cialiste Civil",
     "Alloy Facility",
-    "Usine M‚tallurgique",
+    "Usine Mï¿½tallurgique",
     NULL,
 };
 
@@ -775,7 +775,7 @@ bool TechnoClass::Revealed(HouseClass* house)
         **	An enemy object that is discovered will go into hunt mode if
         **	its current mission is to ambush.
         */
-        if (!house->IsHuman && Mission == MISSION_AMBUSH) {
+        if (!House->IsHuman && Mission == MISSION_AMBUSH) {
             Assign_Mission(MISSION_HUNT);
         }
 
