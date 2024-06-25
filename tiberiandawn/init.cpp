@@ -1633,7 +1633,7 @@ bool Parse_Command_Line(int argc, char* argv[])
 
     for (int index = 1; index < argc; index++) {
         char* string; // Pointer to argument.
-        long code = 0;
+        int code = 0;
 
         char arg_string[512];
         int str_len = (int)strlen(argv[index]);
@@ -2335,7 +2335,7 @@ void Load_Recording_Values(void)
  * HISTORY:                                                                                    *
  *   08/19/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
-long Obfuscate(char const* string)
+unsigned Obfuscate(char const* string)
 {
     char buffer[1024];
 
