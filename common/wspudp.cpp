@@ -235,7 +235,7 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
 
         char temp[128];
         sprintf(temp,
-                "RA95: Found local address: %d.%d.%d.%d\n",
+                "C&C: Found local address: %d.%d.%d.%d\n",
                 address & 0xff,
                 (address & 0xff00) >> 8,
                 (address & 0xff0000) >> 16,
@@ -258,18 +258,18 @@ bool UDPInterfaceClass::Open_Socket(SOCKET)
             struct in_addr* tmp_addr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
             char buf[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmp_addr, buf, INET_ADDRSTRLEN);
-            fprintf(stderr, "RA95: Found local address: %s\n", buf);
+            fprintf(stderr, "C&C: Found local address: %s\n", buf);
 
             unsigned char* a = new unsigned char[4];
             *((uint32_t*)a) = tmp_addr->s_addr;
             LocalAddresses.Add(a);
 
             if ((struct sockaddr_in*)ifa->ifa_broadaddr == 0) {
-                fprintf(stderr, "RA95: No broadcast address\n");
+                fprintf(stderr, "C&C: No broadcast address\n");
             } else {
                 tmp_addr = &((struct sockaddr_in*)ifa->ifa_broadaddr)->sin_addr;
                 inet_ntop(AF_INET, tmp_addr, buf, INET_ADDRSTRLEN);
-                fprintf(stderr, "RA95: Using broadcast address of: %s\n", buf);
+                fprintf(stderr, "C&C: Using broadcast address of: %s\n", buf);
                 Set_Broadcast_Address(buf);
             }
         }

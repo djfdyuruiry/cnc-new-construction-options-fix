@@ -1,147 +1,115 @@
-# Vanilla Conquer
-Vanilla Conquer is a fully portable version of the first generation C&C engine and is capable of running both Tiberian Dawn and Red Alert on multiple platforms. It can also be used for mod development for the Remastered Collection.
+# 🛠 New Construction Options 🛠
 
-The main focus of Vanilla Conquer is to keep the default out-of-box experience faithful to what the games were back when they were released and work as a drop-in replacement for the original executables while also providing bug fixes, compatiblity and quality of life improvements.
+C&C New Construction Options is a fork of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer) with goals to enhance the gameplay and modding experience for `Command & Conquer: Tiberian Dawn` & `Command & Conquer:Red Alert`. 
 
-Current project goals are tracked as [GitHub issues with the goal label](https://github.com/Vanilla-Conquer/Vanilla-Conquer/issues?q=is%3Aissue+is%3Aopen+label%3Agoal).
+This project aims to provide an out-of-the-box experience faithful to the original games while giving users unprecedented control over customization and enhancements through in-game menus, INI file configuration and Lua scripting.
 
-## Chat with us
+# ⚠&nbsp;&nbsp;&nbsp; Under Construction &nbsp;&nbsp;&nbsp;⚠
 
-There are rooms on multiple platforms for discussion:
+![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)
 
-- [The Assembly Armada](https://discord.gg/UnWK2Tw) on [Discord](https://discord.gg)
-- [#vanilla-conquer:vi.fi](https://matrix.to/#/#vanilla-conquer:vi.fi) on [Matrix](https://matrix.org)
-- [#vanilla-conquer](https://web.libera.chat/?channel=#vanilla-conquer) on [Libera.Chat](https://libera.chat]) IRC network
+There are no builds yet available for you to try - I am scoping out what this project will be.
 
-All of these rooms are bridged together so people can choose their preferred service. Please be nice to each other.
+As EVA would say: `NOT READY`
 
-## Building
+## Project Vision
 
-We support wide variety of compilers and platforms to target. Vanilla Conquer is known to compile with recent enough gcc, MSVC, mingw-w64 or clang and known to run on Windows, Linux, macOS and BSDs.
+The main target will be `Tiberian Dawn`, with a view to move on to `Red Alert` when there are working enhancements to port from `Tiberian Dawn`.
 
-### Presets
+My vision for `Tiberian Dawn`:
 
-A [CMakePresets.json](CMakePresets.json) file is provided that contains presets for common build configurations and is used by our CI scripts to build the release builds. These presets require the [Ninja](https://ninja-build.org/) build tool to be available in the system PATH in order to be used.
+- Users can customize their C&C experience without modifying C++ code
+- Tweaks and enhancements are immerisive, they surface in game as UI menus
+- Low level control is available for nearly all aspects of the game engine via config files
+- Static limits imposed by the original source code are removed (no cap on Unit types, Music tracks etc.)
+- Combine the best of old tools and engine changes to give modders the ability to make as many changes as possible
+- Patches from `Vanilla Conquer` are synced in when possible
 
-We also provide an example [CMakeUserPresets.json](resources/CMakeUserPresets.json.example) that can be copied to the root source directory and renamed. You can edit this file to create your own development presets that won't be included in git commits. A few example presets are provided which override the release presets to build a "debug" configuration.
+## Key Features (Planned)
 
-To build using a preset, add `--preset preset_name` to the CMake command line examples below.
+- Configuration via INI files for easy customization (authentic C&C modding experience)
+  - Option to use YAML files instead for modern comforts
+- Event handling using Lua scripts
+  - Slowly move select game logic out of the core engine
+- New scripting APIs to access more game engine functionality
+  - Ability to control scenario flow from Lua scripts, similar to OpenRA
+- Simple mod loading system
+  - Ability to replace files gradually and add new ones, similar to original MIX file logic
+- Comprehensive documentation and tools for modders
+  - Strong API documentation (Lua, INI, YAML etc.)
+  - Good mocking tools to make testing complex scenarios and mods easy
+- Attempt to keep compatbility where possible with original material
+  - Old formats for maps, media files etc. should not have breaking changes
+  - New functionality should replace or enhance old logic, in a opt-in manner
 
-### Windows
+## Why and How
 
-#### Requirements
+I originally published a mod for the C&C Remastered Collection when it was released on steam: [[TD] 🛠 NCO 🛠 (RULES.INI 📃 & Lua Scripting ⚙)](https://steamcommunity.com/sharedfiles/filedetails/?id=2147631402)
 
-The following components are needed to build Vanilla Conquer executables:
+How it changed Tiberian Dawn:
 
- - [MSVC v142 C++ x86/x64 build tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
- - Windows 10 SDK
- - CMake (installable from MSVC build tools)
- - [SDL1 or SDL2 development libraries, Visual C++](https://libsdl.org/download-2.0.php)
- - [OpenAL Core SDK](https://www.openal.org/downloads/)
+- A great level of control over the game engine
+- Brought `RULES.INI` for Tiberian Dawn up to the standard of Red Alert
+- Added Lua scripting
+- Merged in changes from popular Quality of Life mods and enhancements (A* path finding, unit rallying etc.)
+  - _Whilst keeping them configurable and optional_
+- Added enhancements to improve gameplay experience (Better skirmish AI)
 
-Extract SDL2 and OpenAL somewhere you know. If you are building only Remastered dlls you can skip installing SDL2 and OpenAL.
+---
 
-#### Building
+Whilst this mod was a alot of fun and popular enough on Steam I really wanted to achieve similar aims to projects like:
 
-In a VS command line window in the Vanilla Conquer source directory:
+- TRX: github.com/LostArtefacts/TRX
+- R.E.L.I.V.E: https://github.com/AliveTeam/alive_reversing
 
-```sh
-cmake -DSDL2_ROOT_DIR=C:\path\to\SDL2 -DOPENAL_ROOT=C:\path\to\OpenAL -B build .
-cmake --build build
+These took retro classics and reverse engineered and revamped them to work flawlessy on modern systems, adding a bunch of configurable enhancements as well.
+
+Vanilla Conquer has done the hard work of making a cross-platform standlone game engine decoupled from the Remastered Collection.
+
+I will use this as a base to bring in the lessons of my NCO mod to make a similar project to TRX/R.E.L.I.V.E
+
+## Contributing
+
+I am not accepting any contributions right away, but feature requests and any feedback are always welcome.
+
+I work on this project in my free time, so please just record what you can on GitHub and I will respond where I can.
+
+## Building and Running Instructions
+
+If you are want to be brave and try building this yourself, please refer to the original Vanilla Conquer repository: [Vanilla Conquer GitHub](https://github.com/TheAssemblyArmada/Vanilla-Conquer)
+
+Use the `Tiberian Dawn (/w editor)` cmake preset.
+
+## Convential Commits
+
+Each commit message should The Conventional Commits specification:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
 ```
 
-This will build Vanilla Conquer executables in the build directory. If you are building Remastered dlls you need to configure cmake with `-A win32` and ensure your VS command line is x86.
+See: https://www.conventionalcommits.org/en/v1.0.0/#summary
 
-### Linux / macOS / BSD
+Types:
+ - feat: A new feature
+ - fix: A bug fix
+ - docs: Documentation changes
+ - style: Changes that do not affect the meaning of the code (white-space, formatting, etc.)
+ - refactor: Code changes that neither fix a bug nor add a feature
+ - perf: Performance improvements
+ - test: Adding or refactoring tests
+ - chore: Other changes that don't modify src or test files
 
-#### Requirements
+Examples
+ - `feat: add hat wobble`
+ - `fix: remove extra spaces on login screen`
 
-- GNU C++ Compiler (g++) or Clang
-- CMake
-- SDL1 or SDL2
-- OpenAL
+By following this convention, we maintain a clean and informative project history.
 
-On Debian/Ubuntu you can install the build requirements as follows:
+## License
 
-```sh
-sudo apt update
-sudo apt install g++ cmake libsdl2-dev libopenal-dev
-or
-sudo apt install g++ cmake libsdl1.2-dev libopenal-dev
-```
-
-On Fedora/RedHat based system you can install the build requirements as follows:
-
-```sh
-sudo dnf install gcc-c++ cmake SDL2-devel openal-soft-devel
-or
-sudo dnf install gcc-c++ cmake SDL-devel openal-soft-devel
-```
-
-#### Building
-
-```sh
-cmake -B build .
-cmake --build build
-```
-
-This will build Vanilla Conquer executables in the build directory.
-
-#### macOS considerations
-
-To create a portable bundle for macOS we run [macdylibbundler](https://github.com/auriamg/macdylibbundler) in our CI builds as an extra step to add the SDL2 and OpenAL libraries to the bundle. If you wish to create a portable bundle yourself, you will need to do this step manually as CMake will not currently do it for you.
-
-### Icons
-
-CMake will attempt to generate icons in an appropriate format for Windows and macOS if ImageMagick is found in the system PATH. Otherwise you will end up with generic "program" icons.
-
-## Releases
-
-Binary releases of the latest commit are available from [here](https://github.com/TheAssemblyArmada/Vanilla-Conquer/releases/tag/latest), which is updated whenever new code is merged into the main branch.
-
-## Running
-
-### VanillaTD and VanillaRA
-
-Copy the Vanilla executable (`vanillatd.exe` or `vanillara.exe`) to your legacy game directory, on Windows also copy `SDL2.dll` and `OpenAL32.dll`.
-
-For Tiberian Dawn the final freeware Gold CD release ([GDI](https://www.moddb.com/games/cc-gold/downloads/command-conquer-gold-free-game-gdi-iso), [NOD](https://www.moddb.com/games/cc-gold/downloads/command-conquer-gold-free-game-nod-iso)) works fine.
-
-For Red Alert the freeware [CD release](https://web.archive.org/web/20080901183216/http://www.ea.com/redalert/news-detail.jsp?id=62) works fine as well.
-The official [Red Alert demo](https://www.moddb.com/games/cc-red-alert/downloads/command-conquer-red-alert-demo) is also fully playable.
-The demo supports custom skirmish maps (except interior) and includes one campaign mission for both Allied and Soviet from the retail game.
-
-While it is possible to use the game data from the Remastered Collection, The Ultimate Collection or The First Decade they are currently _not_ supported.
-Any repackaged version that you may already have from any unofficial source is _not_ supported.
-If you encounter a bug that may be data related like invisible things or crashing when using a certain unit please retest with the retail data first before submitting a bug report.
-
-### Remastered
-
-The build process will produce _Vanilla_TD_ and _Vanilla_RA_ directories in your build directory if you enable them with `-DBUILD_REMASTERTD=ON` and `-DBUILD_REMASTERRA=ON`.
-These work as mods for the Remastered Collection.
-
-To manually install a local Remastered mod, launch both games once then head to _My Documents/CnCRemastered/CnCRemastered/Mods_.
-You should see _Tiberian\_Dawn_ and _Red\_Alert_ directories.
-
-#### Tiberian Dawn
-
-Copy the _Vanilla_TD_ directory to the _Tiberian\_Dawn_ directory.
-
-The directory structure should look like this:
-
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/Data/TiberianDawn.dll
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/ccmod.json
-    My Documents/CnCRemastered/CnCRemastered/Mods/Tiberian_Dawn/Vanilla_TD/GameConstants_Mod.xml
-
-You should now see the new mod in the mods list of Tiberian Dawn Remastered.
-
-#### Red Alert
-
-Copy the _Vanilla_RA_ directory to the _Red\_Alert_ directory.
-
-The directory structure should look like this:
-
-    My Documents/CnCRemastered/CnCRemastered/Mods/Red_Alert/Vanilla_RA/Data/RedAlert.dll
-    My Documents/CnCRemastered/CnCRemastered/Mods/Red_Alert/Vanilla_RA/ccmod.json
-
-You should now see the new mod in the mods list of Red Alert Remastered.
+This project is licensed under the GPLv3 license. See the [LICENSE](LICENSE) file for details.

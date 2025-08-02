@@ -1,22 +1,32 @@
 name: macos
 
 on:
-  pull_request:
-  push:
+  workflow_dispatch:
+    inputs:
+      preset:
+        description: 'Build preset (e.g., nco-tiberian-dawn)'
+        required: false
+        default: 'nco-tiberian-dawn'
+  # TODO: Re-enable mac builds, saving on action minute usage for now
+  # pull_request:
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   vanilla-macos:
     runs-on: macos-14
     strategy:
       matrix:
-        preset: [release, internal, testing, nonet]
+        preset:
+          - "${{ github.event.inputs.preset || 'nco-tiberian-dawn' }}"
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: 'true'
         fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.sha }}
+        ref: "${{ github.event.pull_request.head.sha || github.sha }}"
     
     - name: Set Git Info
       id: gitinfo
@@ -35,12 +45,13 @@ jobs:
         cache-name: cache-dependencies
       with:
         path: ~/macports
-        key: ${{ env.DEP_CACHE_KEY }}
+        key: "${{ env.DEP_CACHE_KEY }}"
     
     - name: Install homebrew deps
       run: |
         brew install imagemagick dylibbundler
-    
+
+    # note: first run (with an empty cache) takes 30-40 mins    
     - if: ${{ steps.dep-cache.outputs.cache-hit != 'true' }}
       name: Install macport dependencies
       run: |
@@ -71,17 +82,19 @@ jobs:
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       run: |  
         dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd -o build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM
-        dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara -o build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
+        # dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara -o build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
         strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
-        strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
+        # strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
         dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/libs --fix-file build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
-        dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/libs --fix-file build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
+        # dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/libs --fix-file build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
         mkdir artifact
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
+        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app
+        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app
+        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM
+        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
 
     - name: Add internal tools to archive
-      if: ${{ matrix.preset == 'internal' }}
+      if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
         dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillamix -o build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dSYM
         strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
@@ -96,7 +109,7 @@ jobs:
         path: artifact
         
     - name: Upload development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/vanilla' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: softprops/action-gh-release@v2
       with:
         name: Development Build

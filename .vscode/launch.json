@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug TD",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build TD",
+      "program": "${env:TD_DATA_PATH}/vanillatd-dev",
+      "args": [
+        "-CHEAT"
+      ],
+      "cwd": "${env:TD_DATA_PATH}"
+    }
+  ]
+}

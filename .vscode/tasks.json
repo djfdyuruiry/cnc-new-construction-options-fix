@@ -1,0 +1,10 @@
+{
+  "tasks": [
+    {
+      "label": "Build TD",
+      "type": "shell",
+      "command": "./scripts/build-and-run-td.sh --no-run",
+      "group": "build"
+    }
+  ]
+}

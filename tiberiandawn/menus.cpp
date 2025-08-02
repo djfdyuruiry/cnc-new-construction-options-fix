@@ -475,8 +475,11 @@ int Main_Menu(unsigned int timeout)
         D_MULTI_W = 125 * scale_factor, D_MULTI_H = 9 * scale_factor, D_MULTI_X = 98 * scale_factor,
         D_MULTI_Y = 71 * scale_factor,
 
+        D_MAPEDITOR_W = 125 * scale_factor, D_MAPEDITOR_H = 9 * scale_factor, D_MAPEDITOR_X = 98 * scale_factor,
+        D_MAPEDITOR_Y = 89 * scale_factor,
+
         D_INTRO_W = 125 * scale_factor, D_INTRO_H = 9 * scale_factor, D_INTRO_X = 98 * scale_factor,
-        D_INTRO_Y = 89 * scale_factor,
+        D_INTRO_Y = 111 * scale_factor,
 #if (GERMAN | FRENCH)
         D_EXIT_W = 83 * scale_factor,
 #else
@@ -488,7 +491,7 @@ int Main_Menu(unsigned int timeout)
 #else
         D_EXIT_X = 128 * scale_factor,
 #endif
-        D_EXIT_Y = 111 * scale_factor;
+        D_EXIT_Y = 133 * scale_factor;
 
 #ifdef NEWMENU
     int starty = 25 * scale_factor;
@@ -509,6 +512,7 @@ int Main_Menu(unsigned int timeout)
 #endif
         BUTTON_LOAD,
         BUTTON_MULTI,
+        BUTTON_MAPEDITOR,
         BUTTON_INTRO,
         BUTTON_EXIT,
     };
@@ -619,6 +623,15 @@ int Main_Menu(unsigned int timeout)
                              D_MULTI_H);
     starty += ystep;
 
+    TextButtonClass editorbtn(BUTTON_MAPEDITOR,
+                             TXT_EDIT,
+                             TPF_CENTER | TPF_6PT_GRAD | TPF_USE_GRAD_PAL | TPF_NOSHADOW,
+                             D_MAPEDITOR_X,
+                             starty,
+                             D_MAPEDITOR_W,
+                             D_MAPEDITOR_H);
+    starty += ystep;
+
     // TextButtonClass internetbutton(BUTTON_INTERNET, TXT_INTERNET,
     //	TPF_CENTER | TPF_6PT_GRAD | TPF_USE_GRAD_PAL | TPF_NOSHADOW,
     //	D_INTERNET_X, starty, D_INTERNET_W, D_INTERNET_H);
@@ -721,6 +734,7 @@ int Main_Menu(unsigned int timeout)
 
     loadbtn.Add_Tail(*commands);
     multibtn.Add_Tail(*commands);
+    editorbtn.Add_Tail(*commands);
     introbtn.Add_Tail(*commands);
     exitbtn.Add_Tail(*commands);
 
@@ -742,6 +756,7 @@ int Main_Menu(unsigned int timeout)
 #endif // BONUS_MISSIONS
     buttons[butt++] = &loadbtn;
     buttons[butt++] = &multibtn;
+    buttons[butt++] = &editorbtn;
     buttons[butt++] = &introbtn;
     buttons[butt++] = &exitbtn;
 #else
@@ -884,6 +899,14 @@ int Main_Menu(unsigned int timeout)
             break;
 
         case (BUTTON_INTRO | KN_BUTTON):
+            retval = (input & 0x7FFF) - BUTTON_EXPAND;
+#ifdef DEMO
+            retval += 1;
+#endif // DEMO
+            process = false;
+            break;
+
+        case (BUTTON_MAPEDITOR | KN_BUTTON):
             retval = (input & 0x7FFF) - BUTTON_EXPAND;
 #ifdef DEMO
             retval += 1;

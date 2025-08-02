@@ -712,6 +712,7 @@ bool Select_Game(bool fade)
 #endif                        // BONUS_MISSIONS
         SEL_LOAD_MISSION,     // load a saved game
         SEL_MULTIPLAYER_GAME, // play modem/null-modem/network game
+        SEL_MAP_EDITOR,       // open map editor mode
         SEL_INTRO,            // replay the intro
         SEL_EXIT,             // exit to DOS
         SEL_FAME,             // view the hall of fame
@@ -959,6 +960,18 @@ bool Select_Game(bool fade)
                 break;
 
 #endif // BONUS_MISSIONS
+
+            /*
+            ** Map Editor mode
+            */
+            case SEL_MAP_EDITOR:
+                Debug_Map = true;  // Enable editor mode
+                Debug_Unshroud = true; // Reveal entire map
+                Scen.Scenario = 1; // Set default scenario
+
+                process = false;
+                break;
+
 
 #endif
 
@@ -1656,7 +1669,7 @@ bool Parse_Command_Line(int argc, char* argv[])
         **	Print usage text only if requested.
         */
         if (stricmp("/?", string) == 0 || stricmp("-?", string) == 0 || stricmp("-h", string) == 0
-            || stricmp("/h", string) == 0) {
+            || stricmp("/h", string) == 0 || stricmp("--help", string) == 0) {
             /*
             **	Unrecognized command line parameter... Display usage
             **	and then exit.
@@ -1687,22 +1700,43 @@ bool Parse_Command_Line(int argc, char* argv[])
 #else
             puts("Command & Conquer (c) 1995, 1996 Westwood Studios\r\n"
                  "Parameters:\r\n"
-#ifdef NEVER
-                 "  CHEAT     = Enable debug keys.\r\n"
+                 "  funpark    = Kane sends you on a fun mission when you select New Game.\r\n"
+                 "  EASY       = Enable easy mode.\r\n"
+                 "  HARD       = Enable hard mode.\r\n"
+#ifdef CHEAT_KEYS
+                 "  -CHECKMAP  = Run the validate map routine when a scenario is loaded.\r\n"
+                 "  -CHEAT     = Enable debug keys.\r\n"
+                 "  -HANSOLO   = Allow solo network games.\r\n"
+                 "  -SEED<n>   = Set a custom RNG seed -- for repeatable debugging.\r\n"
+#endif
+#ifdef SCENARIO_EDITOR
                  "  -EDITOR    = Enable scenario editor.\r\n"
 #endif
-                 //						"  -CD<path> = Set search path for data files.\r\n"
-                 "  -DESTNET  = Specify Network Number of destination system\r\n"
-                 "              (Syntax: DESTNETxx.xx.xx.xx)\r\n"
-                 "  -STEALTH  = Hide multiplayer names (\"Boss mode\")\r\n"
-                 "  -MESSAGES = Allow messages from outside this game.\r\n"
-                 "  -o        = Enable compatability with version 1.07.\r\n"
+                 "  -CD<path>  = Set search path for data files.\r\n"
+                 "  -DESTNET   = Specify Network Number of destination system\r\n"
+                 "               (Syntax: DESTNETxx.xx.xx.xx)\r\n"
+                 "  -STEALTH   = Hide multiplayer names (\"Boss mode\")\r\n"
+                 "  -MESSAGES  = Allow messages from outside this game.\r\n"
+                 "  -o|-0      = Enable compatability with version 1.07.\r\n"
+                 "  -ATTRACT   = Enter an Attract screen on idle -- RECORD.BIN file must be present.\r\n"
 #ifdef JAPANESE
-                 "  -ENGLISH  = Enable English keyboard compatibility.\r\n"
+                 "  -ENGLISH   = Enable English keyboard compatibility.\r\n"
 #endif
 //					"  -ELITE    = Advanced AI and combat characteristics.\r\n"
+                 "  -O[flag]   = Special control options;\r\n"
+#ifdef CHEAT_KEYS
+                 "     H : Hussled superweapons recharge time.\r\n"
+                 "     I : Inert weapons -- no damage occurs.\r\n"
+                 "     M : Monochrome debug messages.\r\n"
+#endif
+                 "     Q : Quiet mode (no sound).\r\n"
+#ifdef CHEAT_KEYS
+                 "     S : Super record -- flush recording to disk on every write.\r\n"
+                 "     V : Show target selection by opponent.\r\n"
+                 "     X : Make a recording of a multiplayer game.\r\n"
+                 "     Y : Play a recording of a multiplayer game.\r\n"
+#endif
 #ifdef NEVER
-                 "  -O[options]= Special control options;\r\n"
                  "     1 : Tiberium grows.\r\n"
                  "     2 : Tiberium grows and spreads.\r\n"
                  "     A : Aggressive player unit defense enabled.\r\n"
@@ -1711,20 +1745,13 @@ bool Parse_Command_Line(int argc, char* argv[])
                  "     E : Elite defense mode disable (attacker advantage).\r\n"
                  "     D : Deploy reversal allowed for construction yard.\r\n"
                  "     F : Fleeing from direct immediate threats is enabled.\r\n"
-                 "     H : Hussled recharge time.\r\n"
                  "     G : Growth for Tiberium slowed in multiplay.\r\n"
-                 "     I : Inert weapons -- no damage occurs.\r\n"
                  "     J : 7th grade sound effects.\r\n"
-                 "     M : Monochrome debug messages.\r\n"
                  "     N : Name the civilians and buildings.\r\n"
                  "     P : Path algorithm displayed as it works.\r\n"
-                 "     Q : Quiet mode (no sound).\r\n"
                  "     R : Road pieces are not added to buildings.\r\n"
                  "     T : Three point turns for wheeled vehicles.\r\n"
                  "     U : U can target and burn trees.\r\n"
-                 "     V : Show target selection by opponent.\r\n"
-                 "     X : Make a recording of a multiplayer game.\r\n"
-                 "     Y : Play a recording of a multiplayer game.\r\n"
                  "     Z : Disaster containment team.\r\n"
 #endif
                  "\r\n");
@@ -1855,6 +1882,10 @@ bool Parse_Command_Line(int argc, char* argv[])
             continue;
         }
 
+        if (stricmp(string, "-CHEAT") == 0) {
+            Debug_Flag = true;
+            continue;
+        }
 #endif
 
         /*
@@ -1936,8 +1967,8 @@ bool Parse_Command_Line(int argc, char* argv[])
         /*
         **	Special command line control parsing.
         */
-        if (strnicmp(string, "-X", strlen("-O")) == 0) {
-            string += strlen("-X");
+        if (strnicmp(string, "-O", strlen("-O")) == 0) {
+            string += strlen("-O");
             while (*string) {
                 char code = *string++;
                 switch (toupper(code)) {

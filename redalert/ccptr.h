@@ -129,12 +129,12 @@ private:
 **	creating a temporary object. This presumes that the conversion operator is
 **	cheaper than constructing a temporary and that cheaper solutions are desirable.
 */
-template <class T> int operator==(CCPtr<T>& lvalue, T* rvalue)
+template <class T> bool operator==(CCPtr<T>& lvalue, T* rvalue)
 {
     return ((T*)lvalue == rvalue);
 }
 
-template <class T> int operator==(T* lvalue, CCPtr<T>& rvalue)
+template <class T> bool operator==(T* lvalue, CCPtr<T>& rvalue)
 {
     return (lvalue == (T*)rvalue);
 }

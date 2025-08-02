@@ -81,7 +81,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 include(Compilers)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_FIND_FRAMEWORK "LAST")
 
@@ -140,7 +140,6 @@ if(SDL1)
 endif()
 
 if(SDL2)
-    message("Find path is ${CMAKE_FIND_ROOT_PATH}")
     find_package(SDL2 REQUIRED)
     list(APPEND VANILLA_LIBS ${SDL2_LIBRARY})
     include_directories(${SDL2_INCLUDE_DIR})

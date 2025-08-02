@@ -85,6 +85,32 @@
             "binaryDir": "${sourceDir}/build_msvc64",
             "displayName": "MSVC 2019 64bit Vanilla build",
             "architecture": "x64"
+        },
+        {
+            "name": "nco",
+            "inherits": "release",
+            "cacheVariables": {
+                "MAP_EDITORTD": "ON",
+                "MAP_EDITORRA": "ON",
+                "BUILD_TOOLS": "ON",
+                "BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "nco-tiberian-dawn",
+            "inherits": "nco",
+            "cacheVariables": {
+                "BUILD_VANILLARA": "OFF",
+                "MAP_EDITORRA": "OFF"
+            }
+        },
+        {
+            "name": "nco-red-alert",
+            "inherits": "nco",
+            "cacheVariables": {
+                "BUILD_VANILLATD": "OFF",
+                "MAP_EDITORTD": "OFF"
+            }
         }
     ],
     "buildPresets": [
@@ -121,6 +147,27 @@
             "configurePreset": "nonet",
             "displayName": "Vanilla Game Build",
             "description": "Vanilla Game Build",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco",
+            "configurePreset": "nco",
+            "displayName": "NCO Build",
+            "description": "NCO Build",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco-tiberian-dawn",
+            "configurePreset": "nco-tiberian-dawn",
+            "displayName": "NCO Tiberian Dawn Build",
+            "description": "NCO Tiberian Dawn Build",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco-red-alert",
+            "configurePreset": "nco-red-alert",
+            "displayName": "NCO Red Alert Build",
+            "description": "NCO Red Alert Build",
             "configuration": "RelWithDebInfo"
         }
     ],
@@ -205,6 +252,45 @@
                 {
                     "type": "build",
                     "name": "nonet"
+                }
+            ]
+        },
+        {
+            "name": "nco",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco"
+                },
+                {
+                    "type": "build",
+                    "name": "nco"
+                }
+            ]
+        },
+        {
+            "name": "nco-tiberian-dawn",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-tiberian-dawn"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-tiberian-dawn"
+                }
+            ]
+        },
+        {
+            "name": "nco-red-alert",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-red-alert"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-red-alert"
                 }
             ]
         }
