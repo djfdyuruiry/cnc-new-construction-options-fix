@@ -8,13 +8,15 @@ This project aims to provide an out-of-the-box experience faithful to the origin
 
 ![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)![Construction Yard Animation](docs/con-yard.gif)
 
-There are no builds yet available for you to try - I am scoping out what this project will be.
+There are no release builds yet - I am working on initial refactoring and behind the scenes changes first.
+
+If you are brave and want to try a dev build, grab the latest binaries here: https://github.com/djfdyuruiry/cnc-new-construction-options/releases/tag/latest
 
 As EVA would say: `NOT READY`
 
 ## Project Vision
 
-The main target will be `Tiberian Dawn`, with a view to move on to `Red Alert` when there are working enhancements to port from `Tiberian Dawn`.
+The main target will be a standalone `Tiberian Dawn` engine, with a view to move on to `Red Alert` when there are working enhancements to port from `Tiberian Dawn`. Eventually I want to also want to support using this repo as a mod for C&C Remastered Collection.
 
 My vision for `Tiberian Dawn`:
 
@@ -44,9 +46,9 @@ My vision for `Tiberian Dawn`:
 
 ## Why and How
 
-I originally published a mod for the C&C Remastered Collection when it was released on steam: [[TD] 🛠 NCO 🛠 (RULES.INI 📃 & Lua Scripting ⚙)](https://steamcommunity.com/sharedfiles/filedetails/?id=2147631402)
+I made a mod for the C&C Remastered Collection when it was released on Steam: [[TD] 🛠 NCO 🛠 (RULES.INI 📃 & Lua Scripting ⚙)](https://steamcommunity.com/sharedfiles/filedetails/?id=2147631402)
 
-How it changed Tiberian Dawn:
+It changed Tiberian Dawn in the following ways:
 
 - A great level of control over the game engine
 - Brought `RULES.INI` for Tiberian Dawn up to the standard of Red Alert
@@ -55,30 +57,26 @@ How it changed Tiberian Dawn:
   - _Whilst keeping them configurable and optional_
 - Added enhancements to improve gameplay experience (Better skirmish AI)
 
----
+--- 
 
-Whilst this mod was a alot of fun and popular enough on Steam I really wanted to achieve similar aims to projects like:
+Whilst this mod was a alot of fun I now want to achieve similar aims to projects like:
 
-- TRX: github.com/LostArtefacts/TRX
-- R.E.L.I.V.E: https://github.com/AliveTeam/alive_reversing
+- TRX: github.com/LostArtefacts/TRX (Tomb Radier)
+- R.E.L.I.V.E: https://github.com/AliveTeam/alive_reversing (Abe's Oddysee)
 
 These took retro classics and reverse engineered and revamped them to work flawlessy on modern systems, adding a bunch of configurable enhancements as well.
 
-Vanilla Conquer has done the hard work of making a cross-platform standlone game engine decoupled from the Remastered Collection.
-
-I will use this as a base to bring in the lessons of my NCO mod to make a similar project to TRX/R.E.L.I.V.E
+Vanilla Conquer has done the hard work of making a cross-platform standlone game engine decoupled from the Remastered Collection. I will use this as a base to bring in the lessons of my NCO mod to make a similar project to TRX/R.E.L.I.V.E
 
 ## Contributing
 
-I am not accepting any contributions right away, but feature requests and any feedback are always welcome.
-
-I work on this project in my free time, so please just record what you can on GitHub and I will respond where I can.
+I am not actively seeking any contributions, but feature requests and any feedback are always welcome. Since I work on this project in my free time, please just record what you can on GitHub by raising issues and I will respond where I can.
 
 ## Building and Running Instructions
 
 If you are want to be brave and try building this yourself, please refer to the original Vanilla Conquer repository: [Vanilla Conquer GitHub](https://github.com/TheAssemblyArmada/Vanilla-Conquer)
 
-Use the `Tiberian Dawn (/w editor)` cmake preset.
+Use the `nco-tiberian-dawn` cmake preset, like this: `cmake --workflow --preset nco-tiberian-dawn`
 
 ## Convential Commits
 
@@ -96,6 +94,7 @@ See: https://www.conventionalcommits.org/en/v1.0.0/#summary
 
 Types:
  - feat: A new feature
+ - feat!: A feature which has breaking changes
  - fix: A bug fix
  - docs: Documentation changes
  - style: Changes that do not affect the meaning of the code (white-space, formatting, etc.)
@@ -105,8 +104,8 @@ Types:
  - chore: Other changes that don't modify src or test files
 
 Examples
- - `feat: add hat wobble`
- - `fix: remove extra spaces on login screen`
+ - `feat(tiberian-dawn)!: make Kane die in SCG15`
+ - `fix: correct normal difficulty credits for HUMVEE`
 
 By following this convention, we maintain a clean and informative project history.
 
