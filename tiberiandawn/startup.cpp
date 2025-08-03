@@ -77,7 +77,7 @@ bool ProgEndCalled = false;
  *   03/20/1995 JLB : Created.                                                                 *
  *=============================================================================================*/
 
-void Move_Point(short& x, short& y, register DirType dir, unsigned short distance);
+void Move_Point(short& x, short& y, DirType dir, unsigned short distance);
 
 void Check_Use_Compressed_Shapes(void);
 extern void DLL_Shutdown(void);
@@ -208,7 +208,7 @@ int main(int argc, char** argv)
         printf("Zuwenig Hauptspeicher verf?gbar.\n");
 #else
 #ifdef FRENCH
-        printf("M‚moire vive (RAM) insuffisante.\n");
+        printf("Mï¿½moire vive (RAM) insuffisante.\n");
 #else
         printf("Insufficient RAM available.\n");
 #endif

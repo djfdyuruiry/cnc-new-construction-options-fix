@@ -243,7 +243,7 @@ short const* Coord_Spillage_List(COORDINATE coord, int maxsize)
  * HISTORY:                                                                                    *
  *   05/27/1994 JLB : Created.                                                                 *
  *=============================================================================================*/
-COORDINATE Coord_Move(COORDINATE start, register DirType dir, unsigned short distance)
+COORDINATE Coord_Move(COORDINATE start, DirType dir, unsigned short distance)
 {
     short x = Coord_X(start);
     short y = Coord_Y(start);
@@ -292,7 +292,7 @@ COORDINATE Coord_Scatter(COORDINATE coord, unsigned distance, bool lock)
     return (newcoord);
 }
 
-void Move_Point(short& x, short& y, register DirType dir, unsigned short distance)
+void Move_Point(short& x, short& y, DirType dir, unsigned short distance)
 {
     static unsigned char const CosTable[256] = {
         0x00, 0x03, 0x06, 0x09, 0x0c, 0x0f, 0x12, 0x15, 0x18, 0x1b, 0x1e, 0x21, 0x24, 0x27, 0x2a, 0x2d,

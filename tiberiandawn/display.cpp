@@ -4300,7 +4300,7 @@ void DisplayClass::Repair_Mode_Control(int control)
  *   04/30/1994 JLB : Created.                                                                 *
  *   04/30/1994 JLB : Converted to member function.                                            *
  *=============================================================================================*/
-bool DisplayClass::In_View(register CELL cell)
+bool DisplayClass::In_View(CELL cell)
 {
     COORDINATE coord = Coord_Whole(Cell_Coord(cell));
     COORDINATE tcoord = Coord_Whole(TacticalCoord);

@@ -1,0 +1,10 @@
+{
+  "cmake.configureEnvironment": {
+    "CC": "clang",
+    "CXX": "clang++",
+    "VC_CXX_FLAGS": "-w;-Wwrite-strings;-Werror=write-strings"
+  },
+  "githubPullRequests.remotes": [
+    "origin"
+  ]
+}
