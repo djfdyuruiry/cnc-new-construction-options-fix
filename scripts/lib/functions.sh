@@ -6,6 +6,22 @@ lib_scripts_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 . "${lib_scripts_path}/vars.sh"
 
+function assert_variable_exists() {
+  local variable="${1}"
+  local message="${2}"
+
+  shift 2
+
+  if [ -z "${!variable:-}" ]; then
+    error_and_exit "Environment variable missing or empty: ${variable} - ${message}" "$@"
+  fi
+}
+
+function error_and_exit() {
+  log_error "$@"
+  exit 1
+}
+
 function pushd_silent() {
   pushd "$@" &> /dev/null
 }
@@ -19,9 +35,14 @@ function stop_logging() {
 }
 
 function start_logging() {
-  local logFile="${1}"
+  local log_file="${1}"
+  local append_flag="${2:-}"
 
-  exec > >(tee -ia "${logFile}") 2>&1
+  if [ "${append_flag}" != "--append" ]; then
+    rm -f "${log_file}"
+  fi
+
+  exec > >(tee -ia "${log_file}") 2>&1
 }
 
 function _log_with_color() {
@@ -38,7 +59,7 @@ function _log_with_color() {
   # shellcheck disable=SC2059
   formatted_message="$(printf "${message}" "$@")"
 
-  printf "\e[${color}m[%s] %s: %s\e[0m\n" \
+  printf "\e[${color}m[%s] %s | %s\e[0m\n" \
     "${level}" \
     "${timestamp}" \
     "${formatted_message}"

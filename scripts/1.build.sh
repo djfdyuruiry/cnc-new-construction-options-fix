@@ -95,16 +95,16 @@ function main() {
 
   case "${target}" in
     ra)
-      cmake_preset="nco-tiberian-dawn"
+      cmake_preset="nco-red-alert"
       ;;
     td)
-      cmake_preset="nco-red-alert"
+      cmake_preset="nco-tiberian-dawn"
       ;;
   esac
 
   local build_output_path="${build_directory}/${cmake_preset}/RelWithDebInfo"
 
-  build_and_test "${cmake_preset}" "${build_output_path}"
+  build_and_test "${cmake_preset}" "${build_output_path}" "$@"
   log_binary_output "${build_output_path}"
 }
 
