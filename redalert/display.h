@@ -194,7 +194,7 @@ public:
                          SpeedType loco = SPEED_FOOT,
                          bool zonecheck = true,
                          MZoneType mzone = MZONE_NORMAL) const;
-    bool In_View(register CELL cell) const;
+    bool In_View(CELL cell) const;
     bool Passes_Proximity_Check(ObjectTypeClass const* object, HousesType house, short const* list, CELL trycell) const;
     ObjectClass* Cell_Object(CELL cell, int x = 0, int y = 0) const;
     ObjectClass* Next_Object(ObjectClass* object) const;
