@@ -1,9 +1,22 @@
 {
+  "version": "2.0.0",
   "tasks": [
+    {
+      "label": "Build",
+      "type": "cppbuild",
+      "command": "./scripts/build.sh",
+      "group": "build"
+    },
     {
       "label": "Build TD",
       "type": "shell",
-      "command": "./scripts/build-and-run-td.sh --no-run",
+      "command": "./scripts/build.sh td",
+      "group": "build"
+    },
+    {
+      "label": "Build RA",
+      "type": "shell",
+      "command": "./scripts/build.sh ra",
       "group": "build"
     }
   ]
