@@ -39,53 +39,53 @@
 Map(screen) class heirarchy.
 
     MapeditClass(most derived class)-- scenario editor
-        ³ MouseClass-- handles mouse animation and display control
-        ³ ScrollClass-- map scroll handler
-        ³ HelpClass-- pop
+        ï¿½ MouseClass-- handles mouse animation and display control
+        ï¿½ ScrollClass-- map scroll handler
+        ï¿½ HelpClass-- pop
     - up help text handler
-        ³ TabClass-- file folder tab screen mode control dispatcher
-        ³ SidebarClass-- displays and controls construction list sidebar
-        ³ PowerClass-- display power production
+        ï¿½ TabClass-- file folder tab screen mode control dispatcher
+        ï¿½ SidebarClass-- displays and controls construction list sidebar
+        ï¿½ PowerClass-- display power production
           / consumption bargraph
-        ³ RadarClass-- displays and controls radar map
-        ³ DisplayClass-- general tactical map display handler
-        ³ MapClass-- general tactical map data handler
-        ³ GScreenClass(pure virtual base class)-- generic screen control
+        ï¿½ RadarClass-- displays and controls radar map
+        ï¿½ DisplayClass-- general tactical map display handler
+        ï¿½ MapClass-- general tactical map data handler
+        ï¿½ GScreenClass(pure virtual base class)-- generic screen control
 
           AbstractClass
-                                  ³
-                                  ³
-                                  ³
-                                  ³ ObjectClass
-                                  ³
-       ÚÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄ¿
-          AnimClass  ³ TemplateClass    ³        ÃÄ FuseClass     ³ TerrainClass
-              ³                   ³        ÃÄ FlyClass      ³
-              ³                   ³ BulletClass            ³ OverlayClass MissionClass SmudgeClass
-                                  ³ RadioClass
-                                  ³
-                                  ÃÄ CrewClass
-                                  ÃÄ FlasherClass
-                                  ÃÄ StageClass
-                                  ÃÄ CargoClass TechnoClass
-                                  ³
-         ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ FootClass BuildingClass
-         ³
-         ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ DriveClass InfantryClass         ÃÄ FlyClass
-         ³ AircraftClass TurretClass
-         ³ TarComClass
-         ³ UnitClass
+                                  ï¿½
+                                  ï¿½
+                                  ï¿½
+                                  ï¿½ ObjectClass
+                                  ï¿½
+       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+          AnimClass  ï¿½ TemplateClass    ï¿½        ï¿½ï¿½ FuseClass     ï¿½ TerrainClass
+              ï¿½                   ï¿½        ï¿½ï¿½ FlyClass      ï¿½
+              ï¿½                   ï¿½ BulletClass            ï¿½ OverlayClass MissionClass SmudgeClass
+                                  ï¿½ RadioClass
+                                  ï¿½
+                                  ï¿½ï¿½ CrewClass
+                                  ï¿½ï¿½ FlasherClass
+                                  ï¿½ï¿½ StageClass
+                                  ï¿½ï¿½ CargoClass TechnoClass
+                                  ï¿½
+         ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ FootClass BuildingClass
+         ï¿½
+         ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ DriveClass InfantryClass         ï¿½ï¿½ FlyClass
+         ï¿½ AircraftClass TurretClass
+         ï¿½ TarComClass
+         ï¿½ UnitClass
 
           AbstractTypeClass
-                                    ³ ObjectTypeClass
-                                    ³
-             ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-             ³                      ³            ³                 ³ TechnoTypeClass              ³            ³                 ³
-             ³ BulletTypeClass    ³                 ³
-             ³ TemplateTypeClass         ³
-    ÚÄÄÄÄÄÄÄÄÁÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ TerrainTypeClass
-    ³              ³           ³              ³ UnitTypeClass      ³ BuildingTypeClass      ³
-                   ³ InfantryTypeClass AircraftTypeClass
+                                    ï¿½ ObjectTypeClass
+                                    ï¿½
+             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+             ï¿½                      ï¿½            ï¿½                 ï¿½ TechnoTypeClass              ï¿½            ï¿½                 ï¿½
+             ï¿½ BulletTypeClass    ï¿½                 ï¿½
+             ï¿½ TemplateTypeClass         ï¿½
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ TerrainTypeClass
+    ï¿½              ï¿½           ï¿½              ï¿½ UnitTypeClass      ï¿½ BuildingTypeClass      ï¿½
+                   ï¿½ InfantryTypeClass AircraftTypeClass
 */
 
 #if !defined _WIN32 || defined NOMINMAX
@@ -397,7 +397,7 @@ bool Is_DOS_Files(void);
 /*
 **	COORD.CPP
 */
-void Move_Point(short& x, short& y, register DirType dir, unsigned short distance);
+void Move_Point(short& x, short& y, DirType dir, unsigned short distance);
 COORDINATE Adjacent_Cell(COORDINATE coord, FacingType dir);
 COORDINATE Coord_Move(COORDINATE start, DirType facing, unsigned short distance);
 COORDINATE Coord_Scatter(COORDINATE coord, unsigned distance, bool lock = false);
