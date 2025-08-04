@@ -1,11 +1,11 @@
 # Enhancements
 This page contains a list of all enhancements New Construction Options makes to the Command & Conquer games. 
 
-- [General](#general)
-- [Tiberian Dawn](enhancements-td)
-	- [CLI Options](enhancements-td#cli-options)
-	- [Map Editor](enhancements-td#map-editor)
-- [Red Alert](#red-alert)
+- [Global Enhancements](#global-enhancements)
+- [Tiberian Dawn](enhancements-Tiberian-Dawn)
+	- [CLI Options](enhancements-Tiberian-Dawn#cli-options)
+	- [Scenario Editor](enhancements-Tiberian-Dawn#scenario-editor)
+- [Red Alert](#enhancements-Red-Alert)
 
 Status key:
 - <span style="background-color: green;color: white">implemented</span>: working version of the feature at least a `v1.0` of the feature is available (no major bugs)
