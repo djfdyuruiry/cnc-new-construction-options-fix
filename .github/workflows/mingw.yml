@@ -16,13 +16,28 @@ on:
         required: false
         default: 'nco-tiberian-dawn'
 
-#  pull_request:
-#  push:
-#    branches:
-#      - main
+  # TODO: Builds *only* run for PRs and *only* if you label the PR with 'mingw'.
+  #       I want to save on action minute usage for now.
+  pull_request:
+    paths: &change-paths
+      - .clang-format
+      - CMake**
+      - .github/workflows/linux.yml
+      - cmake/**
+      - common/**
+      - redalert/**
+      - resources
+      - tiberiandawn/**
+      - tools/**
+
+  # push:
+  #   branches:
+  #     - main
+  #   paths: *change-paths
 
 jobs:
   vanilla_win_gcc:
+    if: contains(github.event.pull_request.labels.*.name, 'mingw')
     runs-on: ubuntu-22.04
     strategy:
       matrix:
