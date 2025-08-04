@@ -1,3 +1,5 @@
 # Resources
 
-This section k`
+This section contains a directory of resources I found that are useful for developing C&C games.
+
+*Nothing here for now*

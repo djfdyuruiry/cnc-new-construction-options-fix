@@ -8,13 +8,21 @@ on:
       - main
     paths:
       - wiki/**
+      - .github/workflows/wiki.yml
+
+concurrency:
+  group: publish-wiki
+  cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
-  deploy-wiki:
-    permissions:
-      contents: write
+  publish-wiki:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions4gh/configure-wiki@v1
-      - uses: actions4gh/deploy-wiki@v1
+      - uses: actions/checkout@v3
+      - uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          ignore: |
+            .obsidian
