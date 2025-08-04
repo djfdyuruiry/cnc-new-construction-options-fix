@@ -2,12 +2,18 @@ name: deploy-wiki
 
 on:
   workflow_dispatch:
+
+  # wiki workflow runs in 'dry run' mode on PRs
+  pull_request:
+    paths: &change-paths
+      - .github/workflows/wiki.yml
+      - wiki/**
+
+  # wiki should only be deployed from main
   push:
     branches:
       - main
-    paths:
-      - wiki/**
-      - .github/workflows/wiki.yml
+    paths: *change-paths
 
 concurrency:
   group: publish-wiki
@@ -27,3 +33,4 @@ jobs:
           preprocess: true
           ignore: |
             .obsidian
+          dry_run: ${{ github.ref != 'refs/heads/main' }}
