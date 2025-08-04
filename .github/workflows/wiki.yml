@@ -33,4 +33,4 @@ jobs:
           preprocess: true
           ignore: |
             .obsidian
-          dry_run: ${{ github.ref != 'refs/heads/main' }}
+          dry-run: ${{ github.ref != 'refs/heads/main' }}

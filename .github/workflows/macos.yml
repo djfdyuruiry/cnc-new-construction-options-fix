@@ -14,7 +14,7 @@ on:
     paths: &change-paths
       - .clang-format
       - CMake**
-      - .github/workflows/linux.yml
+      - .github/workflows/macos.yml
       - cmake/**
       - common/**
       - redalert/**

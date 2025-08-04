@@ -20,7 +20,7 @@ on:
     paths: &change-paths
       - .clang-format
       - CMake**
-      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
       - cmake/**
       - common/**
       - redalert/**

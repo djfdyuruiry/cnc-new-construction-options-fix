@@ -22,7 +22,7 @@ on:
     paths: &change-paths
       - .clang-format
       - CMake**
-      - .github/workflows/linux.yml
+      - .github/workflows/mingw.yml
       - cmake/**
       - common/**
       - redalert/**
