@@ -1,0 +1,21 @@
+# Enhancements
+This page contains a list of all enhancements New Construction Options makes to the Command & Conquer games. 
+
+- [General](#general)
+- [Tiberian Dawn](enhancements-td)
+	- [CLI Options](enhancements-td#cli-options)
+	- [Map Editor](enhancements-td#map-editor)
+- [Red Alert](#red-alert)
+
+Status key:
+- <span style="background-color: green;color: white">implemented</span>: working version of the feature at least a `v1.0` of the feature is available (no major bugs)
+- <span style="background-color: yellow;color: black">beta</span>: feature available (functionality will not be complete and bugs may happen)
+- <span style="background-color: red;color: black">alpha</span>: feature in progress (very limited and is likely to be unstable)
+
+## Global Enhancements
+
+These enhancements work in both Tiberian Dawn and Red Alert:
+
+*Nothing here for now*
+
+![Construction Yard Animation](img/mcv-spin.gif)
