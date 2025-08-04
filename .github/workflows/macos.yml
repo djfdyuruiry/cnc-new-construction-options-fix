@@ -7,14 +7,29 @@ on:
         description: 'Build preset (e.g., nco-tiberian-dawn)'
         required: false
         default: 'nco-tiberian-dawn'
-  # TODO: Re-enable mac builds, saving on action minute usage for now
-  # pull_request:
+
+  # TODO: Builds *only* run for PRs and *only* if you label the PR with 'macos'.
+  #       I want to save on action minute usage for now.
+  pull_request:
+    paths: &change-paths
+      - .clang-format
+      - CMake**
+      - .github/workflows/linux.yml
+      - cmake/**
+      - common/**
+      - redalert/**
+      - resources
+      - tiberiandawn/**
+      - tools/**
+
   # push:
   #   branches:
   #     - main
+  #   paths: *change-paths
 
 jobs:
   vanilla-macos:
+    if: contains(github.event.pull_request.labels.*.name, 'macos')
     runs-on: macos-14
     strategy:
       matrix:
