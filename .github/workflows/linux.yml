@@ -19,10 +19,23 @@ on:
         description: 'OS to run on (e.g., ubuntu-24.04)'
         required: false
         default: 'ubuntu-24.04'
+
   pull_request:
+    paths: &change-paths
+      - .clang-format
+      - CMake**
+      - .github/workflows/linux.yml
+      - cmake/**
+      - common/**
+      - redalert/**
+      - resources
+      - tiberiandawn/**
+      - tools/**
+
   push:
     branches:
       - main
+    paths: *change-paths
 
 jobs:
   create_dev_release:

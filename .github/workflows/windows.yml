@@ -17,9 +17,21 @@ on:
         default: 'x86_64'
 
   pull_request:
+    paths: &change-paths
+      - .clang-format
+      - CMake**
+      - .github/workflows/linux.yml
+      - cmake/**
+      - common/**
+      - redalert/**
+      - resources
+      - tiberiandawn/**
+      - tools/**
+
   push:
     branches:
       - main
+    paths: *change-paths
 
 jobs:
   # TODO: Remaster compatibility
