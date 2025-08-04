@@ -4,8 +4,9 @@ C&C: New Construction Options (NCO) is a replacement game engine for `Command & 
 
 This project aims to provide an out-of-the-box experience that looks and feels like the original games while giving users unprecedented control over customization and enhancements through in-game menus, INI file configuration and Lua scripting.
 
-> This project is a fork of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer)
+> This project is a fork of [Vanilla Conquer](https://github.com/TheAssemblyArmada/Vanilla-Conquer) 
 
+_**Note on GitHub fork networks**: I removed this repo from the `Vanilla Conquer` network as GitHub defaults PRs for this repo to the upstream of the fork, which is annoying. This is the only reason I don't have the fork link in place currently. I will move it back into the network when GitHub allows setting the default base repo for all new PRs._
 
 ## ⚠ Under Construction ⚠
 
