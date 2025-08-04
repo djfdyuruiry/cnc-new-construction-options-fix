@@ -26,4 +26,4 @@ This project is under construction and intial development, so no release builds 
 
 ## License
 
-This project is licensed under the GPLv3 license. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv3 license. See the [License.txt](License.txt) file for details.
