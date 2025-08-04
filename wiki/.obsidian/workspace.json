@@ -11,10 +11,14 @@
             "id": "15fcb8ee189948a2",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "README"
             }
           }
         ]
@@ -166,17 +170,5 @@
   },
   "active": "15fcb8ee189948a2",
   "lastOpenFiles": [
-    "Home.md",
-    "Contributing.md",
-    "Convential-Commits.md",
-    "Building.md",
-    "planned-features.md",
-    "resources/README.md",
-    "resources",
-    "enhancements.md",
-    "enhancements-td.md",
-    "enhancements-ra.md",
-    "img/mcv-spin.gif",
-    "img/con-yard.gif"
   ]
 }
