@@ -35,10 +35,10 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  resolve_win_cmake_prefix:
+  resolve_win_cmake_preset:
     runs-on: windows-2022
     outputs:
-      prefix: ${{ steps.set_preset.outputs.preset }}
+      preset: ${{ steps.set_preset.outputs.preset }}
     steps:
     - name: Scan for Preset Files in Changes
       uses: dorny/paths-filter@v3
