@@ -28,7 +28,7 @@ on:
   #   paths: *change-paths
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}__macos
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
