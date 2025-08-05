@@ -30,17 +30,17 @@ function run_tests() {
 
   log_info "Executing test binaries"
 
-  for test in $(find build -maxdepth 1 -type f -executable -wholename "${build_output_path}/test_\*" | tr '\n' ' '); do
-    log_info "Running test: ${test}"
+  for test in $(find "${build_output_path}" -maxdepth 1 -type f -executable -wholename "${build_output_path}/test_*" | tr '\n' ' '); do
+    log_warning "Running test: ${test}"
 
     "$test" || {
-      log_error "Test FAILED: ${test}"
+      log_error "Test FAILED"
       failed_tests="${failed_tests} ${test}"
 
       continue
     }
 
-    log_error "Test PASSED: ${test}"
+    log_info "Test PASSED"
   done
 
   if [ -n "${failed_tests}" ]; then
