@@ -383,12 +383,12 @@ typedef enum ThemeType : signed char
     THEME_WARFARE,  //	Warfare
     THEME_BFEARED,  //	Enemies To Be Feared
     THEME_IAM,      // I Am
-    THEME_WIN1,     //	Great Shot!
-    THEME_MAP1,     // Map subliminal techno "theme".
     THEME_VALKYRIE, // Ride of the valkyries.
+    THEME_WIN1,     //	Great Shot! (score screen)
+    THEME_MAP1,     // Map subliminal techno "theme" (main menu)
 
     THEME_COUNT,
-    THEME_LAST = THEME_BFEARED,
+    THEME_LAST = THEME_VALKYRIE,
     THEME_FIRST = 0
 } ThemeType;
 
