@@ -115,21 +115,14 @@
         {
             "name": "nco-remaster",
             "inherits": "remaster",
-            "displayName": "NCO Remaster build",
-            "cacheVariables": {
-                "MAP_EDITORTD": "ON",
-                "MAP_EDITORRA": "ON",
-                "BUILD_TOOLS": "ON",
-                "BUILD_TESTS": "ON"
-            }
+            "displayName": "NCO Remaster build"
         },
         {
             "name": "nco-red-alert-remaster",
             "inherits": "nco-remaster",
             "displayName": "NCO Remaster build",
             "cacheVariables": {
-                "BUILD_REMASTERTD": "OFF",
-                "MAP_EDITORTD": "OFF"
+                "BUILD_REMASTERTD": "OFF"
             }
         },
         {
@@ -137,8 +130,7 @@
             "inherits": "nco-remaster",
             "displayName": "NCO Remaster build",
             "cacheVariables": {
-                "BUILD_REMASTERRA": "OFF",
-                "MAP_EDITORRA": "OFF"
+                "BUILD_REMASTERRA": "OFF"
             }
         }
     ],
