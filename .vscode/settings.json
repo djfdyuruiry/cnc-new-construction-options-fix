@@ -6,5 +6,8 @@
   },
   "githubPullRequests.remotes": [
     "origin"
-  ]
+  ],
+  "files.associations": {
+    "algorithm": "cpp"
+  }
 }

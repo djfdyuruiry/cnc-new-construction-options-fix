@@ -205,7 +205,7 @@ if(BUILD_REMASTERRA)
         ${REDALERT_HEADERS}
         ${REMASTERRA_RC}
     )
-    target_compile_definitions(RedAlert PUBLIC $<$<CONFIG:Debug>:_DEBUG> ${REMASTER_DEFS})
+    target_compile_definitions(RedAlert PUBLIC $<$<CONFIG:Debug>:_DEBUG> $<$<BOOL:CNC_DEBUG_LOGGING>:DEBUG_LOGGING> ${REMASTER_DEFS})
     target_include_directories(RedAlert PUBLIC ${CMAKE_SOURCE_DIR} .)
     target_link_libraries(RedAlert commonr ${REMASTER_LIBS} ${STATIC_LIBS})
     set_target_properties(RedAlert PROPERTIES PREFIX "")
@@ -254,7 +254,7 @@ if(BUILD_VANILLARA)
         )
     endif()
 
-    target_compile_definitions(VanillaRA PUBLIC $<$<CONFIG:Debug>:_DEBUG> ${VANILLA_DEFS})
+    target_compile_definitions(VanillaRA PUBLIC $<$<CONFIG:Debug>:_DEBUG> $<$<BOOL:CNC_DEBUG_LOGGING>:DEBUG_LOGGING> ${VANILLA_DEFS})
     target_include_directories(VanillaRA PUBLIC ${CMAKE_SOURCE_DIR} .)
     target_link_libraries(VanillaRA commonv ${VANILLA_LIBS} ${STATIC_LIBS})
     set_target_properties(VanillaRA PROPERTIES OUTPUT_NAME vanillara)

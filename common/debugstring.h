@@ -15,7 +15,7 @@
 /*
 ** If we aren't building a debug build, then don't even expose the logging interface.
 */
-#ifdef _DEBUG
+#ifdef DEBUG_LOGGING
 void Debug_String_Log(unsigned level, const char* file, int line, const char* fmt, ...);
 void Debug_String_File(const char* file);
 #else
@@ -24,6 +24,7 @@ void Debug_String_File(const char* file);
 #endif
 
 /* Default to debug logging */
+// TODO: Read this from rules or cli args
 #ifndef LOGGING_LEVEL
 #define LOGGING_LEVEL 5
 #endif
@@ -37,37 +38,37 @@ void Debug_String_File(const char* file);
 #define LOGLEVEL_TRACE 6
 
 /* Conditionally define the function like macros for logging levels, allows only certain logging to be compiled into client program. */
-#if LOGLEVEL_TRACE <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_TRACE <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_TRACE(x, ...) Debug_String_Log(LOGLEVEL_TRACE, __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define DBG_TRACE(x, ...) ((void)0)
 #endif
 
-#if LOGLEVEL_DEBUG <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_DEBUG <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_LOG(x, ...) Debug_String_Log(LOGLEVEL_DEBUG, __FILE__, __LINE__, x, ##__VA_ARGS__)
 #else
 #define DBG_LOG(x, ...) ((void)0)
 #endif
 
-#if LOGLEVEL_INFO <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_INFO <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_INFO(x, ...) Debug_String_Log(LOGLEVEL_INFO, __FILE__, __LINE__, x, ##__VA_ARGS__)
 #else
 #define DBG_INFO(x, ...) ((void)0)
 #endif
 
-#if LOGLEVEL_WARN <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_WARN <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_WARN(x, ...) Debug_String_Log(LOGLEVEL_WARN, __FILE__, __LINE__, x, ##__VA_ARGS__)
 #else
 #define DBG_WARN(x, ...) ((void)0)
 #endif
 
-#if LOGLEVEL_ERROR <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_ERROR <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_ERROR(x, ...) Debug_String_Log(LOGLEVEL_ERROR, __FILE__, __LINE__, x, ##__VA_ARGS__)
 #else
 #define DBG_ERROR(x, ...) ((void)0)
 #endif
 
-#if LOGLEVEL_FATAL <= LOGGING_LEVEL && defined _DEBUG
+#if LOGLEVEL_FATAL <= LOGGING_LEVEL && defined DEBUG_LOGGING
 #define DBG_FATAL(x, ...)                                                                                              \
     do {                                                                                                               \
         Debug_String_Log(LOGLEVEL_FATAL, __FILE__, __LINE__, x, ##__VA_ARGS__);                                        \
