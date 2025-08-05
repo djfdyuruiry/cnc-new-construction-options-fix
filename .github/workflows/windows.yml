@@ -40,6 +40,12 @@ jobs:
     outputs:
       preset: ${{ steps.set_preset.outputs.preset }}
     steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+        fetch-depth: 0
+        ref: "${{ github.event.pull_request.head.sha || github.sha }}"
+
     - name: Scan for Preset Files in Changes
       uses: dorny/paths-filter@v3
       id: changes
