@@ -114,13 +114,9 @@
         },
         {
             "name": "nco-remaster",
-            "inherits": "release",
+            "inherits": "remaster",
             "displayName": "NCO Remaster build",
             "cacheVariables": {
-                "BUILD_REMASTERTD": "ON",
-                "BUILD_REMASTERRA": "ON",
-                "BUILD_VANILLATD": "OFF",
-                "BUILD_VANILLARA": "OFF",
                 "MAP_EDITORTD": "ON",
                 "MAP_EDITORRA": "ON",
                 "BUILD_TOOLS": "ON",
