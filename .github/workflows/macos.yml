@@ -90,46 +90,95 @@ jobs:
       run: |
         sudo cp -R ~/macports/local /opt/local
 
+    - name: Scan for Preset Files in Changes
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          ci:
+            - .github/workflows/linux.yml
+          nco:
+            - .clang-format
+            - CMake**
+            - cmake/**
+            - common/**
+            - resources
+            - tools/**
+          ra:
+            - redalert/**
+          td:
+            - tiberiandawn/**
+
+    - name: Set Preset
+      id: set_preset
+      run: |
+        PRESET=""
+
+        if [ "${{ steps.changes.outputs.nco }}" = "true" ]; then
+          echo "Changes to shared files detected - building everything using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] && [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Red Alert & Tiberian Dawn changes detected - building both using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] ; then
+          echo "Only Red Alert changes detected - using cmake preset: nco-red-alert"
+          PRESET="nco-red-alert"
+        elif [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Only Tiberian Dawn changes detected - using cmake preset: nco-tiberian-dawn"
+          PRESET="nco-tiberian-dawn"
+        elif [ "${{ steps.changes.outputs.ci }}" = "true" ]; then
+          echo "Workflow yml changes detected - testing workflow changes using cmake preset: nco"
+          PRESET="nco"
+        else
+          echo "WARNING: Unable to match changed files to a preset - defaulting to building everything using cmake preset: nco"
+          PRESET="nco"
+        fi
+
+        echo "preset=${PRESET}" >> $GITHUB_OUTPUT
+
     - name: Build Vanilla Conquer
       env:
         CMAKE_OSX_ARCHITECTURES: "arm64;x86_64"
         VC_CXX_FLAGS: "-w;-Wwrite-strings;-Werror=write-strings"
       run: |
         export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-        cmake --workflow --preset ${{ matrix.preset }}
+        cmake --workflow --preset ${{ steps.set_preset.outputs.preset }}
 
     - name: Create archives
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       run: |
-        dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd -o build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM
-        # dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara -o build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
-        strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
-        # strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
-        dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/libs --fix-file build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
-        # dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/libs --fix-file build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
         mkdir artifact
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
+        
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
+          dsymutil build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara -o build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dSYM
+          strip -Sx build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
+          dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.app/Contents/libs --fix-file build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.app
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dSYM
+        fi
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-red-alert" ]; then
+          dsymutil build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd -o build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dSYM
+          strip -Sx build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
+          dylibbundler --create-dir --bundle-deps --overwrite-files --dest-dir ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.app/Contents/libs --fix-file build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.app
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dSYM
+        fi
 
     - name: Add internal tools to archive
-      if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
-        dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillamix -o build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dSYM
-        strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dSYM
+        dsymutil build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix -o build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dSYM
+        strip -Sx build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dSYM
 
     - name: Upload artifact
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: actions/upload-artifact@v4
       with:
-        name: vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2
+        name: vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2
         path: artifact
 
     - name: Upload development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
       uses: softprops/action-gh-release@v2
       with:
         name: Development Build
@@ -141,7 +190,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload tagged release
-      if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ startsWith(github.ref, 'refs/tags/') }}
       uses: softprops/action-gh-release@v2
       with:
         files: |

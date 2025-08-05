@@ -73,47 +73,98 @@ jobs:
         unzip -qq openal-soft-1.21.0-bin.zip -d /tmp
         mv /tmp/openal-soft-1.21.0-bin/bin/${{ matrix.arch.win }}/soft_oal.dll /tmp/openal-soft-1.21.0-bin/bin/${{ matrix.arch.win }}/OpenAL32.dll
 
+    - name: Scan for Preset Files in Changes
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          ci:
+            - .github/workflows/linux.yml
+          nco:
+            - .clang-format
+            - CMake**
+            - cmake/**
+            - common/**
+            - resources
+            - tools/**
+          ra:
+            - redalert/**
+          td:
+            - tiberiandawn/**
+
+    - name: Set Preset
+      id: set_preset
+      run: |
+        PRESET=""
+
+        if [ "${{ steps.changes.outputs.nco }}" = "true" ]; then
+          echo "Changes to shared files detected - building everything using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] && [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Red Alert & Tiberian Dawn changes detected - building both using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] ; then
+          echo "Only Red Alert changes detected - using cmake preset: nco-red-alert"
+          PRESET="nco-red-alert"
+        elif [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Only Tiberian Dawn changes detected - using cmake preset: nco-tiberian-dawn"
+          PRESET="nco-tiberian-dawn"
+        elif [ "${{ steps.changes.outputs.ci }}" = "true" ]; then
+          echo "Workflow yml changes detected - testing workflow changes using cmake preset: nco"
+          PRESET="nco"
+        else
+          echo "WARNING: Unable to match changed files to a preset - defaulting to building everything using cmake preset: nco"
+          PRESET="nco"
+        fi
+
+        echo "preset=${PRESET}" >> $GITHUB_OUTPUT
+
     - name: Build Vanilla Conquer
       env:
         CMAKE_FIND_ROOT_PATH: "/tmp/SDL2-2.0.12/${{ matrix.arch.lin }}-w64-mingw32;/tmp/openal-soft-1.21.0-bin"
         CMAKE_TOOLCHAIN_FILE: "cmake/${{ matrix.arch.lin }}-mingw-w64-toolchain.cmake"
         VC_CXX_FLAGS: "-w;-Wwrite-strings;-Werror=write-strings"
       run: |
-        cmake --workflow --preset ${{ matrix.preset }}
+        cmake --workflow --preset ${{ steps.set_preset.outputs.preset }}
 
     - name: Create archives
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.exe ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.exe ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
-        ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.exe
-        # ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.exe
-        ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.exe
-        # ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.exe
         mkdir artifact
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.exe /tmp/SDL2-2.0.12/${{ matrix.arch.lin }}-w64-mingw32/bin/SDL2.dll /tmp/openal-soft-1.21.0-bin/bin/${{ matrix.arch.win }}/OpenAL32.dll
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.exe
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
+
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip /tmp/SDL2-2.0.12/${{ matrix.arch.lin }}-w64-mingw32/bin/SDL2.dll /tmp/openal-soft-1.21.0-bin/bin/${{ matrix.arch.win }}/OpenAL32.dll
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
+          cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.exe ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
+          ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.exe
+          ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.exe
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.exe
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
+        fi
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-red-alert" ]; then
+          cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.exe ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+          ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.exe
+          ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.exe
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.exe
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+        fi
 
     - name: Add internal tools to archive
-      if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
-        ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe
-        ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
+        cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.exe ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
+        ${{ matrix.arch.lin }}-w64-mingw32-strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.exe
+        ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.exe
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.exe
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       with:
-        name: vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}
+        name: vanilla-conquer-${{ steps.set_preset.outputs.preset }}-win-gcc-${{ matrix.arch.lin }}
         path: artifact
 
     - name: Upload development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
       uses: softprops/action-gh-release@v2
       with:
         name: Development Build
@@ -125,7 +176,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload tagged release
-      if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ startsWith(github.ref, 'refs/tags/') }}
       uses: softprops/action-gh-release@v2
       with:
         files: |
