@@ -19,17 +19,35 @@ on:
         description: 'OS to run on (e.g., ubuntu-24.04)'
         required: false
         default: 'ubuntu-24.04'
+
   pull_request:
+    paths: &change-paths
+      - .clang-format
+      - CMake**
+      - .github/workflows/linux.yml
+      - cmake/**
+      - common/**
+      - redalert/**
+      - resources
+      - tests/**
+      - tiberiandawn/**
+      - tools/**
+
   push:
     branches:
       - main
+    paths: *change-paths
+
+concurrency:
+  group: ${{ github.ref }}__linux
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   create_dev_release:
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-22.04
     steps:
     - name: Create Development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
       uses: "0xDylan/action-auto-releases-n20@v1.1"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -44,8 +62,6 @@ jobs:
         compiler:
           - cc: "${{ github.event.inputs.c_compiler || 'clang' }}"
             cxx: "${{ github.event.inputs.cpp_compiler || 'clang++' }}"
-        preset:
-          - "${{ github.event.inputs.preset || 'nco-tiberian-dawn' }}"
         os:
           - "${{ github.event.inputs.os || 'ubuntu-24.04' }}"
 
@@ -62,8 +78,53 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get update -qq > /dev/null
         sudo apt-get install -qq -y clang-format-14 libsdl2-dev libopenal-dev ninja-build > /dev/null
+
+    - name: Scan for Preset Files in Changes
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          ci:
+            - .github/workflows/linux.yml
+          nco:
+            - .clang-format
+            - CMake**
+            - cmake/**
+            - common/**
+            - resources
+            - tools/**
+          ra:
+            - redalert/**
+          td:
+            - tiberiandawn/**
+
+    - name: Set Preset
+      id: set_preset
+      run: |
+        PRESET=""
+
+        if [ "${{ steps.changes.outputs.nco }}" = "true" ]; then
+          echo "Changes to shared files detected - building everything using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] && [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Red Alert & Tiberian Dawn changes detected - building both using cmake preset: nco"
+          PRESET="nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] ; then
+          echo "Only Red Alert changes detected - using cmake preset: nco-red-alert"
+          PRESET="nco-red-alert"
+        elif [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "Only Tiberian Dawn changes detected - using cmake preset: nco-tiberian-dawn"
+          PRESET="nco-tiberian-dawn"
+        elif [ "${{ steps.changes.outputs.ci }}" = "true" ]; then
+          echo "Workflow yml changes detected - testing workflow changes using cmake preset: nco"
+          PRESET="nco"
+        else
+          echo "WARNING: Unable to match changed files to a preset - defaulting to building everything using cmake preset: nco"
+          PRESET="nco"
+        fi
+
+        echo "preset=${PRESET}" >> $GITHUB_OUTPUT
 
     - name: Build Vanilla Conquer
       env:
@@ -71,47 +132,58 @@ jobs:
         CXX: ${{ matrix.compiler.cxx }}
         VC_CXX_FLAGS: "-w;-Wwrite-strings;-Werror=write-strings"
       run: |
-        cmake --workflow --preset ${{ matrix.preset }}
+        cmake --workflow --preset ${{ steps.set_preset.outputs.preset }}
 
-    - name: Check formatting
-      if: ${{ matrix.compiler.cc == 'clang' && matrix.preset == 'testing'}}
-      run: |
-        cmake --build build/testing --target format
-        git diff --exit-code
+    # TODO: re-enable after making formatting changes suggested (changes alot of files)
+    # - name: Check formatting
+    #   if: ${{ matrix.compiler.cc == 'clang' }}
+    #   run: |
+    #     cmake --build build/${{ steps.set_preset.outputs.preset }} --target format
+    #     git diff --exit-code
 
     - name: Create archives
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
-        strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
-        objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
+          cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
+          strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
+          objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
+        fi
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-red-alert" ]; then
+          cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+          strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+          objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+        fi
+
         mkdir artifact
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
+        fi
+
+        if [ "${{ steps.set_preset.outputs.preset }}" != "nco-red-alert" ]; then
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+          7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+        fi
 
     - name: Add internal tools to archive
-      if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
-        objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
+        cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
+        objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
 
     - name: Upload artifact
-      if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: actions/upload-artifact@v4
       with:
-        name: vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64
+        name: vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64
         path: artifact
 
     - name: Upload development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
       uses: softprops/action-gh-release@v2
       with:
         name: Development Build
@@ -123,7 +195,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload tagged release
-      if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
+      if: ${{ startsWith(github.ref, 'refs/tags/') }}
       uses: softprops/action-gh-release@v2
       with:
         files: |

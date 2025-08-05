@@ -97,6 +97,14 @@
             }
         },
         {
+            "name": "nco-red-alert",
+            "inherits": "nco",
+            "cacheVariables": {
+                "BUILD_VANILLATD": "OFF",
+                "MAP_EDITORTD": "OFF"
+            }
+        },
+        {
             "name": "nco-tiberian-dawn",
             "inherits": "nco",
             "cacheVariables": {
@@ -105,11 +113,24 @@
             }
         },
         {
-            "name": "nco-red-alert",
-            "inherits": "nco",
+            "name": "nco-remaster",
+            "inherits": "remaster",
+            "displayName": "NCO Remaster build"
+        },
+        {
+            "name": "nco-red-alert-remaster",
+            "inherits": "nco-remaster",
+            "displayName": "NCO Remaster build",
             "cacheVariables": {
-                "BUILD_VANILLATD": "OFF",
-                "MAP_EDITORTD": "OFF"
+                "BUILD_REMASTERTD": "OFF"
+            }
+        },
+        {
+            "name": "nco-tiberian-dawn-remaster",
+            "inherits": "nco-remaster",
+            "displayName": "NCO Remaster build",
+            "cacheVariables": {
+                "BUILD_REMASTERRA": "OFF"
             }
         }
     ],
@@ -157,6 +178,13 @@
             "configuration": "RelWithDebInfo"
         },
         {
+            "name": "nco-red-alert",
+            "configurePreset": "nco-red-alert",
+            "displayName": "NCO Red Alert Build",
+            "description": "NCO Red Alert Build",
+            "configuration": "RelWithDebInfo"
+        },
+        {
             "name": "nco-tiberian-dawn",
             "configurePreset": "nco-tiberian-dawn",
             "displayName": "NCO Tiberian Dawn Build",
@@ -164,10 +192,24 @@
             "configuration": "RelWithDebInfo"
         },
         {
-            "name": "nco-red-alert",
-            "configurePreset": "nco-red-alert",
-            "displayName": "NCO Red Alert Build",
-            "description": "NCO Red Alert Build",
+            "name": "nco-remaster",
+            "configurePreset": "nco-remaster",
+            "displayName": "NCO Build (remaster)",
+            "description": "NCO Build (remaster)",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco-red-alert-remaster",
+            "configurePreset": "nco-red-alert-remaster",
+            "displayName": "NCO Red Alert Build (remaster)",
+            "description": "NCO Red Alert Build (remaster)",
+            "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco-tiberian-dawn-remaster",
+            "configurePreset": "nco-tiberian-dawn-remaster",
+            "displayName": "NCO Tiberian Dawn Build (remaster)",
+            "description": "NCO Tiberian Dawn Build (remaster)",
             "configuration": "RelWithDebInfo"
         }
     ],
@@ -269,6 +311,19 @@
             ]
         },
         {
+            "name": "nco-red-alert",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-red-alert"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-red-alert"
+                }
+            ]
+        },
+        {
             "name": "nco-tiberian-dawn",
             "steps": [
                 {
@@ -282,15 +337,41 @@
             ]
         },
         {
-            "name": "nco-red-alert",
+            "name": "nco-remaster",
             "steps": [
                 {
                     "type": "configure",
-                    "name": "nco-red-alert"
+                    "name": "nco-remaster"
                 },
                 {
                     "type": "build",
-                    "name": "nco-red-alert"
+                    "name": "nco-remaster"
+                }
+            ]
+        },
+        {
+            "name": "nco-red-alert-remaster",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-red-alert-remaster"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-red-alert-remaster"
+                }
+            ]
+        },
+        {
+            "name": "nco-tiberian-dawn-remaster",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-tiberian-dawn-remaster"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-tiberian-dawn-remaster"
                 }
             ]
         }
