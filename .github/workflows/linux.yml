@@ -29,6 +29,7 @@ on:
       - common/**
       - redalert/**
       - resources
+      - tests/**
       - tiberiandawn/**
       - tools/**
 
@@ -82,13 +83,46 @@ jobs:
         sudo apt-get update -qq > /dev/null
         sudo apt-get install -qq -y clang-format-14 libsdl2-dev libopenal-dev ninja-build > /dev/null
 
+    - name: Scan for Preset Files in Changes
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          nco:
+            - .clang-format
+            - CMake**
+            - cmake/**
+            - common/**
+            - resources
+            - tools/**
+          ra:
+            - redalert/**
+          td:
+            - tiberiandawn/**
+
+    - name: Set Preset
+      id: set_preset
+      run: |
+        if [ "${{ steps.changes.outputs.nco }}" = "true" ]; then
+          echo "::set-output name=preset::nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] && [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "::set-output name=preset::nco"
+        elif [ "${{ steps.changes.outputs.ra }}" = "true" ] ; then
+          echo "::set-output name=preset::nco-red-alert"
+        elif [ "${{ steps.changes.outputs.td }}" = "true" ]; then
+          echo "::set-output name=preset::nco-tiberian-dawn"
+        else
+          echo "WARNING: Unable to match changed files to a preset, defaulting to building everything"
+          echo "::set-output name=preset::nco"
+        fi
+
     - name: Build Vanilla Conquer
       env:
         CC: ${{ matrix.compiler.cc }}
         CXX: ${{ matrix.compiler.cxx }}
         VC_CXX_FLAGS: "-w;-Wwrite-strings;-Werror=write-strings"
       run: |
-        cmake --workflow --preset ${{ matrix.preset }}
+        cmake --workflow --preset ${{ steps.set_preset.outputs.preset }}
 
     - name: Check formatting
       if: ${{ matrix.compiler.cc == 'clang' && matrix.preset == 'testing'}}
@@ -99,32 +133,32 @@ jobs:
     - name: Create archives
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
-        strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
-        objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
+        cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+        # cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
+        strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+        # strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
+        objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+        # objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
         mkdir artifact
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
-        # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd
+        # ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillatd.dbg
+        # ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillara.dbg
 
     - name: Add internal tools to archive
       if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
-        cp ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
-        objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        strip --strip-all ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
+        cp ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
+        objcopy --add-gnu-debuglink=./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        strip --strip-all ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dbg
 
     - name: Upload artifact
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: actions/upload-artifact@v4
       with:
-        name: vanilla-conquer-${{ matrix.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64
+        name: vanilla-conquer-${{ steps.set_preset.outputs.preset }}-linux-${{ matrix.compiler.cc }}-${{ matrix.os }}-x86_64
         path: artifact
 
     - name: Upload development release

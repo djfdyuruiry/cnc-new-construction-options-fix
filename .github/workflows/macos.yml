@@ -19,6 +19,7 @@ on:
       - common/**
       - redalert/**
       - resources
+      - tests/**
       - tiberiandawn/**
       - tools/**
 
