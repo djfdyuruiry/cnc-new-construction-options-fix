@@ -47,7 +47,7 @@ jobs:
         submodules: 'true'
         fetch-depth: 0
         ref: "${{ github.event.pull_request.head.sha || github.sha }}"
-    
+
     - name: Set Git Info
       id: gitinfo
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -66,12 +66,12 @@ jobs:
       with:
         path: ~/macports
         key: "${{ env.DEP_CACHE_KEY }}"
-    
+
     - name: Install homebrew deps
       run: |
         brew install imagemagick dylibbundler
 
-    # note: first run (with an empty cache) takes 30-40 mins    
+    # note: first run (with an empty cache) takes 30-40 mins
     - if: ${{ steps.dep-cache.outputs.cache-hit != 'true' }}
       name: Install macport dependencies
       run: |
@@ -100,7 +100,7 @@ jobs:
 
     - name: Create archives
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
-      run: |  
+      run: |
         dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd -o build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dSYM
         # dsymutil build/${{ matrix.preset }}/RelWithDebInfo/vanillara.app/Contents/MacOS/vanillara -o build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dSYM
         strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.app/Contents/MacOS/vanillatd
@@ -120,14 +120,14 @@ jobs:
         strip -Sx build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
         7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix
         7z a artifact/vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dSYM
-    
+
     - name: Upload artifact
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: actions/upload-artifact@v4
       with:
         name: vanilla-conquer-${{ matrix.preset }}-macos-clang-universal2
         path: artifact
-        
+
     - name: Upload development release
       if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: softprops/action-gh-release@v2

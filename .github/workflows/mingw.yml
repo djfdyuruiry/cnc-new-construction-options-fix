@@ -58,7 +58,7 @@ jobs:
         submodules: 'true'
         fetch-depth: 0
         ref: "${{ github.sha }}"
-        
+
     - name: Set Git Info
       id: gitinfo
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -95,7 +95,7 @@ jobs:
         # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.exe
         7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillatd.dbg
         # ./build/${{ matrix.preset }}/RelWithDebInfo/vanillara.dbg
-    
+
     - name: Add internal tools to archive
       if: ${{ matrix.preset == 'internal' || matrix.preset == 'nco-tiberian-dawn' }}
       run: |
@@ -104,14 +104,14 @@ jobs:
         ${{ matrix.arch.lin }}-w64-mingw32-objcopy --add-gnu-debuglink=./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe
         7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.exe
         7z a artifact/vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ matrix.preset }}/RelWithDebInfo/vanillamix.dbg
-    
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       if: ${{ matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       with:
         name: vanilla-conquer-${{ matrix.preset }}-win-gcc-${{ matrix.arch.lin }}
         path: artifact
-        
+
     - name: Upload development release
       if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && matrix.preset != 'testing' &&  matrix.preset != 'nonet' }}
       uses: softprops/action-gh-release@v2
