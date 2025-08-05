@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "7.Game-Resources.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "7.Game-Resources"
             }
           }
         ]
@@ -170,5 +170,6 @@
   },
   "active": "15fcb8ee189948a2",
   "lastOpenFiles": [
+    "README.md"
   ]
 }
