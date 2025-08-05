@@ -467,7 +467,7 @@ bool ThemeClass::Is_Allowed(ThemeType index) const
         }
     }
 
-    return _themes[index].Available && index <= THEME_LAST;
+    return index > THEME_NONE && index <= THEME_LAST && _themes[index].Available;
 
     // TODO: revist this and see if anything in this logic is still appropriate
     // return (_themes[index].Available
