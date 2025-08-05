@@ -37,6 +37,10 @@ on:
       - main
     paths: *change-paths
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   create_dev_release:
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}

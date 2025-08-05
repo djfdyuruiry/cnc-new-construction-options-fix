@@ -27,6 +27,10 @@ on:
   #     - main
   #   paths: *change-paths
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   vanilla-macos:
     if: contains(github.event.pull_request.labels.*.name, 'macos')
