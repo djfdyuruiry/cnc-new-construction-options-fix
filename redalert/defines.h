@@ -339,7 +339,9 @@ typedef enum VQType
     VQ_ANTEND,
     VQ_ANTINTRO,
 
+#ifdef REMASTER_BUILD
     // 2019/11/12 JAS - Added for Retaliation movies
+
     VQ_RETALIATION_ALLIED1,
     VQ_RETALIATION_ALLIED2,
     VQ_RETALIATION_ALLIED3,
@@ -364,6 +366,36 @@ typedef enum VQType
     VQ_RETALIATION_WINA,
     VQ_RETALIATION_WINS,
     VQ_RETALIATION_ANTS,
+#else
+    VQ_ALLX1,
+    VQ_ALLX1W,
+    VQ_ALLX2,
+    VQ_ALLX2W,
+    VQ_ALLX3,
+    VQ_ALLX3W,
+    VQ_ALLX4,
+    VQ_ALLX4W,
+    VQ_ALLXEND,
+    VQ_ANTBRF,
+
+    VQ_SOVEXP1,
+    VQ_SOVEXP1W,
+    VQ_SOVEXP2,
+    VQ_SOVEXP2W,
+    VQ_SOVEXP3,
+    VQ_SOVEXP3W,
+    VQ_SOVEXP4,
+    VQ_SOVEXP4W,
+    VQ_SOVXEND,
+
+    VQ_CHRONTNK,
+    VQ_GPSLNCH,
+    VQ_NUKETRUK,
+    VQ_SNOWFILD,
+    VQ_INTROX,
+    VQ_TANESCP,
+    VQ_TESLATNK,
+#endif
 
     VQ_COUNT,
     VQ_FIRST = 0
