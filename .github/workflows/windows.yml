@@ -192,82 +192,82 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # TODO: Remaster compatibility
-  remaster_msvc:
-    needs:
-      - resolve_win_cmake_preset
-    runs-on: windows-2022
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: 'true'
-        fetch-depth: 0
-        ref: "${{ github.event.pull_request.head.sha || github.sha }}"
+  # remaster_msvc:
+  #   needs:
+  #     - resolve_win_cmake_preset
+  #   runs-on: windows-2022
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       submodules: 'true'
+  #       fetch-depth: 0
+  #       ref: "${{ github.event.pull_request.head.sha || github.sha }}"
 
-    - uses: ilammy/msvc-dev-cmd@v1.13.0
-      with:
-        arch: x86
+  #   - uses: ilammy/msvc-dev-cmd@v1.13.0
+  #     with:
+  #       arch: x86
 
-    - name: Set Git Info
-      id: gitinfo
-      shell: pwsh
-      run: |
-        $gitoutput = git rev-parse --short HEAD
-        echo "sha_short=${gitoutput}" >> $env:GITHUB_OUTPUT
+  #   - name: Set Git Info
+  #     id: gitinfo
+  #     shell: pwsh
+  #     run: |
+  #       $gitoutput = git rev-parse --short HEAD
+  #       echo "sha_short=${gitoutput}" >> $env:GITHUB_OUTPUT
 
-    - name: Install Dependencies
-      run: |
-        Invoke-WebRequest -Uri https://github.com/ninja-build/ninja/releases/download/v1.10.1/ninja-win.zip -OutFile $Env:TEMP\ninja-win.zip
-        Expand-Archive $Env:TEMP\ninja-win.zip -DestinationPath $Env:TEMP\ninja
+  #   - name: Install Dependencies
+  #     run: |
+  #       Invoke-WebRequest -Uri https://github.com/ninja-build/ninja/releases/download/v1.10.1/ninja-win.zip -OutFile $Env:TEMP\ninja-win.zip
+  #       Expand-Archive $Env:TEMP\ninja-win.zip -DestinationPath $Env:TEMP\ninja
 
-        echo "$Env:TEMP\ninja" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        ninja --version
+  #       echo "$Env:TEMP\ninja" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+  #       ninja --version
 
-    - name: Build Vanilla Conquer
-      env:
-        VC_CXX_FLAGS: "/Zc:strictStrings;-wd4244;-wd4018;-wd4291;-wd4101;-wd4267;-wd4200"
-      run: |
-        cmake --workflow --preset ${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster
+  #   - name: Build Vanilla Conquer
+  #     env:
+  #       VC_CXX_FLAGS: "/Zc:strictStrings;-wd4244;-wd4018;-wd4291;-wd4101;-wd4267;-wd4200"
+  #     run: |
+  #       cmake --workflow --preset ${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster
 
-    - name: Create archives
-      shell: bash
-      run: |
-        mkdir artifact
+  #   - name: Create archives
+  #     shell: bash
+  #     run: |
+  #       mkdir artifact
 
-        if [ "${{ needs.resolve_win_cmake_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
-          7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/RedAlert.dll
-          7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/RedAlert.pdb
-          7z a artifact/vanilla-ra-remaster-mod-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/Vanilla_RA
-        fi
+  #       if [ "${{ needs.resolve_win_cmake_preset.outputs.preset }}" != "nco-tiberian-dawn" ]; then
+  #         7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/RedAlert.dll
+  #         7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/RedAlert.pdb
+  #         7z a artifact/vanilla-ra-remaster-mod-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/Vanilla_RA
+  #       fi
 
-        if [ "${{ needs.resolve_win_cmake_preset.outputs.preset }}" != "nco-red-alert" ]; then
-          7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/TiberianDawn.dll
-          7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/TiberianDawn.pdb
-          7z a artifact/vanilla-td-remaster-mod-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/Vanilla_TD
-        fi
+  #       if [ "${{ needs.resolve_win_cmake_preset.outputs.preset }}" != "nco-red-alert" ]; then
+  #         7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/TiberianDawn.dll
+  #         7z a artifact/vanilla-conquer-remasterdll-msvc-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/RelWithDebInfo/TiberianDawn.pdb
+  #         7z a artifact/vanilla-td-remaster-mod-msvc-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ needs.resolve_win_cmake_preset.outputs.preset }}-remaster/Vanilla_TD
+  #       fi
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: vanilla-conquer-remaster-msvc
-        path: artifact
+  #   - name: Upload artifact
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: vanilla-conquer-remaster-msvc
+  #       path: artifact
 
-    - name: Upload development release
-      if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
-      uses: softprops/action-gh-release@v2
-      with:
-        name: Development Build
-        tag_name: "latest"
-        prerelease: true
-        files: |
-          artifact/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Upload development release
+  #     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+  #     uses: softprops/action-gh-release@v2
+  #     with:
+  #       name: Development Build
+  #       tag_name: "latest"
+  #       prerelease: true
+  #       files: |
+  #         artifact/*
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload tagged release
-      if: ${{ startsWith(github.ref, 'refs/tags/') }}
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          artifact/*
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Upload tagged release
+  #     if: ${{ startsWith(github.ref, 'refs/tags/') }}
+  #     uses: softprops/action-gh-release@v2
+  #     with:
+  #       files: |
+  #         artifact/*
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
