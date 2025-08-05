@@ -38,7 +38,7 @@ jobs:
   resolve_win_cmake_prefix:
     runs-on: windows-2022
     outputs:
-      prefix: ${{ needs.resolve_win_cmake_prefix.outputs.prefix }}
+      prefix: ${{ steps.set_preset.outputs.prefix }}
     steps:
     - name: Scan for Preset Files in Changes
       uses: dorny/paths-filter@v3
