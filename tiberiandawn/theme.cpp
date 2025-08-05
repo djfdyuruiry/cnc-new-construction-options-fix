@@ -89,9 +89,9 @@ ThemeClass::ThemeControl ThemeClass::_themes[THEME_COUNT] = {
     {"WARFARE", TXT_THEME_WARFARE, 0, 182, true, false, false, true},
     {"BEFEARED", TXT_THEME_BEFEARED, 13, 164, false, true, false, true},
     {"I_AM", TXT_THEME_IAM, 6, 161, false, false, false, true},
+    {"VALKYRIE", TXT_THEME_VALK, 0, 306, false, false, true, true},
     {"WIN1", TXT_THEME_WIN1, 0, 41, false, true, true, true},
     {"MAP1", TXT_THEME_WIN1, 0, 61, false, false, true, true},
-    {"VALKYRIE", TXT_THEME_VALK, 0, 306, false, false, true, true},
 };
 
 /***********************************************************************************************
@@ -467,12 +467,15 @@ bool ThemeClass::Is_Allowed(ThemeType index) const
         }
     }
 
-    return (_themes[index].Available
-            && (_themes[index].Normal ||
-                //		(index == THEME_MAP1 && ScenarioInit) ||
-                ((Special.IsVariation && _themes[index].Variation && index != THEME_WIN1)
-                 && (!Is_Demo() || (GameToPlay != GAME_NORMAL || _themes[index].Scenario <= (int)Scen.Scenario))
-                 && (index != THEME_J1 || Special.IsJurassic))));
+    return index > THEME_NONE && index <= THEME_LAST && _themes[index].Available;
+
+    // TODO: revist this and see if anything in this logic is still appropriate
+    // return (_themes[index].Available
+    //         && (_themes[index].Normal ||
+    //             //		(index == THEME_MAP1 && ScenarioInit) ||
+    //             ((Special.IsVariation && _themes[index].Variation && index != THEME_WIN1)
+    //              && (!Is_Demo() || (GameToPlay != GAME_NORMAL || _themes[index].Scenario <= (int)Scen.Scenario))
+    //              && (index != THEME_J1 || Special.IsJurassic))));
 }
 
 /***********************************************************************************************
