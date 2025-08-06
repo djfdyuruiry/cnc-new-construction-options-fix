@@ -2,7 +2,7 @@ name: Feature Request
 description: Suggest an enhancement/change to the game engine
 
 title: "[Feature] "
-labels: ["feature", "triage"]
+labels: ["enhancement"]
 
 assignees:
   - djfdyuruiry
