@@ -10,6 +10,7 @@
   "files.associations": {
     "algorithm": "cpp",
     "chrono": "cpp",
-    "functional": "cpp"
+    "functional": "cpp",
+    "initializer_list": "cpp"
   }
 }
