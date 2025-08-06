@@ -11,6 +11,8 @@
 #include <limits.h>
 #include <fnmatch.h>
 
+#include "debugstring.h"
+
 class Find_File_Data_Posix : public Find_File_Data
 {
 public:
@@ -76,7 +78,12 @@ bool Find_File_Data_Posix::FindNextWithFilter()
         if (DirEntry == nullptr) {
             return false;
         }
-        if (fnmatch(FileFilter, DirEntry->d_name, FNM_PATHNAME | FNM_CASEFOLD) == 0) {
+
+        auto result = fnmatch(FileFilter, DirEntry->d_name, FNM_PATHNAME | FNM_CASEFOLD);
+
+        DBG_TRACE("fnmatch('%s', '%s', FNM_PATHNAME | FNM_CASEFOLD) == %d", FileFilter, DirEntry->d_name, result);
+
+        if (result == 0) {
             strcpy(FullName, DirName);
             strcat(FullName, DirEntry->d_name);
             break;
@@ -90,6 +97,8 @@ bool Find_File_Data_Posix::FindFirst(const char* fname)
     Close();
     FullName[0] = '\0';
     DirName[0] = '\0';
+
+    DBG_TRACE("Find_File_Data_Posix::FindFirst('%s')", fname);
 
     // split directory and file from the path
     char* fdir = strrchr((char*)fname, '/');
