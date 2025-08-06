@@ -1,0 +1,67 @@
+name: Game Bug Report
+description: Raise an issue with the game engine
+
+title: "[Bug] "
+labels: ["bug", "triage"]
+
+assignees:
+  - djfdyuruiry
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use the form below to give information about the bug you found.
+
+        Please be specific about the Game you were trying to run, your Operating System and any mods your are currently running.
+  - type: checkboxes
+    id: game
+    attributes:
+      label: Which game did the bug happen in?
+      description: You can select multiple
+      options:
+        - label: Tiberian Dawn
+        - label: Red Alert
+    validations:
+      required: true
+  - type: dropdown
+    id: is_latest
+    attributes:
+      label: Did you try it on the latest version of NCO?
+      description: Please try updating before raising an issue
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: checkboxes
+    id: os
+    attributes:
+      label: What OS did the bug happen on?
+      description: You can select multiple
+      options:
+        - label: Linux
+        - label: MacOS
+        - label: Windows
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also, what did you expect to happen?
+      placeholder: Enter details here
+    validations:
+      required: true
+  - type: textarea
+    id: mods-patches
+    attributes:
+      label: What mods or community patches did you have installed?
+      description: You can test without them to see if the issue persists
+      placeholder: List installed mods/patches here
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant logs
+      render: shell
