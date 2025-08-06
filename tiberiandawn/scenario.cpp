@@ -828,7 +828,14 @@ void Fixup_Scenario(void)
     /*
     ** Laser-firing Orcas in the PATSUX secret mission
     */
-    if (GameToPlay == GAME_NORMAL && Scen.Scenario == 72) {
+#ifdef REMASTER_BUILD
+    auto patsux_scenario = 72;
+#else
+    // use id for modified scenario in resources/data/td/sc-psx-n64.mix
+    auto patsux_scenario = 54;
+#endif
+
+    if (GameToPlay == GAME_NORMAL && Scen.Scenario == patsux_scenario) {
         ((AircraftTypeClass&)AircraftTypeClass::As_Reference(AIRCRAFT_ORCA)).Primary = WEAPON_OBELISK_LASER;
     } else {
         ((AircraftTypeClass&)AircraftTypeClass::As_Reference(AIRCRAFT_ORCA)).Primary = WEAPON_DRAGON;
