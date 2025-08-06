@@ -4,3 +4,4 @@
 *.h     eol=lf
 *.asm   eol=lf
 *.inc   eol=lf
+*.mix   binary
