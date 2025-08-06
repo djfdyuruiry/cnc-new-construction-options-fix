@@ -20,6 +20,7 @@
 
 #include <errno.h>
 #include <stdlib.h>
+#include "debugstring.h"
 #include "listnode.h"
 #include "pk.h"
 #include "buff.h"
@@ -257,11 +258,15 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename)
     if (filename == NULL)
         return; // ST - 5/9/2019
 
+    DBG_INFO("Attempting to load mix file: %s", filename);
+
     /*
     **	Check to see if the file is available. If it isn't, then
     **	no further processing is needed or possible.
     */
     if (!Force_CD_Available(RequiredCD)) {
+        DBG_ERROR("Failed to load mix file - !Force_CD_Available(): %s", filename);
+
         Prog_End("MixFileClass Force_CD_Available failed", true);
         if (!RunningAsDLL) { // PG
             // RA uses Emergency_Exit but until that is common we stick with standard exit here for TD.
@@ -275,6 +280,7 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename)
     Straw* straw = &fstraw;
 
     if (!file.Is_Available())
+        DBG_ERROR("Failed to load mix file - !file.Is_Available(): %s", filename);
         return;
 
     /*
@@ -322,8 +328,10 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename)
     **	Load up the offset control array. If RAM is exhausted, then the mixfile is invalid.
     */
     HeaderBuffer = new SubBlock[Count];
-    if (HeaderBuffer == NULL)
+    if (HeaderBuffer == NULL) {
+        DBG_ERROR("Failed to load mix file - HeaderBuffer == NULL: %s", filename);
         return;
+    }
     straw->Get(HeaderBuffer, Count * sizeof(SubBlock));
 
     for (int i = 0; i < Count; i++) {
@@ -345,6 +353,8 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename)
     **	Attach to list of mixfiles.
     */
     MixList.Add_Tail(this);
+
+    DBG_INFO("Mix file loaded OK: %s", filename);
 }
 
 /***********************************************************************************************
@@ -379,11 +389,15 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename, PKey const* key)
     if (filename == NULL)
         return; // ST - 5/9/2019
 
+    DBG_INFO("Attempting to load mix file: %s", filename);
+
     /*
     **	Check to see if the file is available. If it isn't, then
     **	no further processing is needed or possible.
     */
     if (!Force_CD_Available(RequiredCD)) {
+        DBG_ERROR("Failed to load mix file - !Force_CD_Available(): %s", filename);
+
         Prog_End("MixFileClass Force_CD_Available failed", true);
         if (!RunningAsDLL) { // PG
             // RA uses Emergency_Exit but until that is common we stick with standard exit here for TD.
@@ -399,8 +413,10 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename, PKey const* key)
     PKStraw pstraw(PKStraw::DECRYPT, fakernd);
     Straw* straw = &fstraw;
 
-    if (!file.Is_Available())
+    if (!file.Is_Available()) {
+        DBG_ERROR("Failed to load mix file - !file.Is_Available(): %s", filename);
         return;
+    }
 
     /*
     **	Stuctures used to hold the various file headers.
@@ -454,8 +470,10 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename, PKey const* key)
     **	Load up the offset control array. If RAM is exhausted, then the mixfile is invalid.
     */
     HeaderBuffer = new SubBlock[Count];
-    if (HeaderBuffer == NULL)
+    if (HeaderBuffer == NULL) {
+        DBG_ERROR("Failed to load mix file - HeaderBuffer == NULL: %s", filename);
         return;
+    }
     straw->Get(HeaderBuffer, Count * sizeof(SubBlock));
 
     for (int i = 0; i < Count; i++) {
@@ -477,6 +495,8 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename, PKey const* key)
     **	Attach to list of mixfiles.
     */
     MixList.Add_Tail(this);
+
+    DBG_INFO("Mix file loaded OK: %s", filename);
 }
 
 /***********************************************************************************************

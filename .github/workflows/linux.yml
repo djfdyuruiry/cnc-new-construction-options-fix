@@ -45,7 +45,7 @@ concurrency:
 jobs:
   create_dev_release:
     if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-22.04
+    runs-on: "${{ github.event.inputs.os || 'ubuntu-24.04' }}"
     steps:
     - name: Create Development release
       uses: "0xDylan/action-auto-releases-n20@v1.1"
@@ -78,7 +78,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -qq -y clang-format-14 libsdl2-dev libopenal-dev ninja-build > /dev/null
+        sudo apt-get update -y -qq > /dev/null
+        sudo apt-get install -qq -y libsdl2-dev libopenal-dev > /dev/null
 
     - name: Scan for Preset Files in Changes
       uses: dorny/paths-filter@v3

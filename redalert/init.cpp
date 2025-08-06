@@ -2100,7 +2100,11 @@ static void Init_Expansion_Files(void)
     /*
     ** Need to search the search paths. ST - 3/15/2019 2:18PM
     */
+#ifdef _WIN32
     const char* path = ".\\";
+#else
+    const char* path = "./";
+#endif
     char search_path[_MAX_PATH];
     char scan_path[_MAX_PATH];
     Find_File_Data* ffd;
@@ -2109,34 +2113,33 @@ static void Init_Expansion_Files(void)
     for (int p = 0; p < 100; p++) {
 
         strcpy(search_path, path);
+
+#ifdef _WIN32
         if (search_path[strlen(search_path) - 1] != '\\') {
             strcat(search_path, "\\");
         }
-
-        strcpy(scan_path, search_path);
-        strcat(scan_path, "SC*.MIX");
-
-        found = Find_First(scan_path, 0, &ffd);
-        while (found) {
-            char* ptr = strdup(ffd->GetName());
-            new MFCD(ptr, &FastKey);
-            found = Find_Next(ffd);
+#else
+        if (search_path[strlen(search_path) - 1] != '/') {
+            strcat(search_path, "/");
         }
-        if (ffd) {
-            Find_Close(ffd);
-        }
+#endif
 
-        strcpy(scan_path, search_path);
-        strcat(scan_path, "Ss*.MIX");
+        // TODO: Make configurable
+        auto expansion_paths = { "SC*.MIX", "Ss*.MIX", "XYPAND*.MIX" };
 
-        found = Find_First(scan_path, 0, &ffd);
-        while (found) {
-            char* ptr = strdup(ffd->GetName());
-            new MFCD(ptr, &FastKey);
-            found = Find_Next(ffd);
-        }
-        if (ffd) {
-            Find_Close(ffd);
+        for (auto path_pattern : expansion_paths) {
+            strcpy(scan_path, search_path);
+            strcat(scan_path, path_pattern);
+
+            found = Find_First(scan_path, 0, &ffd);
+            while (found) {
+                char* ptr = strdup(ffd->GetName());
+                new MFCD(ptr, &FastKey);
+                found = Find_Next(ffd);
+            }
+            if (ffd) {
+                Find_Close(ffd);
+            }
         }
 
         path = CDFileClass::Get_Search_Path(p);

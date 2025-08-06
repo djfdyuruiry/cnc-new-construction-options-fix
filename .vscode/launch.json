@@ -5,12 +5,20 @@
       "name": "Debug TD",
       "type": "cppdbg",
       "request": "launch",
-      "preLaunchTask": "Build TD",
+      "preLaunchTask": "Build & Deploy TD",
       "program": "${env:TD_DATA_PATH}/vanillatd-dev",
       "args": [
         "-CHEAT"
       ],
       "cwd": "${env:TD_DATA_PATH}"
+    },
+    {
+      "name": "Debug RA",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build & Deploy RA",
+      "program": "${env:RA_DATA_PATH}/vanillara-dev",
+      "cwd": "${env:RA_DATA_PATH}"
     }
   ]
 }

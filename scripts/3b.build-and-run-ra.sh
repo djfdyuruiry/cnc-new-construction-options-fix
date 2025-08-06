@@ -11,7 +11,7 @@ function main() {
     "Set the env var RA_DATA_PATH to a directory that contains Tiberian Dawn game data and try again"
 
   "${script_path}/1.build.sh" "ra" "$@"
-  "${script_path}/2.deploy.sh" "nco-red-alert" "vanillara" "${RA_DATA_PATH}/vanillara-dev"
+  "${script_path}/2.deploy.sh" "nco-red-alert-debug" "vanillara" "${RA_DATA_PATH}/vanillara-dev"
 
   pushd_silent "${RA_DATA_PATH}"
 

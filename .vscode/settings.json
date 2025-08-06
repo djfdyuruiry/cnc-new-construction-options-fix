@@ -8,6 +8,9 @@
     "origin"
   ],
   "files.associations": {
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "chrono": "cpp",
+    "functional": "cpp",
+    "initializer_list": "cpp"
   }
 }
