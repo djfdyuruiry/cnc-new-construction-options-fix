@@ -168,8 +168,8 @@ jobs:
       run: |
         dsymutil build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix -o build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dSYM
         strip -Sx build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
-        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2--${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dSYM
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix
+        7z a artifact/vanilla-conquer-${{ steps.set_preset.outputs.preset }}-macos-clang-universal2-${{ steps.gitinfo.outputs.sha_short }}-debug.zip ./build/${{ steps.set_preset.outputs.preset }}/RelWithDebInfo/vanillamix.dSYM
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
