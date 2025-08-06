@@ -79,7 +79,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update -y -qq > /dev/null
-        sudo apt-get install -qq -y clang-format-14 libsdl2-dev libopenal-dev ninja-build > /dev/null
+        sudo apt-get install -qq -y libsdl2-dev libopenal-dev > /dev/null
 
     - name: Scan for Preset Files in Changes
       uses: dorny/paths-filter@v3
