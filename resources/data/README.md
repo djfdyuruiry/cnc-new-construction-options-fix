@@ -6,7 +6,7 @@
 ## `td`
 
 - `sc-psx-n64.mix`: PS1 & N64 Extra Missions + N64 Video Files 
-  - Modified version of the files provided in Nyergud's C&C 1.06 patch
+  - **Note**: This is a modified version of the files provided in Nyergud's C&C 1.06 patch, see [here](http://nyerguds.arsaneus-design.com/cnc95upd/cc95p106/patch106c_r3_en.html#toc_4) for credits of the original authors
   - Scenario IDs changed to work with the Covert Operations Menu logic
   - GDI Missions are `scg[51-56]ea`
   - NOD Missions are `scb[38-41]ea`
