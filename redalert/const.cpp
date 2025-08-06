@@ -246,7 +246,7 @@ char const* const VQName[VQ_COUNT] = {"AAGUN",
                                       "SIZZLE2", // MISSING
                                       "ANTEND",
                                       "ANTINTRO",
-
+#ifdef REMASTER_BUILD
                                       // 2019/11/12 JAS - Added for Retaliation movies
 
                                       "RETALIATION_ALLIED1",
@@ -272,7 +272,38 @@ char const* const VQName[VQ_COUNT] = {"AAGUN",
                                       "RETALIATION_SOVIET10",
                                       "RETALIATION_WINA",
                                       "RETALIATION_WINS",
-                                      "RETALIATION_ANTS"};
+                                      "RETALIATION_ANTS"
+#else
+                                      "ALLX1",
+                                      "ALLX1W",
+                                      "ALLX2",
+                                      "ALLX2W",
+                                      "ALLX3",
+                                      "ALLX3W",
+                                      "ALLX4",
+                                      "ALLX4W",
+                                      "ALLXEND",
+                                      "ANTBRF",
+
+                                      "SOVEXP1",
+                                      "SOVEXP1W",
+                                      "SOVEXP2",
+                                      "SOVEXP2W",
+                                      "SOVEXP3",
+                                      "SOVEXP3W",
+                                      "SOVEXP4",
+                                      "SOVEXP4W",
+                                      "SOVXEND",
+
+                                      "CHRONTNK",
+                                      "GPSLNCH",
+                                      "NUKETRUK",
+                                      "SNOWFILD",
+                                      "INTROX",
+                                      "TANESCP",
+                                      "TESLATNK"
+#endif
+};
 
 /***************************************************************************
 **	Relative coordinate offsets from the center of a cell for each
