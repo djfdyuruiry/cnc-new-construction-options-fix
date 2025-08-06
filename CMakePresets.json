@@ -114,6 +114,14 @@
             }
         },
         {
+            "name": "nco-red-alert-debug",
+            "inherits": "nco-red-alert"
+        },
+        {
+            "name": "nco-tiberian-dawn-debug",
+            "inherits": "nco-tiberian-dawn"
+        },
+        {
             "name": "nco-remaster",
             "inherits": "remaster",
             "displayName": "NCO Remaster build"
@@ -191,6 +199,20 @@
             "displayName": "NCO Tiberian Dawn Build",
             "description": "NCO Tiberian Dawn Build",
             "configuration": "RelWithDebInfo"
+        },
+        {
+            "name": "nco-red-alert-debug",
+            "configurePreset": "nco-red-alert-debug",
+            "displayName": "NCO Red Alert Debug Build",
+            "description": "NCO Red Alert Debug Build",
+            "configuration": "Debug"
+        },
+        {
+            "name": "nco-tiberian-dawn-debug",
+            "configurePreset": "nco-tiberian-dawn-debug",
+            "displayName": "NCO Tiberian Dawn Debug Build",
+            "description": "NCO Tiberian Dawn Debug Build",
+            "configuration": "Debug"
         },
         {
             "name": "nco-remaster",
@@ -334,6 +356,32 @@
                 {
                     "type": "build",
                     "name": "nco-tiberian-dawn"
+                }
+            ]
+        },
+        {
+            "name": "nco-red-alert-debug",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-red-alert-debug"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-red-alert-debug"
+                }
+            ]
+        },
+        {
+            "name": "nco-tiberian-dawn-debug",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "nco-tiberian-dawn-debug"
+                },
+                {
+                    "type": "build",
+                    "name": "nco-tiberian-dawn-debug"
                 }
             ]
         },

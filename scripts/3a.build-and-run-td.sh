@@ -11,7 +11,7 @@ function main() {
     "Set the env var TD_DATA_PATH to a directory that contains Tiberian Dawn game data and try again"
 
   "${script_path}/1.build.sh" "td" "$@"
-  "${script_path}/2.deploy.sh" "nco-tiberian-dawn" "vanillatd" "${TD_DATA_PATH}/vanillatd-dev"
+  "${script_path}/2.deploy.sh" "nco-tiberian-dawn-debug" "vanillatd" "${TD_DATA_PATH}/vanillatd-dev"
 
   pushd_silent "${TD_DATA_PATH}"
 

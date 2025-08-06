@@ -10,7 +10,7 @@ function main() {
   local source="${2}"
   local target="${3}"
 
-  find "${build_path}/${cmake_preset}/RelWithDebInfo" \
+  find "${build_path}/${cmake_preset}/Debug" \
     -maxdepth 1 \
     -type f \
     -executable \

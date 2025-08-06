@@ -4,20 +4,48 @@
     {
       "label": "Build",
       "type": "cppbuild",
-      "command": "./scripts/build.sh",
+      "command": "./scripts/1.build.sh",
       "group": "build"
     },
     {
       "label": "Build TD",
       "type": "shell",
-      "command": "./scripts/build.sh td",
+      "command": "./scripts/1.build.sh td",
       "group": "build"
+    },
+    {
+      "label": "Deploy TD",
+      "type": "shell",
+      "command": "./scripts/2.deploy.sh 'nco-tiberian-dawn-debug' 'vanillatd' '${env:TD_DATA_PATH}/vanillatd-dev'",
+      "group": "build"
+    },
+    {
+      "label": "Build & Deploy TD",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build TD",
+        "Deploy TD"
+      ]
     },
     {
       "label": "Build RA",
       "type": "shell",
-      "command": "./scripts/build.sh ra",
+      "command": "./scripts/1.build.sh ra",
       "group": "build"
+    },
+    {
+      "label": "Deploy RA",
+      "type": "shell",
+      "command": "./scripts/2.deploy.sh 'nco-red-alert-debug' 'vanillara' '${env:RA_DATA_PATH}/vanillara-dev'",
+      "group": "build"
+    },
+    {
+      "label": "Build & Deploy RA",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build RA",
+        "Deploy RA"
+      ]
     }
   ]
 }
