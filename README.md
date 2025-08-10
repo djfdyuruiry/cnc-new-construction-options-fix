@@ -1,6 +1,6 @@
 # 🛠 New Construction Options 🛠
 
-C&C: New Construction Options (NCO) is a replacement game engine for `Command & Conquer: Tiberian Dawn` & `Command & Conquer:Red Alert`. It's goals are to enhance the gameplay and modding experience.
+C&C: New Construction Options (NCO) is an enhanced game engine for `Command & Conquer: Tiberian Dawn` & `Command & Conquer:Red Alert`. It's goals are to enhance the gameplay and modding experience.
 
 This project aims to provide an out-of-the-box experience that looks and feels like the original games while giving users unprecedented control over customization and enhancements through in-game menus, INI file configuration and Lua scripting.
 
