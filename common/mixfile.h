@@ -279,9 +279,10 @@ MixFileClass<T, TCRC>::MixFileClass(char const* filename)
     FileStraw fstraw(file);
     Straw* straw = &fstraw;
 
-    if (!file.Is_Available())
+    if (!file.Is_Available()) {
         DBG_ERROR("Failed to load mix file - !file.Is_Available(): %s", filename);
         return;
+    }
 
     /*
     **	Stuctures used to hold the various file headers.
