@@ -89,6 +89,7 @@
         {
             "name": "nco",
             "inherits": "release",
+            "displayName": "NCO build",
             "cacheVariables": {
                 "MAP_EDITORTD": "ON",
                 "MAP_EDITORRA": "ON",
@@ -100,6 +101,7 @@
         {
             "name": "nco-red-alert",
             "inherits": "nco",
+            "displayName": "NCO build (RA)",
             "cacheVariables": {
                 "BUILD_VANILLATD": "OFF",
                 "MAP_EDITORTD": "OFF"
@@ -108,6 +110,7 @@
         {
             "name": "nco-tiberian-dawn",
             "inherits": "nco",
+            "displayName": "NCO build (TD)",
             "cacheVariables": {
                 "BUILD_VANILLARA": "OFF",
                 "MAP_EDITORRA": "OFF"
@@ -115,11 +118,13 @@
         },
         {
             "name": "nco-red-alert-debug",
-            "inherits": "nco-red-alert"
+            "inherits": "nco-red-alert",
+            "displayName": "NCO debug build (RA)"
         },
         {
             "name": "nco-tiberian-dawn-debug",
-            "inherits": "nco-tiberian-dawn"
+            "inherits": "nco-tiberian-dawn",
+            "displayName": "NCO debug build (TD)"
         },
         {
             "name": "nco-remaster",
@@ -129,7 +134,7 @@
         {
             "name": "nco-red-alert-remaster",
             "inherits": "nco-remaster",
-            "displayName": "NCO Remaster build",
+            "displayName": "NCO Remaster build (RA)",
             "cacheVariables": {
                 "BUILD_REMASTERTD": "OFF"
             }
@@ -137,7 +142,7 @@
         {
             "name": "nco-tiberian-dawn-remaster",
             "inherits": "nco-remaster",
-            "displayName": "NCO Remaster build",
+            "displayName": "NCO Remaster build (TD)",
             "cacheVariables": {
                 "BUILD_REMASTERRA": "OFF"
             }
