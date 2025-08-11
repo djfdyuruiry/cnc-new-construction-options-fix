@@ -1,0 +1,60 @@
+#ifndef RULEKEYS_H
+#define RULEKEYS_H
+
+#define MAX_BUILD_DISTANCE_RULE "MaxBuildDistance"
+#define PREVENT_BUILDING_IN_SHROUD_RULE "PreventBuildingInShroud"
+#define ALLOW_BUILDING_BESIDE_WALLS_RULE "AllowBuildingBesideWalls"
+#define TIBERIUM_GROWS_RULE "TiberiumGrows"
+#define TIBERIUM_SPREADS_RULE "TiberiumSpreads"
+#define SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE "SlowTiberiumGrowthAndSpread"
+#define TIBERIUM_GROWTH_RATE_RULE "TiberiumGrowthRate"
+#define TIBERIUM_SPREAD_RATE_RULE "TiberiumSpreadRate"
+#define TIBERIUM_INFANTRY_DAMAGE_RULE "TiberiumInfantryDamage"
+#define TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE "TiberiumBlossomTreeDamage"
+
+#define CREDITS_PER_TIBERIUM_SCOOP_RULE "CreditsPerTiberiumScoop"
+#define MAX_HARVESTER_CAPACITY_RULE "MaxHarvesterCapacity"
+
+#define PRODUCTION_STEPS_PER_TICK_RULE "ProductionStepsPerTick"
+#define FACTORY_COUNT_STEP_MULTIPLIER_RULE "FactoryCountStepMultiplier"
+#define TOTAL_PRODUCTION_STEPS_RULE "TotalProductionSteps"
+
+#define UNIT_REPAIR_FACTOR_RULE "UnitRepairFactor"
+#define UNIT_REPAIR_STRENGTH_STEP_RULE "UnitRepairStrengthStep"
+#define AIRCRAFT_REPAIR_FACTOR_RULE "AircraftRepairFactor"
+#define AIRCRAFT_REPAIR_STRENGTH_STEP_RULE "AircraftRepairStrengthStep"
+
+#define SMART_DEFENCE_RULE "SmartDefence"
+#define TARGET_TREES_RULE "TargetTrees"
+#define MCV_REDEPLOYABLE_RULE "McvRedeployable"
+#define SPAWN_VISCEROIDS_RULE "SpawnVisceroids"
+#define VEHICLES_DO_THREE_POINT_TURNS_RULE "VehiclesDoThreePointTurns"
+#define SHOW_BIBS_ON_BUILDINGS_RULE "ShowBibsOnBuildings"
+#define SHOW_CIVILIAN_BUILDING_NAMES_RULE "ShowCivilianBuildingNames"
+#define ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE "OnlyAllowNukeIfAllPartsHaveBeenCollected"
+#define ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE "OnlyAllowUsingOneNukePerScenario"
+#define HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE "HelipadsAndAircraftBoughtSeperately"
+#define DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE "DestroyedBuildingsHaveSurvivors"
+
+#define HIDE_TEMPLE_FROM_GDI_RULE "HideTempleFromGdi"
+#define HIDE_OBELISK_FROM_GDI_RULE "HideObeliskFromGdi"
+#define HIDE_APC_FROM_NOD_RULE "HideApcFromNod"
+#define HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE "HideRocketLauncherFromNod"
+#define HIDE_HELIPAD_FROM_NOD_RULE "HideHelipadFromNod"
+#define HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE "HideAdvancedCommCenterFromNod"
+#define ONLY_GDI_CAN_USE_ION_CANNON_RULE "OnlyGdiCanUseIonCannon"
+
+#define SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE "SetBuildLevelTo1InGdiScenario2"
+#define RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE "RenameTechCenterToPrisionInNodScenario3"
+#define HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE "HideBazookaFromGdiUntilSenario8"
+#define HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE "HideRocketLauncherFromGdiUntilScenario9"
+#define HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE "HideSandbagFromGdiUntilScenario9"
+#define ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE "AllowNodToBuildAdvancedPowerInScenario12"
+
+#define ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE "AllowBuildingAllForCurrentHouse"
+#define UNITS_ARE_INDESTRUCTIBLE_RULE "UnitsAreIndestructible"
+#define INFANTRY_AUTO_SCATTERS_RULE "InfantryAutoScatters"
+#define GIVE_ATTACKERS_AN_ADVANTAGE_RULE "GiveAttackersAnAdvantage"
+#define SPEEDY_BUILDS_RULE "SpeedyBuilds"
+
+#endif
