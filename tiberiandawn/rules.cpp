@@ -503,69 +503,73 @@ bool RulesClass::Export_Difficulty(CCINIClass& ini)
 
 bool RulesClass::Import_Game(CCINIClass& ini)
 {
-    // map options
-    Game.Set(ini, MAX_BUILD_DISTANCE_RULE, 1);
-    Game.Set(ini, PREVENT_BUILDING_IN_SHROUD_RULE, true);
-    Game.Set(ini, ALLOW_BUILDING_BESIDE_WALLS_RULE, true);
-    Game.Set(ini, TIBERIUM_GROWS_RULE, true);
-    Game.Set(ini, TIBERIUM_SPREADS_RULE, true);
-    Game.Set(ini, SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE, false);
-    Game.Set(ini, TIBERIUM_GROWTH_RATE_RULE, fixed(1));
-    Game.Set(ini, TIBERIUM_SPREAD_RATE_RULE, fixed(1));
-    Game.Set(ini, TIBERIUM_INFANTRY_DAMAGE_RULE, 2);
-    Game.Set(ini, TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE, 5);
+    DBG_INFO("RulesClass::Import_Game - Importing [%s] rule section", Game.SectionName);
 
-    // harvesting options
-    Game.Set(ini, CREDITS_PER_TIBERIUM_SCOOP_RULE, 25);
-    Game.Set(ini, MAX_HARVESTER_CAPACITY_RULE, 28);
+    Game.With_Context<RuleSectionContext>(ini, [](auto& c) {
+          // map
+        c << MAX_BUILD_DISTANCE_RULE << 2
+          << PREVENT_BUILDING_IN_SHROUD_RULE << true
+          << ALLOW_BUILDING_BESIDE_WALLS_RULE << true
+          << TIBERIUM_GROWS_RULE << true
+          << TIBERIUM_SPREADS_RULE << true
+          << SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE << false
+          << TIBERIUM_GROWTH_RATE_RULE << fixed(1)
+          << TIBERIUM_SPREAD_RATE_RULE << fixed(1)
+          << TIBERIUM_INFANTRY_DAMAGE_RULE << 2
+          << TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE << 5
 
-    // factories options
-    Game.Set(ini, PRODUCTION_STEPS_PER_TICK_RULE, 1);
-    Game.Set(ini, FACTORY_COUNT_STEP_MULTIPLIER_RULE, fixed(1));
-    Game.Set(ini, TOTAL_PRODUCTION_STEPS_RULE, 108);
+          // harvesting
+          << CREDITS_PER_TIBERIUM_SCOOP_RULE << 25
+          << MAX_HARVESTER_CAPACITY_RULE << 28
 
-    // repair options
-    Game.Set(ini, UNIT_REPAIR_FACTOR_RULE, fixed(1.02f));
-    Game.Set(ini, UNIT_REPAIR_STRENGTH_STEP_RULE, 4);
-    Game.Set(ini, AIRCRAFT_REPAIR_FACTOR_RULE, fixed(1.02f));
-    Game.Set(ini, AIRCRAFT_REPAIR_STRENGTH_STEP_RULE, 2);
+          // factories
+          << PRODUCTION_STEPS_PER_TICK_RULE << 1
+          << FACTORY_COUNT_STEP_MULTIPLIER_RULE << fixed(1)
+          << TOTAL_PRODUCTION_STEPS_RULE << 108
 
-    // misc options
-    Game.Set(ini, SMART_DEFENCE_RULE, false);
-    Game.Set(ini, TARGET_TREES_RULE, false);
-    Game.Set(ini, MCV_REDEPLOYABLE_RULE, false);
-    Game.Set(ini, SPAWN_VISCEROIDS_RULE, false);
-    Game.Set(ini, VEHICLES_DO_THREE_POINT_TURNS_RULE, false);
-    Game.Set(ini, SHOW_BIBS_ON_BUILDINGS_RULE, false);
-    Game.Set(ini, SHOW_CIVILIAN_BUILDING_NAMES_RULE, false);
-    Game.Set(ini, ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE, true);
-    Game.Set(ini, ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE, true);
-    Game.Set(ini, HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE, false);
-    Game.Set(ini, DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE, true);
+          // repair
+          << UNIT_REPAIR_FACTOR_RULE << fixed(1.02f)
+          << UNIT_REPAIR_STRENGTH_STEP_RULE << 4
+          << AIRCRAFT_REPAIR_FACTOR_RULE << fixed(1.02f)
+          << AIRCRAFT_REPAIR_STRENGTH_STEP_RULE << 2
 
-    // house specific options
-    Game.Set(ini, HIDE_TEMPLE_FROM_GDI_RULE, true);
-    Game.Set(ini, HIDE_OBELISK_FROM_GDI_RULE, true);
-    Game.Set(ini, HIDE_APC_FROM_NOD_RULE, true);
-    Game.Set(ini, HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE, true);
-    Game.Set(ini, HIDE_HELIPAD_FROM_NOD_RULE, true);
-    Game.Set(ini, HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE, true);
-    Game.Set(ini, ONLY_GDI_CAN_USE_ION_CANNON_RULE, true);
+          // misc
+          << SMART_DEFENCE_RULE << false
+          << TARGET_TREES_RULE << false
+          << MCV_REDEPLOYABLE_RULE << false
+          << SPAWN_VISCEROIDS_RULE << false
+          << VEHICLES_DO_THREE_POINT_TURNS_RULE << false
+          << SHOW_BIBS_ON_BUILDINGS_RULE << false
+          << SHOW_CIVILIAN_BUILDING_NAMES_RULE << false
+          << ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE << true
+          << ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE << true
+          << HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE << false
+          << DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE << true
 
-    // level specific options
-    Game.Set(ini, SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE, true);
-    Game.Set(ini, RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE, true);
-    Game.Set(ini, HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE, true);
-    Game.Set(ini, HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE, true);
-    Game.Set(ini, HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE, true);
-    Game.Set(ini, ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE, true);
+          // house specific
+          << HIDE_TEMPLE_FROM_GDI_RULE << true
+          << HIDE_OBELISK_FROM_GDI_RULE << true
+          << HIDE_APC_FROM_NOD_RULE << true
+          << HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE << true
+          << HIDE_HELIPAD_FROM_NOD_RULE << true
+          << HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE << true
+          << ONLY_GDI_CAN_USE_ION_CANNON_RULE << true
 
-    // cheats options
-    Game.Set(ini, ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE, false);
-    Game.Set(ini, UNITS_ARE_INDESTRUCTIBLE_RULE, false);
-    Game.Set(ini, INFANTRY_AUTO_SCATTERS_RULE, false);
-    Game.Set(ini, GIVE_ATTACKERS_AN_ADVANTAGE_RULE, false);
-    Game.Set(ini, SPEEDY_BUILDS_RULE, false);
+          // level specific
+          << SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE << true
+          << RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE << true
+          << HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE << true
+          << HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE << true
+          << HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE << true
+          << ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE << true
+
+          // cheats
+          << ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE << false
+          << UNITS_ARE_INDESTRUCTIBLE_RULE << false
+          << INFANTRY_AUTO_SCATTERS_RULE << false
+          << GIVE_ATTACKERS_AN_ADVANTAGE_RULE << false
+          << SPEEDY_BUILDS_RULE << false;
+    });
 
     return true;
 }
