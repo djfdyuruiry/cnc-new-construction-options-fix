@@ -4471,9 +4471,9 @@ void DLLExportClass::Calculate_Placement_Distances(BuildingTypeClass* placement_
         map_cell_height++;
     }
 
-	auto maxPlacementDistance = Read_Build_Distance_Game_Rule();
-	auto preventBuildingInShroud = NcoRulesRuntime().ReadRuleValue<bool>(PREVENT_BUILDING_IN_SHROUD_RULE_KEY);
-	auto allowBuildingBesideWalls = NcoRulesRuntime().ReadRuleValue<bool>(ALLOW_BUILDING_BESIDE_WALLS_RULE_KEY);
+	auto maxPlacementDistance = Rule.Game.Get<int>(MAX_BUILD_DISTANCE_RULE);
+	auto preventBuildingInShroud = Rule.Game.Get<bool>(PREVENT_BUILDING_IN_SHROUD_RULE);
+	auto allowBuildingBesideWalls = Rule.Game.Get<bool>(ALLOW_BUILDING_BESIDE_WALLS_RULE);
 
     memset(placement_distance, 255U, MAP_CELL_TOTAL);
     for (int y = 0; y < map_cell_height; y++) {
