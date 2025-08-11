@@ -829,15 +829,6 @@ bool DisplayClass::Passes_Proximity_Check(ObjectTypeClass const* object)
 }
 
 #ifdef USE_RA_AI
-static bool Is_Wall(OverlayType type)
-{
-	return type == OVERLAY_BARBWIRE_WALL
-		|| type == OVERLAY_WOOD_WALL
-		|| type == OVERLAY_BRICK_WALL
-		|| type == OVERLAY_CYCLONE_WALL
-		|| type == OVERLAY_SANDBAG_WALL;
-}
-
 bool DisplayClass::Scan_For_Proximity(CELL cell, HousesType house, bool preventBuildingInShroud, bool allowBuildingBesideWalls, int remainingDistance) const
 {
 	if (remainingDistance < 1) {
@@ -862,7 +853,7 @@ bool DisplayClass::Scan_For_Proximity(CELL cell, HousesType house, bool preventB
 		**	building located there.
 		*/
 		if ((*this)[newcell].Owner == house) {
-			if (allowBuildingBesideWalls || !Is_Wall((*this)[newcell].Overlay)) {
+			if (allowBuildingBesideWalls || !OverlayTypeClass::As_Reference((*this)[newcell].Overlay).IsWall) {
 				return true;
 			}
 		}

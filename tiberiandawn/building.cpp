@@ -5470,16 +5470,6 @@ bool BuildingClass::Can_Player_Move(void) const
     return (*this == STRUCT_CONST && (Mission == MISSION_GUARD) && Special.IsMCVDeploy);
 }
 
-static bool Is_Wall(OverlayType type)
-{
-	return type == OVERLAY_BARBWIRE_WALL
-		|| type == OVERLAY_WOOD_WALL
-		|| type == OVERLAY_BRICK_WALL
-		|| type == OVERLAY_CYCLONE_WALL
-		|| type == OVERLAY_SANDBAG_WALL;
-}
-
-
 static bool Scan_For_Proximity_Check(CELL cell, HouseClass* house, bool allowBuildingBesideWalls, int remainingDistance)
 {
 	if (remainingDistance < 1) {
@@ -5499,7 +5489,7 @@ static bool Scan_For_Proximity_Check(CELL cell, HouseClass* house, bool allowBui
 		**	building located there.
 		*/
 		if (Map[newcell].Owner == house->Class->House) {
-			if (allowBuildingBesideWalls || !Is_Wall(Map[newcell].Overlay)) {
+			if (allowBuildingBesideWalls || !OverlayTypeClass::As_Reference(Map[newcell].Overlay).IsWall) {
 				return true;
 			}
 		}
