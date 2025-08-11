@@ -6,19 +6,21 @@
       "type": "cppdbg",
       "request": "launch",
       "preLaunchTask": "Build & Deploy TD",
-      "program": "${env:TD_DATA_PATH}/vanillatd-dev",
+      "program": "${env:HOME}/Games/cnc-tiberian-dawn/vanillatd-dev",
       "args": [
         "-CHEAT"
       ],
-      "cwd": "${env:TD_DATA_PATH}"
+      "cwd": "${env:HOME}/Games/cnc-tiberian-dawn",
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "name": "Debug RA",
       "type": "cppdbg",
       "request": "launch",
       "preLaunchTask": "Build & Deploy RA",
-      "program": "${env:RA_DATA_PATH}/vanillara-dev",
-      "cwd": "${env:RA_DATA_PATH}"
+      "program": "${env:HOME}/Games/cnc-red-alert/vanillara-dev",
+      "cwd": "${env:HOME}/Games/cnc-red-alert",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

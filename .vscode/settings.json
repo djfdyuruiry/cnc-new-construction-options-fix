@@ -98,6 +98,7 @@
     "typeinfo": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-    "*.def": "cpp"
+    "*.def": "cpp",
+    "filesystem": "cpp"
   }
 }
