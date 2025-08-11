@@ -7,6 +7,10 @@ script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${script_path}/lib/functions.sh"
 
 function main() {
+  if [ -z "${TD_DATA_PATH:-}" ]; then
+    load_env_file_if_present
+  fi
+
   assert_variable_exists "TD_DATA_PATH" \
     "Set the env var TD_DATA_PATH to a directory that contains Tiberian Dawn game data and try again"
 
