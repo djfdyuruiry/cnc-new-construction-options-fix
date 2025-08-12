@@ -71,7 +71,7 @@ public:
     bool AI(CCINIClass& ini);
     bool IQ(CCINIClass& ini);
     bool Difficulty(CCINIClass& ini);
-    bool Import_Sections(CCINIClass& ini);
+    bool Process_Sections(CCINIClass& ini);
     bool Export(CCINIClass& file);
     bool Export_AI(CCINIClass& ini);
     bool Export_IQ(CCINIClass& ini);

@@ -20,21 +20,16 @@ public:
     RuleSection(const char* section_name) : SectionName(section_name) {}
 
     template<typename T>
-    void Set(const char* name, T value) {
-        Rules[name] = value;
-    }
+    RuleSection& With(INIClass& context, std::function<void(T&)> actions) {
+        T contextWrapper = T(*this, context);
 
-    template<typename T>
-    RuleSection& Import_From(const INIClass& source, std::function<void(T&)> initialiser) {
-        T context = T(*this, source);
-
-        initialiser(context);
+        actions(contextWrapper);
 
         return *this;
     }
 
     template<typename T>
-    RuleSection& Load_From_Ini(const INIClass& ini, const char* name, T default_value) {
+    RuleSection& Load_From_Ini(INIClass& ini, const char* name, T default_value) {
         T value;
 
         auto sectionIsInIni = ini.Section_Present(SectionName);
@@ -46,7 +41,7 @@ public:
             return *this;
         }
 
-        DBG_INFO("RuleSection::Load_From_Ini - Importing rule from INI: [%s] -> %s", SectionName, name);
+        DBG_INFO("%s - Importing rule from INI: [%s] -> %s", __PRETTY_FUNCTION__, SectionName, name);
 
         if constexpr (std::is_same_v<T, int>) {
             value = ini.Get_Int(SectionName, name, default_value);
@@ -61,10 +56,35 @@ public:
 
             DBG_INFO("RuleSection::Load_From_Ini - Resolved value: %s | (default=%s)", value.As_ASCII(), default_value.As_ASCII());
         } else {
-            DBG_FATAL("RuleSection::Set - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName, name);
+            DBG_FATAL("RuleSection::Load_From_Ini - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName, name);
         }
 
         Rules[name] = value;
+
+        return *this;
+    }
+
+    template<typename T>
+    const RuleSection& Save_To_Ini(INIClass& ini, const char* name) const {
+        auto value = Get<T>(name);
+
+        DBG_INFO("RuleSection::Save_To_Ini - Exporting rule to INI: [%s] -> %s", SectionName, name);
+
+        if constexpr (std::is_same_v<T, int>) {
+            ini.Put_Int(SectionName, name, value);
+
+            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %d", value);
+        } else if constexpr (std::is_same_v<T, bool>) {
+            ini.Put_Bool(SectionName, name, value);
+
+            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %s", value ? "true" : "false");
+        } else if constexpr (std::is_same_v<T, fixed>) {
+            ini.Put_Fixed(SectionName, name, value);
+
+            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %s", value.As_ASCII());
+        } else {
+            DBG_FATAL("RuleSection::Save_To_Ini - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName, name);
+        }
 
         return *this;
     }
@@ -79,32 +99,58 @@ public:
 
         DBG_FATAL("RuleSection::Get - Rule not found in section: [%s] -> %s", SectionName, name);
     }
+
+    template<typename T>
+    RuleSection& Set(const char* name, T value) {
+        DBG_INFO("RuleSection::Set - Updating rule at runtime: [%s] -> %s", SectionName, name);
+
+        if constexpr (std::is_same_v<T, int>) {
+            DBG_INFO("RuleSection::Set - New value: %d", value);
+        } else if constexpr (std::is_same_v<T, bool>) {
+            DBG_INFO("RuleSection::Set - New value: %s", value ? "true" : "false");
+        } else if constexpr (std::is_same_v<T, fixed>) {
+            DBG_INFO("RuleSection::Set - New value: %s", value.As_ASCII());
+        } else {
+            DBG_FATAL("RuleSection::Set - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName, name);
+        }
+
+        Rules[name] = value;
+
+        return *this;
+    }
 private:
     using RuleVariant = std::variant<int, bool, fixed>;
     std::unordered_map<std::string, RuleVariant> Rules;
 };
 
-class IniRuleImporter {
+class IniRuleContext {
 public:
-    IniRuleImporter(RuleSection& Section, const INIClass& Context) : Section(Section), Context(Context) {}
+    IniRuleContext(RuleSection& Section, INIClass& Context) : Section(Section), Context(Context) {}
 
     template<typename T>
-    IniRuleImporter& Load(const char* name, T default_value) {
+    const IniRuleContext& Load(const char* name, T default_value) const {
         Section.Load_From_Ini(Context, name, default_value);
 
         return *this;
     }
 
-    IniRuleImporter& Load(const char* name) {
+    template<typename T>
+    const IniRuleContext& Save(const char* name) const {
+        Section.Save_To_Ini<T>(Context, name);
+
+        return *this;
+    }
+
+    IniRuleContext& Load(const char* name) {
         NameInStream = std::make_optional(name);
 
         return *this;
     }
 
     template<typename T>
-    IniRuleImporter& With_Default(T default_value) {
+    IniRuleContext& With_Default(T default_value) {
         if (!NameInStream.has_value()) {
-            DBG_FATAL("IniRuleImporter::With_Default - Value passed before rule name in chain/stream assignment");
+            DBG_FATAL("IniRuleContext::With_Default - Load(..) must be called before With_Default(..)");
         }
 
         Load(NameInStream.value(), default_value);
@@ -113,22 +159,9 @@ public:
 
         return *this;
     }
-
-    IniRuleImporter& operator<<(const char* name) {
-        Load(name);
-
-        return *this;
-    }
-
-    template<typename T>
-    IniRuleImporter& operator<<(T default_value) {
-        With_Default<T>(default_value);
-
-        return *this;
-    }
 private:
     RuleSection& Section;
-    const INIClass& Context;
+    INIClass& Context;
     std::optional<const char*> NameInStream;
 };
 
