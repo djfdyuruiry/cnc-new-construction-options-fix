@@ -34,6 +34,8 @@
  *   RulesClass::RulesClass -- Default constructor for rules class object.                     *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#include "common/rulesections.h"
+
 #include "function.h"
 #include "ccini.h"
 
@@ -122,7 +124,6 @@ RulesClass::RulesClass(void)
     , IsCompEasyBonus(false)
     , IsFineDifficulty(false)
     , AllowSuperWeapons(true)
-    , Game("Game")
 {
 #ifndef REMASTER_BUILD
 
@@ -260,7 +261,7 @@ bool RulesClass::Process(CCINIClass& ini)
     AI(ini);
     IQ(ini);
     Difficulty(ini);
-    Import_Game(ini);
+    Import_Sections(ini);
 
     return (true);
 }
@@ -284,7 +285,7 @@ bool RulesClass::Export(CCINIClass& ini)
     Export_AI(ini);
     Export_IQ(ini);
     Export_Difficulty(ini);
-    Export_Game(ini);
+    Export_Sections(ini);
 
     return (true);
 }
@@ -501,80 +502,80 @@ bool RulesClass::Export_Difficulty(CCINIClass& ini)
     return (true);
 }
 
-bool RulesClass::Import_Game(CCINIClass& ini)
+bool RulesClass::Import_Sections(CCINIClass& ini)
 {
-    DBG_INFO("RulesClass::Import_Game - Importing [%s] rule section", Game.SectionName);
+    DBG_INFO("RulesClass::Import_Game - Importing [%s] rule section", "Game");
 
-    Game.With_Context<RuleSectionContext>(ini, [](auto& c) {
-          // map
-        c << MAX_BUILD_DISTANCE_RULE << 2
-          << PREVENT_BUILDING_IN_SHROUD_RULE << true
-          << ALLOW_BUILDING_BESIDE_WALLS_RULE << true
-          << TIBERIUM_GROWS_RULE << true
-          << TIBERIUM_SPREADS_RULE << true
-          << SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE << false
-          << TIBERIUM_GROWTH_RATE_RULE << fixed(1)
-          << TIBERIUM_SPREAD_RATE_RULE << fixed(1)
-          << TIBERIUM_INFANTRY_DAMAGE_RULE << 2
-          << TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE << 5
+    Sections[GAME_SECTION].Import_From<IniRuleImporter>(ini, [](auto& i) {
+        // map
+        i.Load(MAX_BUILD_DISTANCE_RULE).With_Default(1)
+         .Load(PREVENT_BUILDING_IN_SHROUD_RULE).With_Default(true)
+         .Load(ALLOW_BUILDING_BESIDE_WALLS_RULE).With_Default(true)
+         .Load(TIBERIUM_GROWS_RULE).With_Default(true)
+         .Load(TIBERIUM_SPREADS_RULE).With_Default(true)
+         .Load(SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE).With_Default(false)
+         .Load(TIBERIUM_GROWTH_RATE_RULE).With_Default(fixed(1))
+         .Load(TIBERIUM_SPREAD_RATE_RULE).With_Default(fixed(1))
+         .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2)
+         .Load(TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE).With_Default(5);
 
-          // harvesting
-          << CREDITS_PER_TIBERIUM_SCOOP_RULE << 25
-          << MAX_HARVESTER_CAPACITY_RULE << 28
+        // harvesting
+        i.Load(CREDITS_PER_TIBERIUM_SCOOP_RULE).With_Default(25)
+         .Load(MAX_HARVESTER_CAPACITY_RULE).With_Default(28);
 
-          // factories
-          << PRODUCTION_STEPS_PER_TICK_RULE << 1
-          << FACTORY_COUNT_STEP_MULTIPLIER_RULE << fixed(1)
-          << TOTAL_PRODUCTION_STEPS_RULE << 108
+        // factories
+        i.Load(PRODUCTION_STEPS_PER_TICK_RULE).With_Default(1)
+         .Load(FACTORY_COUNT_STEP_MULTIPLIER_RULE).With_Default(fixed(1))
+         .Load(TOTAL_PRODUCTION_STEPS_RULE).With_Default(108);
 
-          // repair
-          << UNIT_REPAIR_FACTOR_RULE << fixed(1.02f)
-          << UNIT_REPAIR_STRENGTH_STEP_RULE << 4
-          << AIRCRAFT_REPAIR_FACTOR_RULE << fixed(1.02f)
-          << AIRCRAFT_REPAIR_STRENGTH_STEP_RULE << 2
+        // repair
+        i.Load(UNIT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f))
+         .Load(UNIT_REPAIR_STRENGTH_STEP_RULE).With_Default(4)
+         .Load(AIRCRAFT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f))
+         .Load(AIRCRAFT_REPAIR_STRENGTH_STEP_RULE).With_Default(2);
 
-          // misc
-          << SMART_DEFENCE_RULE << false
-          << TARGET_TREES_RULE << false
-          << MCV_REDEPLOYABLE_RULE << false
-          << SPAWN_VISCEROIDS_RULE << false
-          << VEHICLES_DO_THREE_POINT_TURNS_RULE << false
-          << SHOW_BIBS_ON_BUILDINGS_RULE << false
-          << SHOW_CIVILIAN_BUILDING_NAMES_RULE << false
-          << ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE << true
-          << ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE << true
-          << HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE << false
-          << DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE << true
+        // misc
+        i.Load(SMART_DEFENCE_RULE).With_Default(false)
+         .Load(TARGET_TREES_RULE).With_Default(false)
+         .Load(MCV_REDEPLOYABLE_RULE).With_Default(false)
+         .Load(SPAWN_VISCEROIDS_RULE).With_Default(false)
+         .Load(VEHICLES_DO_THREE_POINT_TURNS_RULE).With_Default(false)
+         .Load(SHOW_BIBS_ON_BUILDINGS_RULE).With_Default(false)
+         .Load(SHOW_CIVILIAN_BUILDING_NAMES_RULE).With_Default(false)
+         .Load(ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE).With_Default(true)
+         .Load(ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE).With_Default(true)
+         .Load(HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE).With_Default(false)
+         .Load(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE).With_Default(true);
 
-          // house specific
-          << HIDE_TEMPLE_FROM_GDI_RULE << true
-          << HIDE_OBELISK_FROM_GDI_RULE << true
-          << HIDE_APC_FROM_NOD_RULE << true
-          << HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE << true
-          << HIDE_HELIPAD_FROM_NOD_RULE << true
-          << HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE << true
-          << ONLY_GDI_CAN_USE_ION_CANNON_RULE << true
+        // house specific
+        i.Load(HIDE_TEMPLE_FROM_GDI_RULE).With_Default(true)
+         .Load(HIDE_OBELISK_FROM_GDI_RULE).With_Default(true)
+         .Load(HIDE_APC_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_HELIPAD_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE).With_Default(true)
+         .Load(ONLY_GDI_CAN_USE_ION_CANNON_RULE).With_Default(true);
 
-          // level specific
-          << SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE << true
-          << RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE << true
-          << HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE << true
-          << HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE << true
-          << HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE << true
-          << ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE << true
+        // level specific
+        i.Load(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE).With_Default(true)
+         .Load(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE).With_Default(true)
+         .Load(HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE).With_Default(true)
+         .Load(HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true)
+         .Load(HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true)
+         .Load(ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE).With_Default(true);
 
-          // cheats
-          << ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE << false
-          << UNITS_ARE_INDESTRUCTIBLE_RULE << false
-          << INFANTRY_AUTO_SCATTERS_RULE << false
-          << GIVE_ATTACKERS_AN_ADVANTAGE_RULE << false
-          << SPEEDY_BUILDS_RULE << false;
+        // cheats
+        i.Load(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE).With_Default(false)
+         .Load(UNITS_ARE_INDESTRUCTIBLE_RULE).With_Default(false)
+         .Load(INFANTRY_AUTO_SCATTERS_RULE).With_Default(false)
+         .Load(GIVE_ATTACKERS_AN_ADVANTAGE_RULE).With_Default(false)
+         .Load(SPEEDY_BUILDS_RULE).With_Default(false);
     });
 
     return true;
 }
 
-bool RulesClass::Export_Game(CCINIClass& ini)
+bool RulesClass::Export_Sections(CCINIClass& ini)
 {
     // TODO: export Game section
     return (true);

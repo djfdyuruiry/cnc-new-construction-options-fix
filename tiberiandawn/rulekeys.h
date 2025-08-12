@@ -1,6 +1,9 @@
 #ifndef RULEKEYS_H
 #define RULEKEYS_H
 
+// [Game]
+#define GAME_SECTION "Game"
+
 #define MAX_BUILD_DISTANCE_RULE "MaxBuildDistance"
 #define PREVENT_BUILDING_IN_SHROUD_RULE "PreventBuildingInShroud"
 #define ALLOW_BUILDING_BESIDE_WALLS_RULE "AllowBuildingBesideWalls"

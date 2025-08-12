@@ -113,9 +113,11 @@ inline int max(int a, int b)
 #define NOMEMCHECK
 
 #define WWMEM_H
+
 #include "compat.h"
 #include "common/irandom.h"
 #include "common/rawfile.h"
+#include "common/rulesections.h"
 #include "common/wwlib32.h"
 #include "jshell.h"
 

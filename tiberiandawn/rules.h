@@ -36,7 +36,6 @@
 #define RULES_H
 
 #include "common/fixed.h"
-#include "common/rulesection.h"
 
 class CCINIClass;
 
@@ -61,6 +60,8 @@ public:
     unsigned IsContentScan : 1;
 };
 
+class RuleSections;
+
 class RulesClass
 {
 public:
@@ -70,12 +71,12 @@ public:
     bool AI(CCINIClass& ini);
     bool IQ(CCINIClass& ini);
     bool Difficulty(CCINIClass& ini);
-    bool Import_Game(CCINIClass& ini);
+    bool Import_Sections(CCINIClass& ini);
     bool Export(CCINIClass& file);
     bool Export_AI(CCINIClass& ini);
     bool Export_IQ(CCINIClass& ini);
     bool Export_Difficulty(CCINIClass& ini);
-    bool Export_Game(CCINIClass& ini);
+    bool Export_Sections(CCINIClass& ini);
 
     /*
     **	This specifies the average number of minutes between each computer attack.
@@ -286,7 +287,7 @@ public:
     */
     DifficultyClass Diff[DIFF_COUNT];
 
-    RuleSection Game;
+    RuleSections Sections;
 };
 
 #endif
