@@ -287,7 +287,12 @@ public:
     */
     DifficultyClass Diff[DIFF_COUNT];
 
+    // TODO: Roll other sections into this and centrally manage RULES.INI (will benefit loading rules overloads for scenarios)
     RuleSections Sections;
 };
+
+#define Get_Rule_Value(section, rule, value_type) Rule.Sections[section].Get<value_type>(rule)
+
+#define Get_Int_Rule(section, rule) Get_Rule_Value(section, rule, int)
 
 #endif
