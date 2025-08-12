@@ -1801,7 +1801,9 @@ int UnitTypeClass::Repair_Step(void) const
 int UnitTypeClass::Max_Pips(void) const
 {
     if (Type == UNIT_HARVESTER) {
-        return (FULL_LOAD_CREDITS / 100);
+        auto pips = Get_Int_Rule(GAME_SECTION, HARVESTER_PIPS_RULE);
+
+        return pips;
     }
 
     if (IsTransporter) {

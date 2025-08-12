@@ -15,6 +15,7 @@
 #define TIBERIUM_INFANTRY_DAMAGE_RULE "TiberiumInfantryDamage"
 #define TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE "TiberiumBlossomTreeDamage"
 
+#define HARVESTER_PIPS_RULE "HarvesterPipsRule"
 #define CREDITS_PER_TIBERIUM_SCOOP_RULE "CreditsPerTiberiumScoop"
 #define MAX_HARVESTER_CAPACITY_RULE "MaxHarvesterCapacity"
 

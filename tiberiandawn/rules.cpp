@@ -519,8 +519,9 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2)
          .Load(TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE).With_Default(5);
 
-        // harvesting
-        c.Load(CREDITS_PER_TIBERIUM_SCOOP_RULE).With_Default(25)
+        // harvesting - default max credits is 700
+        c.Load(HARVESTER_PIPS_RULE).With_Default(7)
+         .Load(CREDITS_PER_TIBERIUM_SCOOP_RULE).With_Default(25)
          .Load(MAX_HARVESTER_CAPACITY_RULE).With_Default(28);
 
         // factories
@@ -594,7 +595,8 @@ bool RulesClass::Export_Sections(CCINIClass& ini)
          .template Save<int>(TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE);
 
         // harvesting
-        c.template Save<int>(CREDITS_PER_TIBERIUM_SCOOP_RULE)
+        c.template Save<int>(HARVESTER_PIPS_RULE)
+         .template Save<int>(CREDITS_PER_TIBERIUM_SCOOP_RULE)
          .template Save<int>(MAX_HARVESTER_CAPACITY_RULE);
 
         // factories
