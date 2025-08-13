@@ -18,7 +18,11 @@
                 "DSOUND": "OFF",
                 "DDRAW": "OFF",
                 "SDL2": "ON",
-                "OPENAL": "ON"
+                "OPENAL": "ON",
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/.vcpkg/scripts/buildsystems/vcpkg.cmake"
+            },
+            "environment": {
+                "VCPKG_ROOT": "${sourceDir}/.vcpkg"
             }
         },
         {

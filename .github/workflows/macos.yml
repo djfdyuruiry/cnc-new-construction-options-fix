@@ -136,6 +136,9 @@ jobs:
 
         echo "preset=${PRESET}" >> $GITHUB_OUTPUT
 
+    - name: Init vcpkg
+      run: ./scripts/bin/vcpkg --version
+
     - name: Build Vanilla Conquer
       env:
         CMAKE_OSX_ARCHITECTURES: "arm64;x86_64"

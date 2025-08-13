@@ -2,3 +2,4 @@
 /CMakeUserPresets.json
 /.cache
 .env
+.vcpkg

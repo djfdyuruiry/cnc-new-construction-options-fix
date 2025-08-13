@@ -119,6 +119,9 @@ jobs:
 
         echo "preset=${PRESET}" >> $GITHUB_OUTPUT
 
+    - name: Init vcpkg
+      run: ./scripts/bin/vcpkg --version
+
     - name: Build Vanilla Conquer
       env:
         CMAKE_FIND_ROOT_PATH: "/tmp/SDL2-2.0.12/${{ matrix.arch.lin }}-w64-mingw32;/tmp/openal-soft-1.21.0-bin"
