@@ -8,6 +8,8 @@ script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${script_path}/../lib/functions.sh"
 
 function main() {
+  local flag="${1:-}"
+
   pushd_silent "${repo_path}"
 
   if [ ! -d "${vcpkg_path}" ]; then
@@ -20,6 +22,10 @@ function main() {
     else
       "${vcpkg_path}/bootstrap-vcpkg.sh" -disableMetrics
     fi
+  fi
+
+  if [ "${flag}" == "--init" ]; then
+    return
   fi
 
   export VCPKG_ROOT="${vcpkg_path}"

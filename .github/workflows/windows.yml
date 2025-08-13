@@ -141,7 +141,7 @@ jobs:
 
     - name: Init vcpkg
       shell: bash
-      run: IS_WINDOWS=true ./scripts/bin/vcpkg --version
+      run: IS_WINDOWS=true ./scripts/bin/vcpkg --init
 
     - name: Build Vanilla Conquer
       env:
@@ -234,7 +234,7 @@ jobs:
 
   #   - name: Init vcpkg
   #     shell: bash
-  #     run: IS_WINDOWS=true ./scripts/bin/vcpkg --version
+  #     run: IS_WINDOWS=true ./scripts/bin/vcpkg --init
 
   #   - name: Build Vanilla Conquer
   #     env:

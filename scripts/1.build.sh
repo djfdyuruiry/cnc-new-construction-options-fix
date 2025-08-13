@@ -62,7 +62,7 @@ function build_and_test() {
 
   log_warning "Ensuring vcpkg initialised"
 
-  "${scripts_bin_path}/vcpkg" --version
+  "${scripts_bin_path}/vcpkg" --init
 
   log_warning "Executing: cmake --workflow --preset ${cmake_preset} $*"
 
