@@ -34,6 +34,7 @@
  *   RulesClass::RulesClass -- Default constructor for rules class object.                     *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#include "common/logger.h"
 #include "common/rulesections.h"
 
 #include "function.h"
@@ -504,6 +505,7 @@ bool RulesClass::Export_Difficulty(CCINIClass& ini)
 
 bool RulesClass::Process_Sections(CCINIClass& ini)
 {
+    CncLogger.Log_Info("This is a final warning");
     DBG_INFO("RulesClass::Process_Sections - Processing rule section: [%s]", GAME_SECTION);
 
     Sections[GAME_SECTION].With<IniRuleContext>(ini, [](auto& c) {
