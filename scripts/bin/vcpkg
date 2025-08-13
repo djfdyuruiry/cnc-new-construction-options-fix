@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# shellcheck source-path=SCRIPTDIR
+set -eEuo pipefail
+
+script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+. "${script_path}/../lib/vars.sh"
+. "${script_path}/../lib/functions.sh"
+
+function main() {
+  pushd_silent "${repo_path}"
+
+  if [ ! -d "${vcpkg_path}" ]; then
+    git submodule update --init --recursive
+  fi
+
+  if [ ! -x "${vcpkg_path}/vcpkg" ]; then
+    if [ "${IS_WINDOWS:-false}" == "true" ]; then
+      powershell.exe -NoProfile -ExecutionPolicy Bypass "${vcpkg_path}/scripts/bootstrap.ps1" -disableMetrics
+    else
+      "${vcpkg_path}/bootstrap-vcpkg.sh" -disableMetrics
+    fi
+  fi
+
+  export VCPKG_ROOT="${vcpkg_path}"
+
+  "${vcpkg_path}/vcpkg" "$@"
+
+  popd_silent
+}
+
+main "$@"

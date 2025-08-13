@@ -9,3 +9,6 @@ env_file_path="${repo_path}/.env"
 build_directory="build"
 build_path="${repo_path}/${build_directory}"
 scripts_path="${repo_path}/scripts"
+scripts_bin_path="${scripts_path}/bin"
+
+vcpkg_path="${repo_path}/.vcpkg"
