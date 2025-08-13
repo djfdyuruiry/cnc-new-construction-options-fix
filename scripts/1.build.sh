@@ -60,6 +60,10 @@ function build_and_test() {
 
   pushd_silent "${repo_path}"
 
+  log_warning "Ensuring vcpkg initialised"
+
+  "${scripts_bin_path}/vcpkg" --init
+
   log_warning "Executing: cmake --workflow --preset ${cmake_preset} $*"
 
   cmake --workflow --preset "${cmake_preset}" "$@" || {

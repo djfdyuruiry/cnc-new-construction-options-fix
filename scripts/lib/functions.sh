@@ -85,3 +85,13 @@ function log_warning() {
 function log_error() {
   _log_with_color "ERROR" "31" "$@" # Red for ERROR
 }
+
+function load_env_file_if_present() {
+  if [ ! -r "${env_file_path}" ]; then
+    log_warning "Optional env file not found: ${env_file_path}"
+    return
+  fi
+
+  # shellcheck disable=SC2046
+  export $(grep -v '^#' "${env_file_path}" | xargs)
+}

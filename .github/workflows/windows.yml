@@ -139,6 +139,10 @@ jobs:
         Rename-Item openal-soft-1.21.0-bin\bin\${{ matrix.arch.win }}\soft_oal.dll OpenAL32.dll
         echo "magickpath=$(Split-Path -Path $(Get-Command magick).Path -Parent)" >> $env:GITHUB_OUTPUT
 
+    - name: Init vcpkg
+      shell: bash
+      run: IS_WINDOWS=true ./scripts/bin/vcpkg --init
+
     - name: Build Vanilla Conquer
       env:
         CMAKE_FIND_ROOT_PATH: "SDL2-2.0.12;openal-soft-1.21.0-bin;${{ steps.deps.outputs.magickpath }}"
@@ -227,6 +231,10 @@ jobs:
 
   #       echo "$Env:TEMP\ninja" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
   #       ninja --version
+
+  #   - name: Init vcpkg
+  #     shell: bash
+  #     run: IS_WINDOWS=true ./scripts/bin/vcpkg --init
 
   #   - name: Build Vanilla Conquer
   #     env:

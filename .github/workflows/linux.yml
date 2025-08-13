@@ -127,6 +127,9 @@ jobs:
 
         echo "preset=${PRESET}" >> $GITHUB_OUTPUT
 
+    - name: Init vcpkg
+      run: ./scripts/bin/vcpkg --init
+
     - name: Build Vanilla Conquer
       env:
         CC: ${{ matrix.compiler.cc }}
