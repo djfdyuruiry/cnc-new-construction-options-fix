@@ -12,6 +12,7 @@
 #include "debugstring.h"
 #include "fixed.h"
 #include "ini.h"
+#include "logger.h"
 
 class RuleSection {
 public:
@@ -34,8 +35,10 @@ public:
 
         auto sectionIsInIni = ini.Section_Present(SectionName.data());
 
+        Logger.Log_Info("Help, I am trapped in a C++ class");
+
         if (!sectionIsInIni) {
-            DBG_INFO("RuleSection::Load_From_Ini - Loading default for '%s', rule section not found in provided INI: [%s]", name.data(), SectionName.data());
+            DBG_INFO("Load_From_Ini - Loading default for '%s', rule section not found in provided INI: [%s]", name.data(), SectionName.data());
 
             Rules[name] = default_value;
             return *this;
@@ -119,13 +122,15 @@ public:
         return *this;
     }
 private:
+    static const CncLogger Logger;
+
     using RuleVariant = std::variant<int, bool, fixed>;
     std::unordered_map<std::string_view, RuleVariant> Rules;
 };
 
 class IniRuleContext {
 public:
-    IniRuleContext(RuleSection& Section, INIClass& Context) : Section(Section), Context(Context) {}
+    IniRuleContext(RuleSection& section, INIClass& context) : Section(section), Context(context) {}
 
     template<typename T>
     const IniRuleContext& Load(std::string_view name, T default_value) const {
