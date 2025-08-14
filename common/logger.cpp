@@ -1,20 +1,20 @@
-#include "spdlog/async.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/sinks/rotating_file_sink.h"
+#include <stdarg.h>
+
+#include <spdlog/async.h>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 
 #include "logger.h"
 
-const std::string_view CncLogger::DefaultLoggerName = std::string_view("nco");
-const auto CncLogger::DefaultLogger = CncLogger(CncLogger::DefaultLoggerName);
+// static variables
+static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> stdout_sink;
+static std::shared_ptr<spdlog::sinks::rotating_file_sink_mt> rotating_sink;
+static std::vector<spdlog::sink_ptr> sinks;
 
-void CncLogger::Register(const std::string_view name)
-{
+// static functions
+static void Ensure_SpdLog_Initialised() {
     static std::once_flag onceFlag;
-
-    static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> stdout_sink;
-    static std::shared_ptr<spdlog::sinks::rotating_file_sink_mt> rotating_sink;
-    static std::vector<spdlog::sink_ptr> sinks;
 
     std::call_once(onceFlag, []() {
         spdlog::init_thread_pool(8192, 1);
@@ -25,44 +25,77 @@ void CncLogger::Register(const std::string_view name)
 
         auto logger_name = std::string(CncLogger::DefaultLoggerName);
 
-        spdlog::set_default_logger(std::make_shared<spdlog::async_logger>(
-            logger_name, sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block));
+        spdlog::set_default_logger(
+            std::make_shared<spdlog::async_logger>(
+                logger_name,
+                sinks.begin(),
+                sinks.end(),
+                spdlog::thread_pool(),
+                spdlog::async_overflow_policy::block
+            )
+        );
     });
-
-    auto logger_name = std::string(name);
-
-    spdlog::register_or_replace(std::make_shared<spdlog::async_logger>(
-        logger_name, sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block));
 }
 
-CncLogger::CncLogger(const std::string_view name) : Name(name)
+// class members
+const auto CncLogger::DefaultLoggerName = std::string("nco");
+const auto CncLogger::DefaultLogger = CncLogger(CncLogger::DefaultLoggerName);
+
+// class methods
+void CncLogger::Register(const std::string name)
 {
-    if (name != CncLogger::DefaultLoggerName) {
-        Register(name);
+    Ensure_SpdLog_Initialised();
+
+    if (name == CncLogger::DefaultLoggerName) {
+        // default logger registered in Ensure_SpdLog_Initialised (exactly once)
+        return;
     }
+
+    spdlog::register_or_replace(
+        std::make_shared<spdlog::async_logger>(
+            name,
+            sinks.begin(),
+            sinks.end(),
+            spdlog::thread_pool(),
+            spdlog::async_overflow_policy::block
+        )
+    );
 }
 
-void CncLogger::Log_Info(const std::string_view message) const
+CncLogger::CncLogger(const std::string name) : Name(name)
 {
-    spdlog::get(std::string(Name))->info(message);
+    Register(name);
 }
 
-void CncLogger::Log_Warn(const std::string_view message) const
+void CncLogger::Critical(const std::string_view message, ...) const
 {
-    spdlog::get(std::string(Name))->warn(message);
+    spdlog::get(Name)->critical(message);
 }
 
-void CncLogger::Log_Error(const std::string_view message) const
+void CncLogger::Error(const std::string_view message, ...) const
 {
-    spdlog::get(std::string(Name))->error(message);
+    spdlog::get(Name)->error(message);
 }
 
-void CncLogger::Log_Debug(const std::string_view message) const
+void CncLogger::Warn(const std::string_view message, ...) const
 {
-    spdlog::get(std::string(Name))->debug(message);
+    spdlog::get(Name)->warn(message);
 }
 
-void CncLogger::Log_Trace(const std::string_view message) const
+void CncLogger::Info(const std::string_view message, ...) const
 {
-    spdlog::get(std::string(Name))->trace(message);
+    va_list args;
+    va_start(args, message);
+    spdlog::get(Name)->info(message, args);
+    va_end(args);
+}
+
+void CncLogger::Debug(const std::string_view message, ...) const
+{
+    spdlog::get(Name)->debug(message);
+}
+
+void CncLogger::Trace(const std::string_view message, ...) const
+{
+    spdlog::get(Name)->trace(message);
 }

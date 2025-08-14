@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string_view>
 
 /**
@@ -9,20 +10,21 @@
 class CncLogger
 {
 public:
-    static const std::string_view DefaultLoggerName;
+    static const std::string DefaultLoggerName;
     static const CncLogger DefaultLogger;
 
-    CncLogger(const std::string_view name);
+    CncLogger(const std::string name);
 
-    void Log_Info(const std::string_view message) const;
-    void Log_Warn(const std::string_view message) const;
-    void Log_Error(const std::string_view message) const;
-    void Log_Debug(const std::string_view message) const;
-    void Log_Trace(const std::string_view message) const;
+    void Critical(const std::string_view message, ...) const;
+    void Error(const std::string_view message, ...) const;
+    void Warn(const std::string_view message, ...) const;
+    void Info(const std::string_view message, ...) const;
+    void Debug(const std::string_view message, ...) const;
+    void Trace(const std::string_view message, ...) const;
 private:
     static CncLogger Instance;
 
-    static void Register(const std::string_view name);
+    static void Register(const std::string name);
 
-    const std::string_view Name;
+    const std::string Name;
 };
