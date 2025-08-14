@@ -38,12 +38,14 @@
 #include "macros.h"
 #include "straw.h"
 #include <stdlib.h>
-#include <stdint.h>
+#include <cstdint>
 
 extern uint16_t primeTable[3511];
 
-#define digit               uint32_t
-#define signeddigit         int32_t
+// Use the proper type from std:: namespace or define them properly
+typedef std::uint32_t digit;
+typedef std::int32_t signeddigit;
+
 #define LOG_UNITSIZE        5
 #define UNITSIZE            32
 #define UPPER_MOST_BIT      0x80000000L
