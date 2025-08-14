@@ -42,7 +42,13 @@
 
 extern uint16_t primeTable[3511];
 
-// Use the proper type from std:: namespace or define them properly
+/**
+ * To be compatible with C++20 <bit>, these types are required
+ * to be declared in the following way:
+ *
+ *   - Include `<cstdint>` instead of `<stdint.h>`
+ *   - Use `typedef ...` instead of a `#define digit ...` macro
+ **/
 typedef std::uint32_t digit;
 typedef std::int32_t signeddigit;
 
