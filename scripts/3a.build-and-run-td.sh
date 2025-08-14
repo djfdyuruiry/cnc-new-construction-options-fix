@@ -7,6 +7,9 @@ script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${script_path}/lib/functions.sh"
 
 function main() {
+  local preset="${1:-nco-tiberian-dawn-debug}"
+  local build_type="${2:-}"
+
   if [ -z "${TD_DATA_PATH:-}" ]; then
     load_env_file_if_present
   fi
@@ -14,8 +17,23 @@ function main() {
   assert_variable_exists "TD_DATA_PATH" \
     "Set the env var TD_DATA_PATH to a directory that contains Tiberian Dawn game data and try again"
 
-  "${script_path}/1.build.sh" "td" "$@"
-  "${script_path}/2.deploy.sh" "nco-tiberian-dawn-debug" "vanillatd" "${TD_DATA_PATH}/vanillatd-dev"
+  if [[ "${preset}" =~ ^nco.* ]]; then
+    # custom cmake preset passed, remove it before forwarding args to game
+    shift
+  fi
+
+  if [[ "${build_type}" =~ ^(Debug|RelWithDebInfo)$ ]]; then
+    # custom build preset passed, remove it before forwarding args to game
+    shift
+  elif [[ "${preset}" =~ ^nco.* ]]; then
+    build_type="RelWithDebInfo"
+  else
+    # not a build type, don't pass to the build script
+    build_type=""
+  fi
+
+  "${script_path}/1.build.sh" "${preset}" "${build_type}"
+  "${script_path}/2.deploy.sh" "${preset}" "vanillatd" "${TD_DATA_PATH}/vanillatd-dev"
 
   pushd_silent "${TD_DATA_PATH}"
 
