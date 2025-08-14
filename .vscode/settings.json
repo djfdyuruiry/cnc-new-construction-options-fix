@@ -4,6 +4,15 @@
     "CXX": "clang++",
     "VC_CXX_FLAGS": "-w;-Wwrite-strings;-Werror=write-strings"
   },
+  "cmake.options.statusBarVisibility": "hidden",
+  "cmake.options.advanced": { 
+    "configurePreset": { 
+      "statusBarVisibility": "visible"
+    }, 
+    "workflowPreset": {
+      "statusBarVisibility": "visible"
+    }
+  },
   "githubPullRequests.remotes": [
     "origin"
   ],
