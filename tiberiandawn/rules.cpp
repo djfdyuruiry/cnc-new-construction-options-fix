@@ -505,8 +505,7 @@ bool RulesClass::Export_Difficulty(CCINIClass& ini)
 
 bool RulesClass::Process_Sections(CCINIClass& ini)
 {
-    CncLogger::Default().info("This is a final warning");
-    DBG_INFO("RulesClass::Process_Sections - Processing rule section: [%s]", GAME_SECTION);
+    CNC_LOG_INFO("Processing rule section: [%s]", GAME_SECTION);
 
     Sections[GAME_SECTION].With<IniRuleContext>(ini, [](auto& c) {
         // map
