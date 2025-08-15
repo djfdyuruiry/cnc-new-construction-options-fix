@@ -35,7 +35,7 @@ public:
 
         auto sectionIsInIni = ini.Section_Present(SectionName.data());
 
-        Logger.Info("Help, I am trapped in a C++ class");
+        Logger().info("[{}] Help, I am trapped in a C++ class", __PRETTY_FUNCTION__);
 
         if (!sectionIsInIni) {
             DBG_INFO("Load_From_Ini - Loading default for '%s', rule section not found in provided INI: [%s]", name.data(), SectionName.data());

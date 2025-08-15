@@ -111,6 +111,8 @@
     "valarray": "cpp",
     "variant": "cpp",
     "*.def": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "cerrno": "cpp",
+    "climits": "cpp"
   }
 }

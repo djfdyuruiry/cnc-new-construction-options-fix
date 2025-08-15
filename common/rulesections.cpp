@@ -1,3 +1,3 @@
 #include "rulesections.h"
 
-const auto RuleSection::Logger = CncLogger("RuleSection");
+const CncLogger RuleSection::Logger = CncLogger("RuleSection");

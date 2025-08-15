@@ -1,5 +1,3 @@
-#include <stdarg.h>
-
 #include <spdlog/async.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -39,7 +37,7 @@ static void Ensure_SpdLog_Initialised() {
 
 // class members
 const auto CncLogger::DefaultLoggerName = std::string("nco");
-const auto CncLogger::DefaultLogger = CncLogger(CncLogger::DefaultLoggerName);
+const auto CncLogger::Default = CncLogger(CncLogger::DefaultLoggerName);
 
 // class methods
 void CncLogger::Register(const std::string name)
@@ -67,35 +65,13 @@ CncLogger::CncLogger(const std::string name) : Name(name)
     Register(name);
 }
 
-void CncLogger::Critical(const std::string_view message, ...) const
+void CncLogger::Fatal(const std::string_view message) const
 {
-    spdlog::get(Name)->critical(message);
+    (*this)().critical(message);
+    exit(1);
 }
 
-void CncLogger::Error(const std::string_view message, ...) const
+spdlog::logger& CncLogger::operator()() const
 {
-    spdlog::get(Name)->error(message);
-}
-
-void CncLogger::Warn(const std::string_view message, ...) const
-{
-    spdlog::get(Name)->warn(message);
-}
-
-void CncLogger::Info(const std::string_view message, ...) const
-{
-    va_list args;
-    va_start(args, message);
-    spdlog::get(Name)->info(message, args);
-    va_end(args);
-}
-
-void CncLogger::Debug(const std::string_view message, ...) const
-{
-    spdlog::get(Name)->debug(message);
-}
-
-void CncLogger::Trace(const std::string_view message, ...) const
-{
-    spdlog::get(Name)->trace(message);
+    return *spdlog::get(Name);
 }

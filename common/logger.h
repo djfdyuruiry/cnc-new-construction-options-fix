@@ -3,6 +3,8 @@
 #include <memory>
 #include <string_view>
 
+#include <spdlog/spdlog.h>
+
 /**
  * @brief Logger class using spdlog. For memory and thread safety, only assign instances
  *        of this class using static storage specifiers; use a static member or variable.
@@ -11,16 +13,13 @@ class CncLogger
 {
 public:
     static const std::string DefaultLoggerName;
-    static const CncLogger DefaultLogger;
+    static const CncLogger Default;
 
     CncLogger(const std::string name);
 
-    void Critical(const std::string_view message, ...) const;
-    void Error(const std::string_view message, ...) const;
-    void Warn(const std::string_view message, ...) const;
-    void Info(const std::string_view message, ...) const;
-    void Debug(const std::string_view message, ...) const;
-    void Trace(const std::string_view message, ...) const;
+    // TODO: Add PII level/log method to require a special flag or runtime arg to force print them (paths containing usernames etc.)
+    void Fatal(const std::string_view message) const;
+    spdlog::logger& operator()() const;
 private:
     static CncLogger Instance;
 

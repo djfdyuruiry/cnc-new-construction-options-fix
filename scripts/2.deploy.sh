@@ -29,6 +29,9 @@ function main() {
     -executable \
     -iname "${source}" \
     -print0 | xargs -0 -I {} cp -fv "{}" "${target}"
+
+  rm -fv "$(dirname "${target}")/"*.log
+
 }
 
 main "$@"

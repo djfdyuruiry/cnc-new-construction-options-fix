@@ -1,86 +1,85 @@
 #include <assert.h>
+#include <filesystem>
+#include <format>
+#include <memory>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#include <io.h>
-#endif
+#include <spdlog/spdlog.h>
 
-static class DebugStateClass
-{
-public:
-    DebugStateClass()
-        : File(nullptr)
-    {
-        /* Windows doesn't attach to the console by default so printing to stderr does nothing. */
-#if defined(_WIN32) && _WIN32_WINNT >= 0x0501
-        /* Attach to the console that started us if any */
-        if (AttachConsole(ATTACH_PARENT_PROCESS)) {
-            /* We attached successfully, lets redirect IO to the consoles handles if not already redirected */
-            if (_fileno(stdout) == -2 || _get_osfhandle(fileno(stdout)) == -2) {
-                freopen("CONOUT$", "w", stdout);
-            }
-
-            if (_fileno(stderr) == -2 || _get_osfhandle(fileno(stderr)) == -2) {
-                freopen("CONOUT$", "w", stderr);
-            }
-
-            if (_fileno(stdin) == -2 || _get_osfhandle(fileno(stdin)) == -2) {
-                freopen("CONIN$", "r", stdin);
-            }
-        }
-#endif
-    }
-
-    ~DebugStateClass()
-    {
-        if (File != nullptr) {
-            fclose(File);
-        }
-
-        File = nullptr;
-    }
-
-    FILE* File;
-} DebugState;
+#include "logger.h"
 
 /**
  * Main log function, intended to be used from behind macros that pass in file and line details.
  */
 void Debug_String_Log(unsigned level, const char* file, int line, const char* fmt, ...)
 {
-    static const char* levels[] = {"NONE", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
+    static const char* levels[] = {"none", "fatal", "error", "warn", "info", "debug", "trace"};
     assert(level <= 6);
 
-    /* If we have a file pointer set we are logging to a file */
-    if (DebugState.File != nullptr) {
-        va_list args;
-        fprintf(DebugState.File, "%-5s %s:%d: ", levels[level], file, line);
-        va_start(args, fmt);
-        vfprintf(DebugState.File, fmt, args);
-        fprintf(DebugState.File, "\n");
-        va_end(args);
-        fflush(DebugState.File);
+    auto spd_level = spdlog::level::off;
+
+    if (strcmp(levels[level], "fatal") == 0) {
+        spd_level = spdlog::level::critical;
+    } else if (strcmp(levels[level], "none") != 0) {
+        spd_level = spdlog::level::from_str(levels[level]);
     }
 
-    /* Don't print file and line numbers to stderr to avoid clogging it up with too much info */
+    if (!CncLogger::Default().should_log(spd_level)) {
+        return;
+    }
+
+    auto file_path = std::filesystem::path(file);
+    auto parent_path = file_path.parent_path();
+    auto parent_directory = parent_path.filename();
+
+    auto file_line = std::format(
+        "[{}/{}:{}] ",
+        parent_directory.string(),
+        file_path.filename().string(),
+        line
+    );
+
     va_list args;
-    fprintf(stderr, "%-5s: ", levels[level]);
-    va_start(args, fmt);
-    vfprintf(stderr, fmt, args);
-    fprintf(stderr, "\n");
-    va_end(args);
-    fflush(stderr);
-}
 
-void Debug_String_File(const char* file)
-{
-    if (DebugState.File != nullptr) {
-        fclose(DebugState.File);
+    // get message_size
+    va_start(args, fmt);
+    auto message_size = vsnprintf(NULL, 0, fmt, args);
+    va_end(args);
+
+    if (message_size < 0) {
+        CncLogger::Default().error(
+            "vsnprintf failed to process legacy log message in Debug_String_Log. source={} | fmt={}",
+            file_line,
+            fmt
+        );
+        return;
     }
 
-    DebugState.File = fopen(file, "w");
+    // format the message
+    std::unique_ptr<char[]> formatted_message(new char[message_size + 1]);
+
+    va_start(args, fmt);
+    auto result = vsnprintf(formatted_message.get(), message_size + 1, fmt, args);
+    va_end(args);
+
+    if (result < 0) {
+        CncLogger::Default().error(
+            "vsnprintf failed to process legacy log message in Debug_String_Log. source={} | fmt={}",
+            file_line,
+            fmt
+        );
+        return;
+    }
+
+    // log message using CncLogger
+    auto message = file_line + std::string(formatted_message.get());
+
+    if (spd_level == spdlog::level::critical) {
+        CncLogger::Default.Fatal(message);
+    }
+
+    CncLogger::Default().log(spd_level, message);
 }
