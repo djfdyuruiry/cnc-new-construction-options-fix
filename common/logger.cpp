@@ -5,36 +5,62 @@
 
 #include "logger.h"
 
+#define JSON_LOG_FORMAT R"(\
+{\
+"time": "%Y-%m-%dT%H:%M:%S.%f%z", \
+"name": "%n", \
+"level": "%^%l%$", \
+"at": "%@", \
+"in": "%!", \
+"process": %P, \
+"thread": %t, \
+"message": "%v" \
+}\
+)"
+
 // static variables
+static auto log_env_defined = std::getenv("SPDLOG_LEVEL") != nullptr;
+
 static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> stdout_sink;
 static std::shared_ptr<spdlog::sinks::rotating_file_sink_mt> rotating_sink;
 static std::vector<spdlog::sink_ptr> sinks;
 
 // static functions
-static void Ensure_SpdLog_Initialised() {
-    static std::once_flag onceFlag;
+static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name) {
+    auto logger = std::make_shared<spdlog::async_logger>(
+        name,
+        sinks.begin(),
+        sinks.end(),
+        spdlog::thread_pool(),
+        spdlog::async_overflow_policy::block
+    );
 
-    std::call_once(onceFlag, []() {
-        spdlog::init_thread_pool(8192, 1);
+    if (log_env_defined) {
+        spdlog::
+    } else {
+        logger->set_level(spdlog::level::err);
+    }
 
-        stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-        rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("nco.log", 1024 * 1024 * 10, 3);
-        sinks = std::vector<spdlog::sink_ptr>{stdout_sink, rotating_sink};
-
-        auto logger_name = std::string(CncLogger::DefaultLoggerName);
-
-        spdlog::set_default_logger(
-            std::make_shared<spdlog::async_logger>(
-                logger_name,
-                sinks.begin(),
-                sinks.end(),
-                spdlog::thread_pool(),
-                spdlog::async_overflow_policy::block
-            )
-        );
-    });
+    return logger;
 }
 
+static void Init_SpdLog() {
+    spdlog::init_thread_pool(8192, 1);
+
+    auto log_file = std::format("{}.log", CncLogger::DefaultLoggerName);
+
+    stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(log_file, 1024 * 1024 * 10, 3);
+    sinks = std::vector<spdlog::sink_ptr>{stdout_sink, rotating_sink};
+
+    stdout_sink.get()->set_pattern("%^%L [%!]%$ %v");
+    rotating_sink.get()->set_pattern(JSON_LOG_FORMAT);
+
+    spdlog::set_default_logger(
+        Build_Logger(CncLogger::DefaultLoggerName)
+    );
+}
+ 
 // class members
 const auto CncLogger::DefaultLoggerName = std::string("nco");
 const auto CncLogger::Default = CncLogger(CncLogger::DefaultLoggerName);
@@ -42,7 +68,9 @@ const auto CncLogger::Default = CncLogger(CncLogger::DefaultLoggerName);
 // class methods
 void CncLogger::Register(const std::string name)
 {
-    Ensure_SpdLog_Initialised();
+    static std::once_flag onceFlag;
+
+    std::call_once(onceFlag, Init_SpdLog);
 
     if (name == CncLogger::DefaultLoggerName) {
         // default logger registered in Ensure_SpdLog_Initialised (exactly once)
@@ -50,13 +78,7 @@ void CncLogger::Register(const std::string name)
     }
 
     spdlog::register_or_replace(
-        std::make_shared<spdlog::async_logger>(
-            name,
-            sinks.begin(),
-            sinks.end(),
-            spdlog::thread_pool(),
-            spdlog::async_overflow_policy::block
-        )
+        Build_Logger(name)
     );
 }
 
@@ -67,11 +89,11 @@ CncLogger::CncLogger(const std::string name) : Name(name)
 
 void CncLogger::Fatal(const std::string_view message) const
 {
-    (*this)().critical(message);
+    spdlog::get(Name)->critical(message);
     exit(1);
 }
 
-spdlog::logger& CncLogger::operator()() const
+std::shared_ptr<spdlog::logger> CncLogger::operator()() const
 {
-    return *spdlog::get(Name);
+    return spdlog::get(Name);
 }

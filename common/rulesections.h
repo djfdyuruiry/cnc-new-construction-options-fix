@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <variant>
 
-#include "debugstring.h"
 #include "fixed.h"
 #include "ini.h"
 #include "logger.h"
@@ -35,31 +34,29 @@ public:
 
         auto sectionIsInIni = ini.Section_Present(SectionName.data());
 
-        Logger().info("[{}] Help, I am trapped in a C++ class", __PRETTY_FUNCTION__);
-
         if (!sectionIsInIni) {
-            DBG_INFO("Load_From_Ini - Loading default for '%s', rule section not found in provided INI: [%s]", name.data(), SectionName.data());
+            CNC_LOG_INFO("Loading default for '{}', rule section not found in provided INI: [{}]", name, SectionName);
 
             Rules[name] = default_value;
             return *this;
         }
 
-        DBG_INFO("RuleSection::Load_From_Ini - Importing rule from INI: [%s] -> %s", SectionName.data(), name.data());
+        CNC_LOG_INFO("Importing rule from INI: [{}] -> {}", SectionName, name);
 
         if constexpr (std::is_same_v<T, int>) {
             value = ini.Get_Int(SectionName.data(), name.data(), default_value);
 
-            DBG_INFO("RuleSection::Load_From_Ini - Resolved value: %d | (default=%d)", value, default_value);
+            CNC_LOG_INFO("Resolved value: {} | (default={})", value, default_value);
         } else if constexpr (std::is_same_v<T, bool>) {
             value = ini.Get_Bool(SectionName.data(), name.data(), default_value);
 
-            DBG_INFO("RuleSection::Load_From_Ini - Resolved value: %s | (default=%s)", value ? "true" : "false", default_value ? "true" : "false");
+            CNC_LOG_INFO("Resolved value: {} | (default={})", value, default_value);
         } else if constexpr (std::is_same_v<T, fixed>) {
             value = ini.Get_Fixed(SectionName.data(), name.data(), default_value);
 
-            DBG_INFO("RuleSection::Load_From_Ini - Resolved value: %s | (default=%s)", value.As_ASCII(), default_value.As_ASCII());
+            CNC_LOG_INFO("Resolved value: {} | (default={})", value.As_ASCII(), default_value.As_ASCII());
         } else {
-            DBG_FATAL("RuleSection::Load_From_Ini - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName.data(), name.data());
+            CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName, name);
         }
 
         Rules[name] = value;
@@ -71,22 +68,22 @@ public:
     const RuleSection& Save_To_Ini(INIClass& ini, std::string_view name) const {
         auto value = Get<T>(name);
 
-        DBG_INFO("RuleSection::Save_To_Ini - Exporting rule to INI: [%s] -> %s", SectionName.data(), name.data());
+        CNC_LOG_DEBUG("Exporting rule to INI: [{}] -> {}", SectionName, name);
 
         if constexpr (std::is_same_v<T, int>) {
             ini.Put_Int(SectionName.data(), name.data(), value);
 
-            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %d", value);
+            CNC_LOG_DEBUG("Exported value: {}", value);
         } else if constexpr (std::is_same_v<T, bool>) {
             ini.Put_Bool(SectionName.data(), name.data(), value);
 
-            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %s", value ? "true" : "false");
+            CNC_LOG_DEBUG("Exported value: {}", value);
         } else if constexpr (std::is_same_v<T, fixed>) {
             ini.Put_Fixed(SectionName.data(), name.data(), value);
 
-            DBG_INFO("RuleSection::Save_To_Ini - Exported value: %s", value.As_ASCII());
+            CNC_LOG_DEBUG("Exported value: {}", value.As_ASCII());
         } else {
-            DBG_FATAL("RuleSection::Save_To_Ini - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName.data(), name.data());
+            CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName.data(), name.data());
         }
 
         return *this;
@@ -100,21 +97,21 @@ public:
             return std::get<T>(it->second);
         }
 
-        DBG_FATAL("RuleSection::Get - Rule not found in section: [%s] -> %s", SectionName.data(), name.data());
+        CNC_LOG_DEBUG("Rule not found in section: [{}] -> {}", SectionName, name);
     }
 
     template<typename T>
     RuleSection& Set(std::string_view name, T value) {
-        DBG_INFO("RuleSection::Set - Updating rule at runtime: [%s] -> %s", SectionName.data(), name.data());
+        CNC_LOG_WARN("Updating rule at runtime: [{}] -> {}", SectionName, name);
 
         if constexpr (std::is_same_v<T, int>) {
-            DBG_INFO("RuleSection::Set - New value: %d", value);
+            CNC_LOG_WARN("New value: {}", value);
         } else if constexpr (std::is_same_v<T, bool>) {
-            DBG_INFO("RuleSection::Set - New value: %s", value ? "true" : "false");
+            CNC_LOG_WARN("New value: {}", value);
         } else if constexpr (std::is_same_v<T, fixed>) {
-            DBG_INFO("RuleSection::Set - New value: %s", value.As_ASCII());
+            CNC_LOG_WARN("New value: {}", value.As_ASCII());
         } else {
-            DBG_FATAL("RuleSection::Set - Mapping for INI type not implemented, rule: [%s] -> %s", SectionName.data(), name.data());
+            CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName, name);
         }
 
         Rules[name] = value;
@@ -122,8 +119,6 @@ public:
         return *this;
     }
 private:
-    static const CncLogger Logger;
-
     using RuleVariant = std::variant<int, bool, fixed>;
     std::unordered_map<std::string_view, RuleVariant> Rules;
 };
@@ -155,7 +150,7 @@ public:
     template<typename T>
     IniRuleContext& With_Default(T default_value) {
         if (!NameInStream.has_value()) {
-            DBG_FATAL("IniRuleContext::With_Default - Load(..) must be called before With_Default(..)");
+            CNC_LOG_FATAL("Load(..) must be called before With_Default(..)");
         }
 
         Load(NameInStream.value(), default_value);
@@ -179,7 +174,7 @@ public:
             return *(it->second);
         }
 
-        DBG_INFO("RuleSections::operator[] - Adding new rules section '%s'", name.data());
+        CNC_LOG_DEBUG("Adding new rules section '{}'", name.data());
 
         Sections[name] = std::make_unique<RuleSection>(name);
 

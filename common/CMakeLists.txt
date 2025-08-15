@@ -79,7 +79,6 @@ set(COMMON_SRC
     rect.cpp
     rgb.cpp
     rndstraw.cpp
-    rulesections.cpp
     settings.cpp
     sha.cpp
     shape.cpp
