@@ -64,6 +64,9 @@ class RuleSections;
 
 class RulesClass
 {
+private:
+    void Apply_Static_And_Global_Values();
+
 public:
     RulesClass(void);
 
@@ -72,6 +75,7 @@ public:
     bool IQ(CCINIClass& ini);
     bool Difficulty(CCINIClass& ini);
     bool Process_Sections(CCINIClass& ini);
+
     bool Export(CCINIClass& file);
     bool Export_AI(CCINIClass& ini);
     bool Export_IQ(CCINIClass& ini);

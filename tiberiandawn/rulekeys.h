@@ -59,6 +59,6 @@
 #define UNITS_ARE_INDESTRUCTIBLE_RULE "UnitsAreIndestructible"
 #define INFANTRY_AUTO_SCATTERS_RULE "InfantryAutoScatters"
 #define GIVE_ATTACKERS_AN_ADVANTAGE_RULE "GiveAttackersAnAdvantage"
-#define SPEEDY_BUILDS_RULE "SpeedyBuilds"
+#define SPEEDY_SUPERWEAPON_RULE "SpeedySuperweapons"
 
 #endif

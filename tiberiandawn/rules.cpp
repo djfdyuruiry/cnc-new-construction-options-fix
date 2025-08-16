@@ -264,6 +264,8 @@ bool RulesClass::Process(CCINIClass& ini)
     Difficulty(ini);
     Process_Sections(ini);
 
+    Apply_Static_And_Global_Values();
+
     return (true);
 }
 
@@ -515,9 +517,9 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(TIBERIUM_GROWS_RULE).With_Default(true)
          .Load(TIBERIUM_SPREADS_RULE).With_Default(true)
          .Load(SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE).With_Default(false)
-         .Load(TIBERIUM_GROWTH_RATE_RULE).With_Default(fixed(1))
-         .Load(TIBERIUM_SPREAD_RATE_RULE).With_Default(fixed(1))
-         .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2)
+         .Load(TIBERIUM_GROWTH_RATE_RULE).With_Default(fixed(1)) // TODO: impl
+         .Load(TIBERIUM_SPREAD_RATE_RULE).With_Default(fixed(1)) // TODO: impl
+         .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2) // TODO: impl
          .Load(TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE).With_Default(5);
 
         // harvesting - default max credits is 700
@@ -526,15 +528,15 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(MAX_HARVESTER_CAPACITY_RULE).With_Default(28);
 
         // factories
-        c.Load(PRODUCTION_STEPS_PER_TICK_RULE).With_Default(1)
-         .Load(FACTORY_COUNT_STEP_MULTIPLIER_RULE).With_Default(fixed(1))
-         .Load(TOTAL_PRODUCTION_STEPS_RULE).With_Default(108);
+        c.Load(PRODUCTION_STEPS_PER_TICK_RULE).With_Default(1) // TODO: impl
+         .Load(FACTORY_COUNT_STEP_MULTIPLIER_RULE).With_Default(fixed(1)) // TODO: impl
+         .Load(TOTAL_PRODUCTION_STEPS_RULE).With_Default(108); // TODO: impl
 
         // repair
-        c.Load(UNIT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f))
-         .Load(UNIT_REPAIR_STRENGTH_STEP_RULE).With_Default(4)
-         .Load(AIRCRAFT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f))
-         .Load(AIRCRAFT_REPAIR_STRENGTH_STEP_RULE).With_Default(2);
+        c.Load(UNIT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f)) // TODO: impl
+         .Load(UNIT_REPAIR_STRENGTH_STEP_RULE).With_Default(4) // TODO: impl
+         .Load(AIRCRAFT_REPAIR_FACTOR_RULE).With_Default(fixed(1.02f)) // TODO: impl
+         .Load(AIRCRAFT_REPAIR_STRENGTH_STEP_RULE).With_Default(2); // TODO: impl
 
         // misc
         c.Load(SMART_DEFENCE_RULE).With_Default(false)
@@ -544,42 +546,75 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(VEHICLES_DO_THREE_POINT_TURNS_RULE).With_Default(false)
          .Load(SHOW_BIBS_ON_BUILDINGS_RULE).With_Default(false)
          .Load(SHOW_CIVILIAN_BUILDING_NAMES_RULE).With_Default(false)
-         .Load(ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE).With_Default(true)
-         .Load(ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE).With_Default(true)
+         .Load(ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE).With_Default(true) // TODO: impl
+         .Load(ONLY_ALLOW_USING_ONE_NUKE_PER_SCENARIO_RULE).With_Default(true) // TODO: impl
          .Load(HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE).With_Default(false)
-         .Load(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE).With_Default(true);
+         .Load(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE).With_Default(true); // TODO: impl
 
         // house specific
-        c.Load(HIDE_TEMPLE_FROM_GDI_RULE).With_Default(true)
-         .Load(HIDE_OBELISK_FROM_GDI_RULE).With_Default(true)
-         .Load(HIDE_APC_FROM_NOD_RULE).With_Default(true)
-         .Load(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE).With_Default(true)
-         .Load(HIDE_HELIPAD_FROM_NOD_RULE).With_Default(true)
-         .Load(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE).With_Default(true)
-         .Load(ONLY_GDI_CAN_USE_ION_CANNON_RULE).With_Default(true);
+        c.Load(HIDE_TEMPLE_FROM_GDI_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_OBELISK_FROM_GDI_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_APC_FROM_NOD_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_HELIPAD_FROM_NOD_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE).With_Default(true) // TODO: impl
+         .Load(ONLY_GDI_CAN_USE_ION_CANNON_RULE).With_Default(true); // TODO: impl
 
         // level specific
-        c.Load(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE).With_Default(true)
-         .Load(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE).With_Default(true)
-         .Load(HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE).With_Default(true)
-         .Load(HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true)
-         .Load(HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true)
-         .Load(ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE).With_Default(true);
+        c.Load(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE).With_Default(true) // TODO: impl
+         .Load(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true) // TODO: impl
+         .Load(HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true) // TODO: impl
+         .Load(ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE).With_Default(true); // TODO: impl
 
         // cheats
-        c.Load(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE).With_Default(false)
+        c.Load(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE).With_Default(false) // TODO: impl
          .Load(UNITS_ARE_INDESTRUCTIBLE_RULE).With_Default(false)
          .Load(INFANTRY_AUTO_SCATTERS_RULE).With_Default(false)
          .Load(GIVE_ATTACKERS_AN_ADVANTAGE_RULE).With_Default(false)
-         .Load(SPEEDY_BUILDS_RULE).With_Default(false);
+         .Load(SPEEDY_SUPERWEAPON_RULE).With_Default(false);
     });
 
     return true;
 }
 
+void RulesClass::Apply_Static_And_Global_Values() {
+    // map
+    Special.IsTGrowth = Rule.Sections[GAME_SECTION].Get<bool>(TIBERIUM_GROWS_RULE);
+    Special.IsTSpread = Rule.Sections[GAME_SECTION].Get<bool>(TIBERIUM_SPREADS_RULE);
+    Special.IsTFast = !Rule.Sections[GAME_SECTION].Get<bool>(SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE);
+
+    // misc
+    Special.IsSmartDefense = Rule.Sections[GAME_SECTION].Get<bool>(SMART_DEFENCE_RULE);
+    Special.IsTreeTarget = Rule.Sections[GAME_SECTION].Get<bool>(TARGET_TREES_RULE);
+    Special.IsMCVDeploy = Rule.Sections[GAME_SECTION].Get<bool>(MCV_REDEPLOYABLE_RULE);
+    Special.IsVisceroids = Rule.Sections[GAME_SECTION].Get<bool>(SPAWN_VISCEROIDS_RULE);
+    Special.IsThreePoint = Rule.Sections[GAME_SECTION].Get<bool>(VEHICLES_DO_THREE_POINT_TURNS_RULE);
+    Special.IsRoad = Rule.Sections[GAME_SECTION].Get<bool>(SHOW_BIBS_ON_BUILDINGS_RULE);
+    Special.IsNamed = Rule.Sections[GAME_SECTION].Get<bool>(SHOW_CIVILIAN_BUILDING_NAMES_RULE);
+    Special.IsSeparate = Rule.Sections[GAME_SECTION].Get<bool>(HELIPADS_AND_AIRCRAFT_BOUGHT_SEPERATELY_RULE);
+
+    // cheats
+    Special.IsInert = Rule.Sections[GAME_SECTION].Get<bool>(UNITS_ARE_INDESTRUCTIBLE_RULE);
+    Special.IsScatter = Rule.Sections[GAME_SECTION].Get<bool>(INFANTRY_AUTO_SCATTERS_RULE);
+    Special.IsDefenderAdvantage = !Rule.Sections[GAME_SECTION].Get<bool>(GIVE_ATTACKERS_AN_ADVANTAGE_RULE);
+    Special.IsSpeedBuild = Rule.Sections[GAME_SECTION].Get<bool>(SPEEDY_SUPERWEAPON_RULE);
+
+    // TODO: Make rule and restore audio if missing
+    // Special.IsJuvenile = false;
+
+    // TODO: Make rules for the below
+    // Special.IsVisibleTarget = false;
+    // Special.IsShowPath = false;
+    // Special.HealthBarDisplayMode = HB_SELECTED;
+    // Special.ResourceBarDisplayMode = RB_SELECTED;
+    // Special.ModernBalance = false;
+}
+
 bool RulesClass::Export_Sections(CCINIClass& ini)
 {
-    DBG_INFO("RulesClass::Export_Sections - Exporting rule section: [%s]", GAME_SECTION);
+    CNC_LOG_INFO("Exporting rule section: [%s]", GAME_SECTION);
 
     // TODO: Provide way to write out comments OR move each block to seperate sections
     Sections[GAME_SECTION].With<IniRuleContext>(ini, [](auto& c) {
@@ -646,7 +681,7 @@ bool RulesClass::Export_Sections(CCINIClass& ini)
          .template Save<bool>(UNITS_ARE_INDESTRUCTIBLE_RULE)
          .template Save<bool>(INFANTRY_AUTO_SCATTERS_RULE)
          .template Save<bool>(GIVE_ATTACKERS_AN_ADVANTAGE_RULE)
-         .template Save<bool>(SPEEDY_BUILDS_RULE);
+         .template Save<bool>(SPEEDY_SUPERWEAPON_RULE);
     });
 
     return true;
