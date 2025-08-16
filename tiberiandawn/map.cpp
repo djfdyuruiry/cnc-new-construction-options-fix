@@ -1432,6 +1432,7 @@ void MapClass::Logic(void)
         TiberiumScan = 0;
         IsForwardScan = (IsForwardScan == false);
 
+        // BUG: When these values are too high, causes game loop to lag (needs more efficent algorithm, not looping)
         auto growthFactorMultipler = Rule.Sections[GAME_SECTION].Get<fixed>(TIBERIUM_GROWTH_RATE_RULE);
 		auto spreadFactorMultipler = Rule.Sections[GAME_SECTION].Get<fixed>(TIBERIUM_SPREAD_RATE_RULE);
 
