@@ -517,9 +517,9 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(TIBERIUM_GROWS_RULE).With_Default(true)
          .Load(TIBERIUM_SPREADS_RULE).With_Default(true)
          .Load(SLOW_TIBERIUM_GROWTH_AND_SPREAD_RULE).With_Default(false)
-         .Load(TIBERIUM_GROWTH_RATE_RULE).With_Default(fixed(1)) // TODO: impl
-         .Load(TIBERIUM_SPREAD_RATE_RULE).With_Default(fixed(1)) // TODO: impl
-         .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2) // TODO: impl
+         .Load(TIBERIUM_GROWTH_RATE_RULE).With_Default(fixed(1))
+         .Load(TIBERIUM_SPREAD_RATE_RULE).With_Default(fixed(1))
+         .Load(TIBERIUM_INFANTRY_DAMAGE_RULE).With_Default(2)
          .Load(TIBERIUM_BLOSSOM_TREE_DAMAGE_RULE).With_Default(5);
 
         // harvesting - default max credits is 700
