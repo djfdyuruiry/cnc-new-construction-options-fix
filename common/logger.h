@@ -14,9 +14,6 @@
   #define SPDLOG_FUNCTION static_cast<const char *>(__FUNCSIG__)
 #endif
 
-// default to trace whilst initiliasing the program
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
-
 #include <spdlog/spdlog.h>
 
 /**
@@ -61,6 +58,7 @@ private:
 #define CNC_LOG_CRITICAL(...) \
   SPDLOG_LOGGER_CRITICAL(CncLogger::Default(), __VA_ARGS__)
 
+// TODO: trigger debugger to break here
 #define CNC_LOG_FATAL(...) \
   SPDLOG_LOGGER_CRITICAL(CncLogger::Default(), __VA_ARGS__); \
   exit(1)

@@ -1,4 +1,5 @@
 #include <spdlog/async.h>
+#include <spdlog/cfg/env.h>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/rotating_file_sink.h>
@@ -19,7 +20,7 @@
 )"
 
 // static variables
-static auto log_env_defined = std::getenv("SPDLOG_LEVEL") != nullptr;
+static auto log_env_defined = std::getenv("NCO_LOG_LEVEL") != nullptr;
 
 static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> stdout_sink;
 static std::shared_ptr<spdlog::sinks::rotating_file_sink_mt> rotating_sink;
@@ -36,7 +37,7 @@ static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name
     );
 
     if (log_env_defined) {
-        spdlog::
+        spdlog::cfg::load_env_levels("NCO_LOG_LEVEL");
     } else {
         logger->set_level(spdlog::level::err);
     }
@@ -62,8 +63,8 @@ static void Init_SpdLog() {
 }
  
 // class members
-const auto CncLogger::DefaultLoggerName = std::string("nco");
-const auto CncLogger::Default = CncLogger(CncLogger::DefaultLoggerName);
+const std::string CncLogger::DefaultLoggerName = std::string("nco");
+const CncLogger CncLogger::Default = CncLogger(CncLogger::DefaultLoggerName);
 
 // class methods
 void CncLogger::Register(const std::string name)
