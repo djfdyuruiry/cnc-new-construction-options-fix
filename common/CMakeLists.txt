@@ -171,7 +171,7 @@ file(GLOB_RECURSE COMMON_HEADERS "*.h")
 
 add_library(common STATIC ${COMMON_SRC} ${COMMON_HEADERS})
 
-target_link_libraries(common PRIVATE spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
+target_link_libraries(common PUBLIC spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(common PUBLIC ${COMMON_LIBS})
 
 target_include_directories(common PUBLIC .)
