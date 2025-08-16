@@ -97,7 +97,7 @@ public:
             return std::get<T>(it->second);
         }
 
-        CNC_LOG_DEBUG("Rule not found in section: [{}] -> {}", SectionName, name);
+        CNC_LOG_FATAL("Rule not found in section: [{}] -> {}", SectionName, name);
     }
 
     template<typename T>
