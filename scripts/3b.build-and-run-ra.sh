@@ -7,7 +7,7 @@ script_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "${script_path}/lib/functions.sh"
 
 function main() {
-  local preset="${1:-nco-red-alert-debug}"
+  local preset="${1:-}"
   local build_type="${2:-}"
 
   if [ -z "${RA_DATA_PATH:-}" ]; then
@@ -20,6 +20,10 @@ function main() {
   if [[ "${preset}" =~ ^nco.* ]]; then
     # custom cmake preset passed, remove it before forwarding args to game
     shift
+  fi
+
+  if [ -z "${preset}" ]; then
+    preset="nco-red-alert-debug"
   fi
 
   if [[ "${build_type}" =~ ^(Debug|RelWithDebInfo)$ ]]; then
