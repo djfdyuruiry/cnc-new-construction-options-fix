@@ -6,19 +6,6 @@
 
 #include "logger.h"
 
-#define JSON_LOG_FORMAT R"(\
-{\
-"time": "%Y-%m-%dT%H:%M:%S.%f%z", \
-"name": "%n", \
-"level": "%^%l%$", \
-"at": "%@", \
-"in": "%!", \
-"process": %P, \
-"thread": %t, \
-"message": "%v" \
-}\
-)"
-
 // static variables
 static auto log_env_defined = std::getenv("NCO_LOG_LEVEL") != nullptr;
 
@@ -36,16 +23,19 @@ static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name
         spdlog::async_overflow_policy::block
     );
 
-    if (log_env_defined) {
-        spdlog::cfg::load_env_levels("NCO_LOG_LEVEL");
-    } else {
-        logger->set_level(spdlog::level::err);
-    }
+    // BUG: env var not loading global level into new loggers (and logger specific overrides not working)
+    logger->set_level(spdlog::get_level());
 
     return logger;
 }
 
 static void Init_SpdLog() {
+    if (log_env_defined) {
+        spdlog::cfg::load_env_levels("NCO_LOG_LEVEL");
+    } else {
+        spdlog::set_level(spdlog::level::err);
+    }
+
     spdlog::init_thread_pool(8192, 1);
 
     auto log_file = std::format("{}.log", CncLogger::DefaultLoggerName);
@@ -55,7 +45,10 @@ static void Init_SpdLog() {
     sinks = std::vector<spdlog::sink_ptr>{stdout_sink, rotating_sink};
 
     stdout_sink.get()->set_pattern("%^%L [%!]%$ %v");
-    rotating_sink.get()->set_pattern(JSON_LOG_FORMAT);
+    // BUG: Newlines in message strings break JSONL format
+    rotating_sink.get()->set_pattern(
+        R"({ "time": "%Y-%m-%dT%H:%M:%S.%f%z", "name": "%n", "level": "%^%l%$", "at": "%@", "in": "%!", "process": %P, "thread": %t, "message": "%v" })"
+    );
 
     spdlog::set_default_logger(
         Build_Logger(CncLogger::DefaultLoggerName)

@@ -42,7 +42,7 @@ function main() {
 
   local exit_code=0
 
-  ./vanillatd-dev -CHEAT "$@" || {
+  NCO_LOG_LEVEL="debug" ./vanillatd-dev -CHEAT "$@" || {
     exit_code="$?"
     stop_logging
     log_error "Game finished with non-zero exit code: ${exit_code}"

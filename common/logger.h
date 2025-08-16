@@ -41,24 +41,24 @@ private:
 
 // alias SPD macros so we don't pollute code with SPD refs
 #define CNC_LOG_TRACE(...) \
-  SPDLOG_LOGGER_TRACE(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::trace, __VA_ARGS__)
 
 #define CNC_LOG_DEBUG(...) \
-  SPDLOG_LOGGER_DEBUG(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::debug, __VA_ARGS__)
 
 #define CNC_LOG_INFO(...) \
-  SPDLOG_LOGGER_INFO(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::info, __VA_ARGS__)
 
 #define CNC_LOG_WARN(...) \
-  SPDLOG_LOGGER_WARN(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::warn, __VA_ARGS__)
 
 #define CNC_LOG_ERROR(...) \
-  SPDLOG_LOGGER_ERROR(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::error, __VA_ARGS__)
 
 #define CNC_LOG_CRITICAL(...) \
-  SPDLOG_LOGGER_CRITICAL(CncLogger::Default(), __VA_ARGS__)
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::critical, __VA_ARGS__)
 
 // TODO: trigger debugger to break here
 #define CNC_LOG_FATAL(...) \
-  SPDLOG_LOGGER_CRITICAL(CncLogger::Default(), __VA_ARGS__); \
+  SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::critical, __VA_ARGS__); \
   exit(1)

@@ -42,7 +42,7 @@ function main() {
 
   local exit_code=0
 
-  ./vanillara-dev "$@" || {
+  NCO_LOG_LEVEL="debug" ./vanillara-dev "$@" || {
     exit_code="$?"
     stop_logging
     log_error "Game finished with non-zero exit code: ${exit_code}"

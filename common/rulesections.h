@@ -41,20 +41,20 @@ public:
             return *this;
         }
 
-        CNC_LOG_INFO("Importing rule from INI: [{}] -> {}", SectionName, name);
+        CNC_LOG_DEBUG("Importing rule from INI: [{}] -> {}", SectionName, name);
 
         if constexpr (std::is_same_v<T, int>) {
             value = ini.Get_Int(SectionName.data(), name.data(), default_value);
 
-            CNC_LOG_INFO("Resolved value: {} | (default={})", value, default_value);
+            CNC_LOG_DEBUG("Resolved value: {} | (default={})", value, default_value);
         } else if constexpr (std::is_same_v<T, bool>) {
             value = ini.Get_Bool(SectionName.data(), name.data(), default_value);
 
-            CNC_LOG_INFO("Resolved value: {} | (default={})", value, default_value);
+            CNC_LOG_DEBUG("Resolved value: {} | (default={})", value, default_value);
         } else if constexpr (std::is_same_v<T, fixed>) {
             value = ini.Get_Fixed(SectionName.data(), name.data(), default_value);
 
-            CNC_LOG_INFO("Resolved value: {} | (default={})", value.As_ASCII(), default_value.As_ASCII());
+            CNC_LOG_DEBUG("Resolved value: {} | (default={})", value.As_ASCII(), default_value.As_ASCII());
         } else {
             CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName, name);
         }
