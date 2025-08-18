@@ -619,7 +619,8 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	for the stealth tank in mission #11 only.
     */
     if (house == HOUSE_BAD && type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_STANK
-        && level == 11) {
+        && level == 11
+        && Rule.Sections[GAME_SECTION].Get<bool>(REQUIRE_TECH_CENTRE_FOR_STEALTH_TANK_IN_NOD_SCENARIO_11_RULE)) {
         CNC_LOG_TRACE("NOD scenario 11 detected, changing Stealth Tank prerequisite to Tech Centre");
 
         pre = STRUCTF_MISSION;
@@ -4726,8 +4727,14 @@ fixed HouseClass::Power_Fraction(void) const
 bool HouseClass::Has_Nuke_Device(void)
 {
     Validate();
+
     if (GameToPlay != GAME_NORMAL || !IsHuman)
         return (true);
+
+    if (!Rule.Sections[GAME_SECTION].Get<bool>(ONLY_ALLOW_NUKE_IF_ALL_PARTS_HAVE_BEEN_COLLECTED_RULE)) {
+        return true;
+    }
+
     return ((NukePieces & 0x07) == 0x07);
 }
 

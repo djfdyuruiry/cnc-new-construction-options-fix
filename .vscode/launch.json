@@ -15,7 +15,7 @@
       "environment": [
         {
           "name": "NCO_LOG_LEVEL",
-          "value": "debug"
+          "value": "debug,Find_File_Data=off"
         }
       ]
     },
@@ -30,7 +30,7 @@
       "environment": [
         {
           "name": "NCO_LOG_LEVEL",
-          "value": "debug"
+          "value": "debug,Find_File_Data=off"
         }
       ]
     }

@@ -621,7 +621,17 @@ BuildingClass* AircraftTypeClass::Who_Can_Build_Me(bool, bool legal, HousesType 
  *=============================================================================================*/
 int AircraftTypeClass::Repair_Cost(void) const
 {
-    return (Fixed_To_Cardinal(Cost / (MaxStrength / REPAIR_STEP), REPAIR_PERCENT));
+	auto repair_factor = Rule.Sections[GAME_SECTION].Get<fixed>(AIRCRAFT_REPAIR_FACTOR_RULE);
+	auto repair_percent = nearbyint(repair_factor * 100);
+
+    auto repair_step = Rule.Sections[GAME_SECTION].Get<int>(AIRCRAFT_REPAIR_STRENGTH_STEP_RULE);
+
+	return(
+		Fixed_To_Cardinal(
+			Cost / (MaxStrength / repair_step),
+			repair_percent
+		)
+	);
 }
 
 /***********************************************************************************************

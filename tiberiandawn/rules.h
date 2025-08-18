@@ -64,9 +64,6 @@ class RuleSections;
 
 class RulesClass
 {
-private:
-    void Apply_Static_And_Global_Values();
-
 public:
     RulesClass(void);
 
@@ -293,6 +290,10 @@ public:
 
     // TODO: Roll other sections into this and centrally manage RULES.INI (will benefit loading rules overloads for scenarios)
     RuleSections Sections;
+
+private:
+    void Apply_Special_Properties();
+    void Apply_Static_And_Global_Values();
 };
 
 #define Get_Rule_Value(section, rule, value_type) Rule.Sections[section].Get<value_type>(rule)

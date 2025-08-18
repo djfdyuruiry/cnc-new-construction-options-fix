@@ -1979,8 +1979,12 @@ void BuildingClass::Drop_Debris(TARGET source)
     cell = Coord_Cell(Coord);
     offset = Occupy_List();
     int odds = 2;
-    if (Target_Legal(WhomToRepay))
+    if (Target_Legal(WhomToRepay)) {
         odds -= 1;
+
+        IsSurvivorless = !Rule.Sections[GAME_SECTION].Get<bool>(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE);
+    }
+
     if (IsCaptured)
         odds += 6;
     while (*offset != REFRESH_EOL) {
