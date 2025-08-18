@@ -569,7 +569,7 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE).With_Default(true); // TODO: impl
 
         // cheats
-        c.Load(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE).With_Default(false) // TODO: impl
+        c.Load(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE).With_Default(false)
          .Load(UNITS_ARE_INDESTRUCTIBLE_RULE).With_Default(false)
          .Load(INFANTRY_AUTO_SCATTERS_RULE).With_Default(false)
          .Load(GIVE_ATTACKERS_AN_ADVANTAGE_RULE).With_Default(false)
