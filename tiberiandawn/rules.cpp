@@ -552,17 +552,17 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE).With_Default(true); // TODO: impl
 
         // house specific
-        c.Load(HIDE_TEMPLE_FROM_GDI_RULE).With_Default(true) // TODO: impl
-         .Load(HIDE_OBELISK_FROM_GDI_RULE).With_Default(true) // TODO: impl
-         .Load(HIDE_APC_FROM_NOD_RULE).With_Default(true) // TODO: impl
-         .Load(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE).With_Default(true) // TODO: impl
-         .Load(HIDE_HELIPAD_FROM_NOD_RULE).With_Default(true) // TODO: impl
-         .Load(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE).With_Default(true) // TODO: impl
+        c.Load(HIDE_TEMPLE_FROM_GDI_RULE).With_Default(true)
+         .Load(HIDE_OBELISK_FROM_GDI_RULE).With_Default(true)
+         .Load(HIDE_APC_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_HELIPAD_FROM_NOD_RULE).With_Default(true)
+         .Load(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE).With_Default(true)
          .Load(ONLY_GDI_CAN_USE_ION_CANNON_RULE).With_Default(true); // TODO: impl
 
         // level specific
-        c.Load(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE).With_Default(true) // TODO: impl
-         .Load(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE).With_Default(true) // TODO: impl
+        c.Load(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE).With_Default(true)
+         .Load(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE).With_Default(true)
          .Load(HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE).With_Default(true) // TODO: impl
          .Load(HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true) // TODO: impl
          .Load(HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE).With_Default(true) // TODO: impl

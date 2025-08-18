@@ -620,6 +620,7 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     */
     if (house == HOUSE_BAD && type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_STANK
         && level == 11) {
+        CNC_LOG_TRACE("NOD scenario 11 detected, changing Stealth Tank prerequisite to Tech Centre");
 
         pre = STRUCTF_MISSION;
         level = type->Scenario;
@@ -630,7 +631,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	until mission #8.
     */
     if (house == HOUSE_GOOD && type->What_Am_I() == RTTI_INFANTRYTYPE
-        && ((InfantryTypeClass const*)type)->Type == INFANTRY_E3 && level < 7) {
+        && ((InfantryTypeClass const*)type)->Type == INFANTRY_E3 && level < 7
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_BAZOOKA_FROM_GDI_UNTIL_SENARIO_8_RULE)) {
+        CNC_LOG_TRACE("GDI scenario earlier than #8 detected, hiding Bazooka infantry from player");
 
         return (false);
     }
@@ -640,7 +643,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	and no sooner.
     */
     if (house == HOUSE_GOOD && type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_MLRS
-        && level < 9) {
+        && level < 9
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_ROCKET_LAUNCHER_FROM_GDI_UNTIL_SCENARIO_9_RULE)) {
+        CNC_LOG_TRACE("GDI scenario earlier than #9 detected, hiding Rocket Launcher unit from player");
 
         return (false);
     }
@@ -648,19 +653,34 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     /*
     **	Special case to disable the APC from the Nod player.
     */
-    if (house == HOUSE_BAD && type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_APC) {
+    if (house == HOUSE_BAD && type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_APC
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_APC_FROM_NOD_RULE)) {
+        CNC_LOG_TRACE("NOD scenario detected, hiding APC unit from player");
 
         return (false);
     }
 
     /*
-    **	Ensure that the Temple of Nod cannot be built by GDI even
+    **	Ensure that the Temple of Nod/Obelisk of Light cannot be built by GDI even
     **	if GDI has captured the Nod construction yard.
     */
     if (type->What_Am_I() == RTTI_BUILDINGTYPE
         && (((BuildingTypeClass const*)type)->Type == STRUCT_TEMPLE
             || ((BuildingTypeClass const*)type)->Type == STRUCT_OBELISK)
         && Class->House == HOUSE_GOOD) {
+		if (((BuildingTypeClass const*)type)->Type == STRUCT_TEMPLE 
+            && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_TEMPLE_FROM_GDI_RULE)){
+			return false;
+		} else {
+            CNC_LOG_TRACE("GDI scenario detected, hiding Temple of Nod from player");
+        }
+
+        if (((BuildingTypeClass const*)type)->Type == STRUCT_OBELISK
+            && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_OBELISK_FROM_GDI_RULE)) {
+			return false;
+		} else {
+            CNC_LOG_TRACE("GDI scenario detected, hiding Obelisk of Light from player");
+        }
 
         return (false);
     }
@@ -669,7 +689,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	Ensure that the rocket launcher tank cannot be built by Nod.
     */
     if (type->What_Am_I() == RTTI_UNITTYPE && ((UnitTypeClass const*)type)->Type == UNIT_MLRS
-        && Class->House == HOUSE_BAD) {
+        && Class->House == HOUSE_BAD
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_ROCKET_LAUNCHER_FROM_NOD_RULE)) {
+        CNC_LOG_TRACE("NOD scenario detected, hiding Rocket Launcher unit from player");
 
         return (false);
     }
@@ -679,7 +701,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	Nod has captured the GDI construction yard.
     */
     if (type->What_Am_I() == RTTI_BUILDINGTYPE && (((BuildingTypeClass const*)type)->Type == STRUCT_EYE)
-        && Class->House == HOUSE_BAD) {
+        && Class->House == HOUSE_BAD
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_ADVANCED_COMM_CENTER_FROM_NOD_RULE)) {
+        CNC_LOG_TRACE("NOD scenario detected, hiding Advanced Comm Center from player");
 
         return (false);
     }
@@ -688,7 +712,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	Nod can build the advanced power plant at scenario #12.
     */
     if (house == HOUSE_BAD && level >= 12 && type->What_Am_I() == RTTI_BUILDINGTYPE
-        && ((BuildingTypeClass const*)type)->Type == STRUCT_ADVANCED_POWER) {
+        && ((BuildingTypeClass const*)type)->Type == STRUCT_ADVANCED_POWER
+        && Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_NOD_TO_BUILD_ADVANCED_POWER_IN_SCENARIO_12_RULE)) {
+        CNC_LOG_TRACE("NOD scenario 12 detected, making Advanced Power Plant available");
 
         level = type->Scenario;
     }
@@ -697,7 +723,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	Nod cannot build a helipad in the normal game.
     */
     if (house == HOUSE_BAD && type->What_Am_I() == RTTI_BUILDINGTYPE
-        && ((BuildingTypeClass const*)type)->Type == STRUCT_HELIPAD) {
+        && ((BuildingTypeClass const*)type)->Type == STRUCT_HELIPAD
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_HELIPAD_FROM_NOD_RULE)) {
+        CNC_LOG_TRACE("NOD scenario detected, hiding Helipad from player");
 
         return (false);
     }
@@ -706,7 +734,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	GDI can build the sandbag wall only from scenario #9 onwards.
     */
     if (house == HOUSE_GOOD && level < 8 && type->What_Am_I() == RTTI_BUILDINGTYPE
-        && ((BuildingTypeClass const*)type)->Type == STRUCT_SANDBAG_WALL) {
+        && ((BuildingTypeClass const*)type)->Type == STRUCT_SANDBAG_WALL
+        && Rule.Sections[GAME_SECTION].Get<bool>(HIDE_SANDBAG_FROM_GDI_UNTIL_SCENARIO_9_RULE)) {
+        CNC_LOG_TRACE("GDI scenario earlier than #9 detected, hiding sandbags from player");
 
         return (false);
     }
@@ -715,12 +745,18 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	GDI has a special second training mission. Adjust the scenario level so that
     **	scenario two will still feel like scenario #1.
     */
-    if (house == HOUSE_GOOD && level == 2) {
+    if (house == HOUSE_GOOD && level == 2 
+        && Rule.Sections[GAME_SECTION].Get<bool>(SET_BUILD_LEVEL_TO_1_IN_GDI_SCENARIO_2_RULE)) {
+        CNC_LOG_TRACE("GDI scenario 2 detected, limiting tech level to 1");
+
         level = 1;
     }
 
     // ST - 8/23/2019 4:53PM
-    if (DebugUnlockBuildables || Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE)) {
+    if (DebugUnlockBuildables 
+        || Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE)) {
+        CNC_LOG_TRACE("{} rule enabled, allowing player to build any standard object", ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE);
+
         // prevent building non-standard objects (A10, civilians etc.)
         level = 98;
         pre = 0;
@@ -1283,8 +1319,10 @@ void HouseClass::AI(void)
         **	If there is no ion cannon present, but there is an advanced communcation
         **	center available, then make the ion cannon available as well.
         */
-        if ((GameToPlay == GAME_NORMAL || Rule.AllowSuperWeapons) && (ActiveBScan & STRUCTF_EYE)
-            && (ActLike == HOUSE_GOOD || GameToPlay != GAME_NORMAL) && (IsHuman || GameToPlay != GAME_NORMAL)) {
+        if ((GameToPlay == GAME_NORMAL || Rule.AllowSuperWeapons)
+            && (ActiveBScan & STRUCTF_EYE)
+            && (ActLike == HOUSE_GOOD || GameToPlay != GAME_NORMAL)
+            && (IsHuman || GameToPlay != GAME_NORMAL)) {
 
             IonCannon.Enable(false, this == PlayerPtr, Power_Fraction() < 1);
 
