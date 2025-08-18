@@ -62,3 +62,26 @@ private:
 #define CNC_LOG_FATAL(...) \
   SPDLOG_LOGGER_CALL(CncLogger::Default(), spdlog::level::critical, __VA_ARGS__); \
   exit(1)
+
+#define CNC_LOGGER_TRACE(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::trace, __VA_ARGS__)
+
+#define CNC_LOGGER_DEBUG(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::debug, __VA_ARGS__)
+
+#define CNC_LOGGER_INFO(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::info, __VA_ARGS__)
+
+#define CNC_LOGGER_WARN(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::warn, __VA_ARGS__)
+
+#define CNC_LOGGER_ERROR(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::error, __VA_ARGS__)
+
+#define CNC_LOGGER_CRITICAL(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::critical, __VA_ARGS__)
+
+// TODO: trigger debugger to break here
+#define CNC_LOGGER_FATAL(...) \
+  SPDLOG_LOGGER_CALL(Logger(), spdlog::level::critical, __VA_ARGS__); \
+  exit(1)

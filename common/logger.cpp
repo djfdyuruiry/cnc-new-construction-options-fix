@@ -7,13 +7,31 @@
 #include "logger.h"
 
 // static variables
-static auto log_env_defined = std::getenv("NCO_LOG_LEVEL") != nullptr;
-
 static std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> stdout_sink;
 static std::shared_ptr<spdlog::sinks::rotating_file_sink_mt> rotating_sink;
 static std::vector<spdlog::sink_ptr> sinks;
 
 // static functions
+/**
+ * Load spdlog level setting from the environment.
+ */
+static bool Load_Env_Log_Levels() {
+    static std::once_flag onceFlag;
+    static auto log_env_defined = false;
+
+    std::call_once(onceFlag, []() {
+        auto log_env_var = std::getenv("NCO_LOG_LEVEL");
+
+        log_env_defined = log_env_var != nullptr;
+    });
+
+    if (log_env_defined) {
+        spdlog::cfg::load_env_levels("NCO_LOG_LEVEL");
+    }
+
+    return log_env_defined;
+}
+
 static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name) {
     auto logger = std::make_shared<spdlog::async_logger>(
         name,
@@ -23,15 +41,12 @@ static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name
         spdlog::async_overflow_policy::block
     );
 
-    logger->set_level(spdlog::get_level());
-
     return logger;
 }
 
 static void Init_SpdLog() {
-    if (log_env_defined) {
-        spdlog::cfg::load_env_levels("NCO_LOG_LEVEL");
-    } else {
+    if (!Load_Env_Log_Levels()) {
+        // set a global default if no env config found
         spdlog::set_level(spdlog::level::err);
     }
 
@@ -73,6 +88,9 @@ void CncLogger::Register(const std::string name)
     spdlog::register_or_replace(
         Build_Logger(name)
     );
+
+    // ensure any env var config is applied to the new logger
+    Load_Env_Log_Levels();
 }
 
 CncLogger::CncLogger(const std::string name) : Name(name)
