@@ -90,8 +90,6 @@ void Debug_Key(unsigned input)
             break;
 
         case KN_K:
-// PG_TO_FIX
-#if (0)
             /*
             ** time to create a screen shot using the PCX code (if it works)
             */
@@ -114,7 +112,6 @@ void Debug_Key(unsigned input)
                 Write_PCX_File(filename, temp_page, (unsigned char*)CurrentPalette);
                 // Map.Place_Random_Crate();
             }
-#endif
             break;
 
         case KN_P:
