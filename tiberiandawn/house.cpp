@@ -601,8 +601,9 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     **	Multiplayer game uses a different legality check for building.
     */
     if (GameToPlay != GAME_NORMAL || (Special.IsJurassic && AreThingiesEnabled)) {
-        if (DebugUnlockBuildables) {
-            return true;
+        if (DebugUnlockBuildables || Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE)) {
+            // similar to single player, prevent building non-standard objects (A10, civilians etc.)
+            return type->Level < 8;
         }
         return ((pre & flags) == pre && type->Level <= BuildLevel);
     }
@@ -719,7 +720,8 @@ bool HouseClass::Can_Build(TechnoTypeClass const* type, HousesType house) const
     }
 
     // ST - 8/23/2019 4:53PM
-    if (DebugUnlockBuildables) {
+    if (DebugUnlockBuildables || Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_BUILDING_ALL_FOR_CURRENT_HOUSE_RULE)) {
+        // prevent building non-standard objects (A10, civilians etc.)
         level = 98;
         pre = 0;
     }
