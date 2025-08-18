@@ -23,7 +23,6 @@ static std::shared_ptr<spdlog::async_logger> Build_Logger(const std::string name
         spdlog::async_overflow_policy::block
     );
 
-    // BUG: env var not loading global level into new loggers (and logger specific overrides not working)
     logger->set_level(spdlog::get_level());
 
     return logger;
