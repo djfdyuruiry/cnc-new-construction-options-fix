@@ -1,3 +1,5 @@
+include(td-rules)
+
 set(TIBDAWN_SRC
     aadata.cpp
     abstract.cpp
