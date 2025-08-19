@@ -575,7 +575,7 @@ bool RulesClass::Process_Sections(CCINIClass& ini)
          .Load(UNITS_ARE_INDESTRUCTIBLE_RULE).With_Default(false)
          .Load(INFANTRY_AUTO_SCATTERS_RULE).With_Default(false)
          .Load(GIVE_ATTACKERS_AN_ADVANTAGE_RULE).With_Default(false)
-         .Load(SPEEDY_SUPERWEAPON_RULE).With_Default(false);
+         .Load(SPEEDY_SUPERWEAPONS_RULE).With_Default(false);
     });
 
     return true;
@@ -601,7 +601,7 @@ void RulesClass::Apply_Special_Properties() {
     Special.IsInert = Sections[GAME_SECTION].Get<bool>(UNITS_ARE_INDESTRUCTIBLE_RULE);
     Special.IsScatter = Sections[GAME_SECTION].Get<bool>(INFANTRY_AUTO_SCATTERS_RULE);
     Special.IsDefenderAdvantage = !Sections[GAME_SECTION].Get<bool>(GIVE_ATTACKERS_AN_ADVANTAGE_RULE);
-    Special.IsSpeedBuild = Sections[GAME_SECTION].Get<bool>(SPEEDY_SUPERWEAPON_RULE);
+    Special.IsSpeedBuild = Sections[GAME_SECTION].Get<bool>(SPEEDY_SUPERWEAPONS_RULE);
 
     // TODO: Make rule and restore audio if missing
     // Special.IsJuvenile = false;
@@ -690,7 +690,7 @@ bool RulesClass::Export_Sections(CCINIClass& ini)
          .template Save<bool>(UNITS_ARE_INDESTRUCTIBLE_RULE)
          .template Save<bool>(INFANTRY_AUTO_SCATTERS_RULE)
          .template Save<bool>(GIVE_ATTACKERS_AN_ADVANTAGE_RULE)
-         .template Save<bool>(SPEEDY_SUPERWEAPON_RULE);
+         .template Save<bool>(SPEEDY_SUPERWEAPONS_RULE);
     });
 
     return true;

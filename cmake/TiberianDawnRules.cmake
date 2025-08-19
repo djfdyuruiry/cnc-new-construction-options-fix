@@ -4,6 +4,7 @@
 function(Main)
   message(STATUS "=== TiberianDawnRules.cmake start ===")
 
+  set(RULE_JSON_SOURCES_COMMENTS, "")
   set(RULE_KEYS_DEFINES "")
 
   file(RELATIVE_PATH RELATIVE_SOURCE_DIR ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -15,6 +16,8 @@ function(Main)
     file(RELATIVE_PATH RELATIVE_RULE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/rules ${RULE_FILE})
 
     message(STATUS "Processing rules file: ${RELATIVE_RULE_FILE}")
+
+    string(APPEND RULE_JSON_SOURCES_COMMENTS " *   - rules/${RELATIVE_RULE_FILE}\n")
 
     string(REGEX REPLACE "^([A-Z][a-z]+)[.]json$" "\\1" SECTION_NAME ${RELATIVE_RULE_FILE})
 
