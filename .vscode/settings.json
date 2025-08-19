@@ -113,6 +113,7 @@
     "*.def": "cpp",
     "filesystem": "cpp",
     "cerrno": "cpp",
-    "climits": "cpp"
+    "climits": "cpp",
+    "*.in": "cpp"
   }
 }

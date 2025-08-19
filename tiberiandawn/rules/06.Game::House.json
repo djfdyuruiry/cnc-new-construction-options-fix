@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "name": "HideTempleFromGdi",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideObeliskFromGdi",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideApcFromNod",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideRocketLauncherFromNod",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideHelipadFromNod",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideAdvancedCommCenterFromNod",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "OnlyGdiCanUseIonCannon",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

@@ -1759,10 +1759,10 @@ void UnitTypeClass::Dimensions(int& width, int& height) const
  *=============================================================================================*/
 int UnitTypeClass::Repair_Cost(void) const
 {
-	auto repair_factor = Rule.Sections[GAME_SECTION].Get<fixed>(UNIT_REPAIR_FACTOR_RULE);
+	auto repair_factor = Get_Fixed_Rule(GAME_REPAIR_SECTION, UNIT_REPAIR_FACTOR_RULE);
 	auto repair_percent = nearbyint(repair_factor * 100);
 
-    auto repair_step = Rule.Sections[GAME_SECTION].Get<int>(UNIT_REPAIR_STRENGTH_STEP_RULE);
+    auto repair_step = Get_Int_Rule(GAME_REPAIR_SECTION, UNIT_REPAIR_STRENGTH_STEP_RULE);
 
 	return(
 		Fixed_To_Cardinal(
@@ -1811,7 +1811,7 @@ int UnitTypeClass::Repair_Step(void) const
 int UnitTypeClass::Max_Pips(void) const
 {
     if (Type == UNIT_HARVESTER) {
-        auto pips = Get_Int_Rule(GAME_SECTION, HARVESTER_PIPS_RULE);
+        auto pips = Get_Int_Rule(GAME_HARVESTING_SECTION, HARVESTER_PIPS_RULE);
 
         return pips;
     }

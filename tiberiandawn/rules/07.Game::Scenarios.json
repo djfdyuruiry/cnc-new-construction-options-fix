@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "name": "SetBuildLevelTo1InGdiScenario2",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "RenameTechCenterToPrisionInNodScenario3",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideBazookaFromGdiUntilScenario8",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideRocketLauncherFromGdiUntilScenario9",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "HideSandbagFromGdiUntilScenario9",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "AllowNodToBuildAdvancedPowerInScenario12",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "RequireTechCentreForStealthTankInNodScenario11",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

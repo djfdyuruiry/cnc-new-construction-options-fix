@@ -300,4 +300,8 @@ private:
 
 #define Get_Int_Rule(section, rule) Get_Rule_Value(section, rule, int)
 
+#define Get_Bool_Rule(section, rule) Get_Rule_Value(section, rule, bool)
+
+#define Get_Fixed_Rule(section, rule) Get_Rule_Value(section, rule, fixed)
+
 #endif

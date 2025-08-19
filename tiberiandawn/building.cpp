@@ -1982,7 +1982,7 @@ void BuildingClass::Drop_Debris(TARGET source)
     if (Target_Legal(WhomToRepay)) {
         odds -= 1;
 
-        IsSurvivorless = !Rule.Sections[GAME_SECTION].Get<bool>(DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE);
+        IsSurvivorless = !Get_Bool_Rule(GAME_MISC_SECTION, DESTROYED_BUILDINGS_HAVE_SURVIVORS_RULE);
     }
 
     if (IsCaptured)
@@ -5548,9 +5548,9 @@ bool BuildingClass::Passes_Proximity_Check(CELL homecell)
 	**	cells to these are of friendly persuasion, then consider the proximity check to
 	**	have been a success.
 	*/
-	auto maxPlacementDistance = Rule.Sections[GAME_SECTION].Get<int>(MAX_BUILD_DISTANCE_RULE);
-	auto preventBuildingInShroud = Rule.Sections[GAME_SECTION].Get<bool>(PREVENT_BUILDING_IN_SHROUD_RULE);
-	auto allowBuildingBesideWalls = Rule.Sections[GAME_SECTION].Get<bool>(ALLOW_BUILDING_BESIDE_WALLS_RULE);
+	auto maxPlacementDistance = Get_Int_Rule(GAME_MAP_SECTION, MAX_BUILD_DISTANCE_RULE);
+	auto preventBuildingInShroud = Get_Bool_Rule(GAME_MAP_SECTION, PREVENT_BUILDING_IN_SHROUD_RULE);
+	auto allowBuildingBesideWalls = Get_Bool_Rule(GAME_MAP_SECTION, ALLOW_BUILDING_BESIDE_WALLS_RULE);
 
 	auto ptr = Occupy_List(true);
 

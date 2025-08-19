@@ -4533,7 +4533,7 @@ int BuildingTypeClass::Max_Pips(void) const
  *=============================================================================================*/
 int BuildingTypeClass::Full_Name(void) const
 {
-    if (Scen.Scenario == 3 && Type == STRUCT_MISSION && Rule.Sections[GAME_SECTION].Get<bool>(RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE)) {
+    if (Scen.Scenario == 3 && Type == STRUCT_MISSION && Get_Bool_Rule(GAME_SCENARIOS_SECTION, RENAME_TECH_CENTER_TO_PRISION_IN_NOD_SCENARIO_3_RULE)) {
         CNC_LOG_WARN("Mission 3 detected, renaming {} to {}", TechnoTypeClass::Full_Name(), TXT_PRISON);
 
         return (TXT_PRISON);

@@ -1,0 +1,29 @@
+{
+  "rules": [
+    {
+      "name": "AllowBuildingAllForCurrentHouse",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "UnitsAreIndestructible",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "InfantryAutoScatters",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "GiveAttackersAnAdvantage",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "SpeedySuperweapons",
+      "type": "bool",
+      "default": false
+    }
+  ]
+}

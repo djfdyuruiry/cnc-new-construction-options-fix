@@ -81,6 +81,7 @@ public:
         } else if constexpr (std::is_same_v<T, fixed>) {
             ini.Put_Fixed(SectionName.data(), name.data(), value);
 
+            // BUG: value being exported is not right, 1.2 instead of 1.02
             CNC_LOG_DEBUG("Exported value: {}", value.As_ASCII());
         } else {
             CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName.data(), name.data());
