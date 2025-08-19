@@ -2,19 +2,23 @@
 # for a single source of truth.
 
 function(Main)
-  message(STATUS "=== td.rules.cmake start ===")
-  message(STATUS "Processing rules files in ${CMAKE_CURRENT_SOURCE_DIR}/rules/*.json")
-
-  file(GLOB_RECURSE RULES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/rules/*.json")
+  message(STATUS "=== TiberianDawnRules.cmake start ===")
 
   set(RULE_KEYS_DEFINES "")
 
+  file(RELATIVE_PATH RELATIVE_SOURCE_DIR ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+  message(STATUS "Processing rules files in ${RELATIVE_SOURCE_DIR}/rules/*.json")
+
+  file(GLOB_RECURSE RULES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/rules/*.json")
+
   foreach(RULE_FILE ${RULES_FILES})
-    file(RELATIVE_PATH RELATIVE_RULE_FILE ${CMAKE_CURRENT_SOURCE_DIR} ${RULE_FILE})
+    file(RELATIVE_PATH RELATIVE_RULE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/rules ${RULE_FILE})
 
     message(STATUS "Processing rules file: ${RELATIVE_RULE_FILE}")
 
-    string(REGEX REPLACE "rules/([A-Z][a-z]+)[.]json" "\\1" SECTION_NAME ${RELATIVE_RULE_FILE})
+    string(REGEX REPLACE "^([A-Z][a-z]+)[.]json$" "\\1" SECTION_NAME ${RELATIVE_RULE_FILE})
+
+    message(STATUS "Rule section: ${SECTION_NAME}")
 
     string(TOUPPER ${SECTION_NAME} SECTION_NAME_UPPER)
     string(APPEND RULE_KEYS_DEFINES "// [${SECTION_NAME}]\n")
@@ -31,24 +35,25 @@ function(Main)
       string(JSON RULE_OBJECT_JSON GET ${RULES_JSON} rules ${RULE_INDEX})
 
       string(JSON RULE_NAME GET ${RULE_OBJECT_JSON} name)
-      string(JSON RULE_TYPE GET ${RULE_OBJECT_JSON} type)
-      string(JSON RULE_DEFAULT GET ${RULE_OBJECT_JSON} default)
+      #string(JSON RULE_TYPE GET ${RULE_OBJECT_JSON} type)
+      #string(JSON RULE_DEFAULT GET ${RULE_OBJECT_JSON} default)
 
-      message(STATUS "Rule Name: ${RULE_NAME}")
-      message(STATUS "Rule Type: ${RULE_TYPE}")
-      message(STATUS "Rule Default: ${RULE_DEFAULT}")
+      message(STATUS "Generating define for rule: [${SECTION_NAME}] => ${RULE_NAME}")
 
       string(REGEX REPLACE "([A-Z][a-z]+)" "\\1_" RULE_NAME_SNAKE_CASE ${RULE_NAME})
       string(REGEX REPLACE "_($)" "\\1" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
+      string(REGEX REPLACE "([0-9])([A-Z])" "\\1_\\2" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
       string(TOUPPER ${RULE_NAME_SNAKE_CASE} RULE_NAME_SNAKE_CASE)
 
       string(APPEND RULE_KEYS_DEFINES "\n#define ${RULE_NAME_SNAKE_CASE}_RULE \"${RULE_NAME}\"")
     endforeach()
   endforeach()
 
-  message(STATUS ${RULE_KEYS_DEFINES})
+  set(RULE_KEYS_HEADER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rulekeys.h)
 
-  message(STATUS "=== td.rules.cmake end ===")
+  configure_file(${RULE_KEYS_HEADER_PATH}.in ${RULE_KEYS_HEADER_PATH} @ONLY)
+
+  message(STATUS "=== TiberianDawnRules.cmake end ===")
 endfunction()
 
 Main()

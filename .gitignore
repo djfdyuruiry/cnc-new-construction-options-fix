@@ -4,3 +4,6 @@
 .env
 .vcpkg
 *.log
+
+# generated code
+tiberiandawn/rulekeys.h

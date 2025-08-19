@@ -1,4 +1,4 @@
-include(td-rules)
+include(TiberianDawnRules)
 
 set(TIBDAWN_SRC
     aadata.cpp
