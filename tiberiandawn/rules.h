@@ -302,6 +302,6 @@ private:
 
 #define Get_Bool_Rule(section, rule) Get_Rule_Value(section, rule, bool)
 
-#define Get_Fixed_Rule(section, rule) Get_Rule_Value(section, rule, fixed)
+#define Get_Float_Rule(section, rule) Get_Rule_Value(section, rule, float)
 
 #endif

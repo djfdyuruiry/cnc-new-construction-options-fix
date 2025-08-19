@@ -235,7 +235,7 @@ void FactoryClass::AI(void)
         **	factory types doesn't affect individual factories.
         */
         if (Object && House->IsHuman) {
-			auto factory_count_multiplier = Get_Fixed_Rule(GAME_FACTORIES_SECTION, FACTORY_COUNT_STEP_MULTIPLIER_RULE);
+			auto factory_count_multiplier = Get_Float_Rule(GAME_FACTORIES_SECTION, FACTORY_COUNT_STEP_MULTIPLIER_RULE);
 			auto modified_stages = stages;
 
 			switch (Object->What_Am_I()) {

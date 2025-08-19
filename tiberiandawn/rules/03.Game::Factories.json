@@ -7,7 +7,7 @@
     },
     {
       "name": "FactoryCountStepMultiplier",
-      "type": "fixed",
+      "type": "float",
       "default": 1.0
     },
     {

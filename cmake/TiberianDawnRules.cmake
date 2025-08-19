@@ -11,6 +11,9 @@ function(ResolveRuleValue _RULE_DEFAULT _RULE_VALUE)
     else()
       set(RULE_VALUE "false")
     endif()
+  elseif(${RULE_TYPE} STREQUAL "float")
+      # ensure value is denoted as a float
+      set(RULE_VALUE "${RULE_VALUE}f")
   elseif(${RULE_TYPE} STREQUAL "fixed")
       # ensure value wrapped in a fixed class constructor call
       set(RULE_VALUE "fixed(${RULE_VALUE}f)")

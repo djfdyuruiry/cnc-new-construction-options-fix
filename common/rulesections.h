@@ -51,10 +51,13 @@ public:
             value = ini.Get_Bool(SectionName.data(), name.data(), default_value);
 
             CNC_LOG_DEBUG("Resolved value: {} | (default={})", value, default_value);
-        } else if constexpr (std::is_same_v<T, fixed>) {
-            value = ini.Get_Fixed(SectionName.data(), name.data(), default_value);
+        } else if constexpr (std::is_same_v<T, float>) {
+            auto default_value_str = std::format("{}", default_value);
+            value = std::stof(
+                ini.Get_String(SectionName.data(), name.data(), default_value_str)
+            );            
 
-            CNC_LOG_DEBUG("Resolved value: {} | (default={})", value.As_ASCII(), default_value.As_ASCII());
+            CNC_LOG_DEBUG("Resolved value: {} | (default={})", value, default_value);
         } else {
             CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName, name);
         }
@@ -78,11 +81,11 @@ public:
             ini.Put_Bool(SectionName.data(), name.data(), value);
 
             CNC_LOG_DEBUG("Exported value: {}", value);
-        } else if constexpr (std::is_same_v<T, fixed>) {
-            ini.Put_Fixed(SectionName.data(), name.data(), value);
+        } else if constexpr (std::is_same_v<T, float>) {
+            auto value_str = std::format("{}", value);
+            ini.Put_String(SectionName.data(), name.data(), value_str);
 
-            // BUG: value being exported is not right, 1.2 instead of 1.02
-            CNC_LOG_DEBUG("Exported value: {}", value.As_ASCII());
+            CNC_LOG_DEBUG("Exported value: {}", value_str);
         } else {
             CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName.data(), name.data());
         }
@@ -105,12 +108,8 @@ public:
     RuleSection& Set(std::string_view name, T value) {
         CNC_LOG_WARN("Updating rule at runtime: [{}] -> {}", SectionName, name);
 
-        if constexpr (std::is_same_v<T, int>) {
+        if constexpr (std::is_same_v<T, int> || std::is_same_v<T, bool> || std::is_same_v<T, float>) {
             CNC_LOG_WARN("New value: {}", value);
-        } else if constexpr (std::is_same_v<T, bool>) {
-            CNC_LOG_WARN("New value: {}", value);
-        } else if constexpr (std::is_same_v<T, fixed>) {
-            CNC_LOG_WARN("New value: {}", value.As_ASCII());
         } else {
             CNC_LOG_FATAL("Mapping for INI type not implemented, rule: [{}] -> {}", SectionName, name);
         }
@@ -120,7 +119,7 @@ public:
         return *this;
     }
 private:
-    using RuleVariant = std::variant<int, bool, fixed>;
+    using RuleVariant = std::variant<int, bool, float>;
     std::unordered_map<std::string_view, RuleVariant> Rules;
 };
 

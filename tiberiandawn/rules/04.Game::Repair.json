@@ -2,7 +2,7 @@
   "rules": [
     {
       "name": "UnitRepairFactor",
-      "type": "fixed",
+      "type": "float",
       "default": 1.02
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "name": "AircraftRepairFactor",
-      "type": "fixed",
+      "type": "float",
       "default": 1.02
     },
     {

@@ -32,12 +32,12 @@
     },
     {
       "name": "TiberiumGrowthRate",
-      "type": "fixed",
+      "type": "float",
       "default": 1.0
     },
     {
       "name": "TiberiumSpreadRate",
-      "type": "fixed",
+      "type": "float",
       "default": 1.0
     },
     {
