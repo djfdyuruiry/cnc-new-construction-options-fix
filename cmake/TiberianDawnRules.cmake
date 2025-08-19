@@ -1,57 +1,94 @@
 # Rules code generator, allows keeping game rules in one place
 # for a single source of truth.
 
+function(TransformRuleNameToUpperSnakecase _RULE_NAME _RULE_NAME_SNAKE_CASE)
+  string(REGEX REPLACE "([A-Z][a-z]+)" "\\1_" RULE_NAME_SNAKE_CASE ${_RULE_NAME})
+  string(REGEX REPLACE "_($)" "\\1" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
+  string(REGEX REPLACE "([0-9])([A-Z])" "\\1_\\2" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
+  string(TOUPPER ${RULE_NAME_SNAKE_CASE} RULE_NAME_SNAKE_CASE)
+
+  set("${_RULE_NAME_SNAKE_CASE}" ${RULE_NAME_SNAKE_CASE} PARENT_SCOPE)
+endfunction()
+
+function(LoadRuleProperties _RULES_JSON _RULE_INDEX _RULE_NAME _RULE_TYPE _RULE_DEFAULT)
+  string(JSON RULE_OBJECT_JSON GET "${_RULES_JSON}" rules "${_RULE_INDEX}")
+
+  string(JSON RULE_NAME GET ${RULE_OBJECT_JSON} name)
+  string(JSON RULE_TYPE GET ${RULE_OBJECT_JSON} type)
+  string(JSON RULE_DEFAULT GET ${RULE_OBJECT_JSON} default)
+
+  set(RULE_NAME ${RULE_NAME} PARENT_SCOPE)
+  set(RULE_TYPE ${RULE_TYPE} PARENT_SCOPE)
+  set(RULE_DEFAULT ${RULE_DEFAULT} PARENT_SCOPE)
+endfunction()
+
+function (ExtractSectionNameFromFileName _RELATIVE_RULE_FILE _SECTION_NAME _SECTION_NAME_UPPER)
+  string(REGEX REPLACE "^([A-Z][a-z]+)[.]json$" "\\1" SECTION_NAME "${_RELATIVE_RULE_FILE}")
+
+  message(STATUS "Rule section: ${SECTION_NAME}")
+
+  string(TOUPPER ${SECTION_NAME} SECTION_NAME_UPPER)
+
+  set("${_SECTION_NAME}" ${SECTION_NAME} PARENT_SCOPE)
+  set("${_SECTION_NAME_UPPER}" ${SECTION_NAME_UPPER} PARENT_SCOPE)
+endfunction()
+
+function(ParseRuleFilePath _RULE_FILE _RELATIVE_RULE_FILE)
+  file(RELATIVE_PATH RELATIVE_RULE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/rules "${_RULE_FILE}")
+
+  message(STATUS "Processing rules file: ${RELATIVE_RULE_FILE}")
+
+  set("${_RELATIVE_RULE_FILE}" ${RELATIVE_RULE_FILE} PARENT_SCOPE)
+endfunction()
+
+function(ScanForRuleFiles _RULES_FILES)
+  file(RELATIVE_PATH RELATIVE_SOURCE_DIR ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+  message(STATUS "Processing rules files in ${RELATIVE_SOURCE_DIR}/rules/*.json")
+
+  file(GLOB_RECURSE RULES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/rules/*.json")
+
+  set("${_RULES_FILES}" ${RULES_FILES} PARENT_SCOPE)
+endfunction()
+
 function(Main)
   message(STATUS "=== TiberianDawnRules.cmake start ===")
 
   set(RULE_JSON_SOURCES_COMMENTS, "")
   set(RULE_KEYS_DEFINES "")
 
-  file(RELATIVE_PATH RELATIVE_SOURCE_DIR ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-  message(STATUS "Processing rules files in ${RELATIVE_SOURCE_DIR}/rules/*.json")
-
-  file(GLOB_RECURSE RULES_FILES "${CMAKE_CURRENT_SOURCE_DIR}/rules/*.json")
+  # find JSON files
+  ScanForRuleFiles(RULES_FILES)
 
   foreach(RULE_FILE ${RULES_FILES})
-    file(RELATIVE_PATH RELATIVE_RULE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/rules ${RULE_FILE})
+    ParseRuleFilePath("${RULE_FILE}" RELATIVE_RULE_FILE)
+    ExtractSectionNameFromFileName("${RELATIVE_RULE_FILE}" SECTION_NAME SECTION_NAME_UPPER)
 
-    message(STATUS "Processing rules file: ${RELATIVE_RULE_FILE}")
-
+    # rulekeys.h comment header
+    message(STATUS "Generating code for rule section: [${SECTION_NAME}]")
+  
     string(APPEND RULE_JSON_SOURCES_COMMENTS " *   - rules/${RELATIVE_RULE_FILE}\n")
 
-    string(REGEX REPLACE "^([A-Z][a-z]+)[.]json$" "\\1" SECTION_NAME ${RELATIVE_RULE_FILE})
-
-    message(STATUS "Rule section: ${SECTION_NAME}")
-
-    string(TOUPPER ${SECTION_NAME} SECTION_NAME_UPPER)
+    # rulekeys.h section defines
     string(APPEND RULE_KEYS_DEFINES "// [${SECTION_NAME}]\n")
     string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_NAME_UPPER}_SECTION \"${SECTION_NAME}\"\n")
 
+    # load rule definitions from JSON file
     file(READ ${RULE_FILE} RULES_JSON)
 
-    # read number of rules
     string(JSON RULE_COUNT LENGTH ${RULES_JSON} rules)
     MATH(EXPR RULE_COUNT "${RULE_COUNT}-1")
 
     foreach(RULE_INDEX RANGE ${RULE_COUNT})
-      # extract rule at index
-      string(JSON RULE_OBJECT_JSON GET ${RULES_JSON} rules ${RULE_INDEX})
+      LoadRuleProperties("${RULES_JSON}" "${RULE_INDEX}" RULE_NAME RULE_TYPE RULE_DEFAULT)
+      TransformRuleNameToUpperSnakecase("${RULE_NAME}" RULE_NAME_SNAKE_CASE)
 
-      string(JSON RULE_NAME GET ${RULE_OBJECT_JSON} name)
-      #string(JSON RULE_TYPE GET ${RULE_OBJECT_JSON} type)
-      #string(JSON RULE_DEFAULT GET ${RULE_OBJECT_JSON} default)
-
-      message(STATUS "Generating define for rule: [${SECTION_NAME}] => ${RULE_NAME}")
-
-      string(REGEX REPLACE "([A-Z][a-z]+)" "\\1_" RULE_NAME_SNAKE_CASE ${RULE_NAME})
-      string(REGEX REPLACE "_($)" "\\1" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
-      string(REGEX REPLACE "([0-9])([A-Z])" "\\1_\\2" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
-      string(TOUPPER ${RULE_NAME_SNAKE_CASE} RULE_NAME_SNAKE_CASE)
-
+      # rulekeys.h rule defines
+      message(STATUS "Generating code for rule: [${SECTION_NAME}] => ${RULE_NAME}")
       string(APPEND RULE_KEYS_DEFINES "\n#define ${RULE_NAME_SNAKE_CASE}_RULE \"${RULE_NAME}\"")
     endforeach()
   endforeach()
 
+  # render templates
   set(RULE_KEYS_HEADER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rulekeys.h)
 
   configure_file(${RULE_KEYS_HEADER_PATH}.in ${RULE_KEYS_HEADER_PATH} @ONLY)
