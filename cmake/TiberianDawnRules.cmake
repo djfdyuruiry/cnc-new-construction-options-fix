@@ -1,6 +1,24 @@
 # Rules code generator, allows keeping game rules in one place
 # for a single source of truth.
 
+function(ResolveRuleValue _RULE_DEFAULT _RULE_VALUE)
+  set(RULE_VALUE "${_RULE_DEFAULT}")
+
+  if (${RULE_TYPE} STREQUAL "bool")
+    # covert ON/OFF to C boolean literals
+    if (${_RULE_DEFAULT})
+      set(RULE_VALUE "true")
+    else()
+      set(RULE_VALUE "false")
+    endif()
+  elseif(${RULE_TYPE} STREQUAL "fixed")
+      # ensure value wrapped in a fixed class constructor call
+      set(RULE_VALUE "fixed(${RULE_VALUE}f)")
+  endif()
+
+  set("${_RULE_VALUE}" "${RULE_VALUE}" PARENT_SCOPE)
+endfunction()
+
 function(TransformRuleNameToUpperSnakecase _RULE_NAME _RULE_NAME_SNAKE_CASE)
   string(REGEX REPLACE "([A-Z][a-z]+)" "\\1_" RULE_NAME_SNAKE_CASE ${_RULE_NAME})
   string(REGEX REPLACE "_($)" "\\1" RULE_NAME_SNAKE_CASE ${RULE_NAME_SNAKE_CASE})
@@ -56,6 +74,9 @@ function(Main)
   set(RULE_JSON_SOURCES_COMMENTS, "")
   set(RULE_KEYS_DEFINES "")
 
+  set(RULE_PROCESS_CODE "")
+  set(RULE_EXPORT_CODE "")
+
   # find JSON files
   ScanForRuleFiles(RULES_FILES)
 
@@ -69,8 +90,23 @@ function(Main)
     string(APPEND RULE_JSON_SOURCES_COMMENTS " *   - rules/${RELATIVE_RULE_FILE}\n")
 
     # rulekeys.h section defines
-    string(APPEND RULE_KEYS_DEFINES "// [${SECTION_NAME}]\n")
-    string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_NAME_UPPER}_SECTION \"${SECTION_NAME}\"\n")
+    set(SECTION_DEFINE "${SECTION_NAME_UPPER}_SECTION")
+
+    string(APPEND RULE_KEYS_DEFINES "\n// [${SECTION_NAME}]\n")
+    string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_DEFINE} \"${SECTION_NAME}\"\n")
+
+    # rules-nco.cpp
+    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Processing rule section: [%s]\", ${SECTION_DEFINE});\n"
+                                 "\n"
+                                 "    Sections[${SECTION_DEFINE}].With<IniRuleContext>(ini, [](auto& c) {\n"
+                                 "        c")
+    string(APPEND RULE_PROCESS_CODE "${SECTION_LEAD_IN}")
+
+    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Exporting rule section: [%s]\", ${SECTION_DEFINE});\n"
+                                 "\n"
+                                 "    Sections[${SECTION_DEFINE}].With<IniRuleContext>(ini, [](auto& c) {\n"
+                                 "        c")
+    string(APPEND RULE_EXPORT_CODE "${SECTION_LEAD_IN}")
 
     # load rule definitions from JSON file
     file(READ ${RULE_FILE} RULES_JSON)
@@ -79,19 +115,41 @@ function(Main)
     MATH(EXPR RULE_COUNT "${RULE_COUNT}-1")
 
     foreach(RULE_INDEX RANGE ${RULE_COUNT})
+      if (${RULE_INDEX} GREATER 0)
+        # rules-nco.cpp
+        string(APPEND RULE_PROCESS_CODE "\n         ")
+        string(APPEND RULE_EXPORT_CODE "\n         ")
+      endif()
+
       LoadRuleProperties("${RULES_JSON}" "${RULE_INDEX}" RULE_NAME RULE_TYPE RULE_DEFAULT)
+
       TransformRuleNameToUpperSnakecase("${RULE_NAME}" RULE_NAME_SNAKE_CASE)
+      set(RULE_DEFINE "${RULE_NAME_SNAKE_CASE}_RULE")
+
+      # rules-nco.cpp
+      ResolveRuleValue("${RULE_DEFAULT}" RULE_VALUE)
+
+      string(APPEND RULE_PROCESS_CODE ".Load(${RULE_DEFINE}).With_Default(${RULE_VALUE})")
+
+      string(APPEND RULE_EXPORT_CODE ".template Save<${RULE_TYPE}>(${RULE_DEFINE})")
 
       # rulekeys.h rule defines
       message(STATUS "Generating code for rule: [${SECTION_NAME}] => ${RULE_NAME}")
-      string(APPEND RULE_KEYS_DEFINES "\n#define ${RULE_NAME_SNAKE_CASE}_RULE \"${RULE_NAME}\"")
+      string(APPEND RULE_KEYS_DEFINES "\n#define ${RULE_DEFINE} \"${RULE_NAME}\"")
     endforeach()
+
+    # rules-nco.cpp
+    string(APPEND RULE_PROCESS_CODE ";\n    });")
+
+    string(APPEND RULE_EXPORT_CODE ";\n    });")
   endforeach()
 
   # render templates
-  set(RULE_KEYS_HEADER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rulekeys.h)
+  set(RULES_NCO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rules-nco.cpp)
+  set(RULE_KEYS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rulekeys.h)
 
-  configure_file(${RULE_KEYS_HEADER_PATH}.in ${RULE_KEYS_HEADER_PATH} @ONLY)
+  configure_file(${RULES_NCO_PATH}.in ${RULES_NCO_PATH} @ONLY)
+  configure_file(${RULE_KEYS_PATH}.in ${RULE_KEYS_PATH} @ONLY)
 
   message(STATUS "=== TiberianDawnRules.cmake end ===")
 endfunction()
