@@ -37,6 +37,7 @@
 #include "function.h"
 #include <stdarg.h>
 #include "common/filepcx.h"
+#include "common/rawfile.h"
 #ifdef CHEAT_KEYS
 
 extern bool ScreenRecording;
@@ -90,8 +91,6 @@ void Debug_Key(unsigned input)
             break;
 
         case KN_K:
-// PG_TO_FIX
-#if (0)
             /*
             ** time to create a screen shot using the PCX code (if it works)
             */
@@ -99,6 +98,7 @@ void Debug_Key(unsigned input)
                 GraphicBufferClass temp_page(
                     SeenBuff.Get_Width(), SeenBuff.Get_Height(), NULL, SeenBuff.Get_Width() * SeenBuff.Get_Height());
                 char filename[30];
+                auto pcx_file = RawFileClass();
 
                 SeenBuff.Blit(temp_page);
                 for (int lp = 0; lp < 99; lp++) {
@@ -107,14 +107,18 @@ void Debug_Key(unsigned input)
                     } else {
                         sprintf(filename, "scrsht%d.pcx", lp);
                     }
-                    if (access(filename, F_OK) == -1)
+
+                    pcx_file.Set_Name(filename);
+
+                    if (!pcx_file.Is_Available()) {
+                        // file with matching name is not present on disk, so we are free to use it
                         break;
+                    }
                 }
 
                 Write_PCX_File(filename, temp_page, (unsigned char*)CurrentPalette);
                 // Map.Place_Random_Crate();
             }
-#endif
             break;
 
         case KN_P:

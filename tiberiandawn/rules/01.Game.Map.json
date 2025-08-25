@@ -1,0 +1,54 @@
+{
+  "rules": [
+    {
+      "name": "MaxBuildDistance",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "name": "PreventBuildingInShroud",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "AllowBuildingBesideWalls",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "TiberiumGrows",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "TiberiumSpreads",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "SlowTiberiumGrowthAndSpread",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "TiberiumGrowthRate",
+      "type": "float",
+      "default": 1.0
+    },
+    {
+      "name": "TiberiumSpreadRate",
+      "type": "float",
+      "default": 1.0
+    },
+    {
+      "name": "TiberiumInfantryDamage",
+      "type": "int",
+      "default": 2
+    },
+    {
+      "name": "TiberiumBlossomTreeDamage",
+      "type": "int",
+      "default": 5
+    }
+  ]
+}

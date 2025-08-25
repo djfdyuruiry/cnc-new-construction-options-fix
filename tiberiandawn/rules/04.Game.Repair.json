@@ -1,0 +1,24 @@
+{
+  "rules": [
+    {
+      "name": "UnitRepairFactor",
+      "type": "float",
+      "default": 1.02
+    },
+    {
+      "name": "UnitRepairStrengthStep",
+      "type": "int",
+      "default": 4
+    },
+    {
+      "name": "AircraftRepairFactor",
+      "type": "float",
+      "default": 1.02
+    },
+    {
+      "name": "AircraftRepairStrengthStep",
+      "type": "int",
+      "default": 2
+    }
+  ]
+}

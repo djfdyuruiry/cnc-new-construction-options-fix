@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "name": "HarvesterPips",
+      "type": "int",
+      "default": 7
+    },
+    {
+      "name": "CreditsPerTiberiumScoop",
+      "type": "int",
+      "default": 25
+    },
+    {
+      "name": "MaxHarvesterCapacity",
+      "type": "int",
+      "default": 28
+    }
+  ]
+}

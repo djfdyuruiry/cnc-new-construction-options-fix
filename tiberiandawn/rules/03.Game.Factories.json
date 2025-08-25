@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "name": "ProductionStepsPerTick",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "name": "FactoryCountStepMultiplier",
+      "type": "float",
+      "default": 1.0
+    },
+    {
+      "name": "TotalProductionSteps",
+      "type": "int",
+      "default": 108
+    }
+  ]
+}

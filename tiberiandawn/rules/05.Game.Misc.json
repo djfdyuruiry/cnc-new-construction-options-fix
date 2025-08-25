@@ -1,0 +1,60 @@
+{
+  "rules": [
+    {
+      "name": "SmartDefence",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "TargetTrees",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "McvRedeployable",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "SpawnVisceroids",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "VehiclesDoThreePointTurns",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "ShowBibsOnBuildings",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "ShowCivilianBuildingNames",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "OnlyAllowNukeIfAllPartsHaveBeenCollected",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "name": "OnlyAllowUsingOneNukePerScenario",
+      "type": "bool",
+      "default": true,
+      "implemented": false
+    },
+    {
+      "name": "HelipadsAndAircraftBoughtSeperately",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "name": "DestroyedBuildingsHaveSurvivors",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}
