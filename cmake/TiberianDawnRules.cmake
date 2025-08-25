@@ -87,9 +87,9 @@ function(Main)
     ParseRuleFilePath("${RULE_FILE}" RELATIVE_RULE_FILE)
     ExtractSectionNameFromFileName("${RELATIVE_RULE_FILE}" SECTION_NAME SECTION_NAME_UPPER)
 
-    # rulekeys.h comment header
     message(STATUS "Generating code for rule section: [${SECTION_NAME}]")
   
+    # rulekeys.h comment header
     string(APPEND RULE_JSON_SOURCES_COMMENTS " *   - rules/${RELATIVE_RULE_FILE}\n")
 
     # rulekeys.h section defines
@@ -101,13 +101,13 @@ function(Main)
     string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_DEFINE} \"${SECTION_NAME}\"\n")
 
     # rules-nco.cpp
-    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Processing rule section: [%s]\", ${SECTION_DEFINE});\n"
+    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Processing rule section: [{}]\", ${SECTION_DEFINE});\n"
                                  "\n"
                                  "    Sections[${SECTION_DEFINE}].With<IniRuleContext>(ini, [](auto& c) {\n"
                                  "        c")
     string(APPEND RULE_PROCESS_CODE "${SECTION_LEAD_IN}")
 
-    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Exporting rule section: [%s]\", ${SECTION_DEFINE});\n"
+    string(CONCAT SECTION_LEAD_IN "\n    CNC_LOG_INFO(\"Exporting rule section: [{}]\", ${SECTION_DEFINE});\n"
                                  "\n"
                                  "    Sections[${SECTION_DEFINE}].With<IniRuleContext>(ini, [](auto& c) {\n"
                                  "        c")
