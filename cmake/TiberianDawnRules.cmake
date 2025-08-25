@@ -52,7 +52,7 @@ function(LoadRuleProperties _RULES_JSON _RULE_INDEX _RULE_NAME _RULE_TYPE _RULE_
 endfunction()
 
 function (ExtractSectionNameFromFileName _RELATIVE_RULE_FILE _SECTION_NAME _SECTION_NAME_UPPER)
-  string(REGEX REPLACE "^.+[.]([^.]+)[.]json$" "\\1" SECTION_NAME "${_RELATIVE_RULE_FILE}")
+  string(REGEX REPLACE "^[0-9]+[.](.+)[.]json$" "\\1" SECTION_NAME "${_RELATIVE_RULE_FILE}")
 
   message(STATUS "Rule section: ${SECTION_NAME}")
 
@@ -103,7 +103,7 @@ function(Main)
     # rulekeys.h section defines
     set(SECTION_DEFINE "${SECTION_NAME_UPPER}_SECTION")
 
-    string(REGEX REPLACE "." "_" SECTION_DEFINE "${SECTION_DEFINE}")
+    string(REGEX REPLACE "[.]" "_" SECTION_DEFINE "${SECTION_DEFINE}")
 
     string(APPEND RULE_KEYS_DEFINES "\n\n// [${SECTION_NAME}]\n")
     string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_DEFINE} \"${SECTION_NAME}\"\n")
