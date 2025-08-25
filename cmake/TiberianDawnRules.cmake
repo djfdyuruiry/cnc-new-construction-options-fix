@@ -103,7 +103,7 @@ function(Main)
     # rulekeys.h section defines
     set(SECTION_DEFINE "${SECTION_NAME_UPPER}_SECTION")
 
-    string(REGEX REPLACE "::" "_" SECTION_DEFINE "${SECTION_DEFINE}")
+    string(REGEX REPLACE "." "_" SECTION_DEFINE "${SECTION_DEFINE}")
 
     string(APPEND RULE_KEYS_DEFINES "\n\n// [${SECTION_NAME}]\n")
     string(APPEND RULE_KEYS_DEFINES "#define ${SECTION_DEFINE} \"${SECTION_NAME}\"\n")
