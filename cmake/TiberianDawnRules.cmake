@@ -4,9 +4,9 @@
 function(ResolveRuleValue _RULE_DEFAULT _RULE_VALUE)
   set(RULE_VALUE "${_RULE_DEFAULT}")
 
-  if (${RULE_TYPE} STREQUAL "bool")
+  if(${RULE_TYPE} STREQUAL "bool")
     # covert ON/OFF to C boolean literals
-    if (${_RULE_DEFAULT})
+    if(${_RULE_DEFAULT})
       set(RULE_VALUE "true")
     else()
       set(RULE_VALUE "false")
@@ -38,9 +38,17 @@ function(LoadRuleProperties _RULES_JSON _RULE_INDEX _RULE_NAME _RULE_TYPE _RULE_
   string(JSON RULE_TYPE GET ${RULE_OBJECT_JSON} type)
   string(JSON RULE_DEFAULT GET ${RULE_OBJECT_JSON} default)
 
+  string(JSON IS_IMPLEMENTED ERROR_VARIABLE JSON_ERROR GET ${RULE_OBJECT_JSON} implemented)
+
+  if(NOT ${IS_IMPLEMENTED} STREQUAL "OFF")
+    # default implemented flag to true
+    set(IS_IMPLEMENTED "ON")
+  endif()
+
   set(RULE_NAME ${RULE_NAME} PARENT_SCOPE)
   set(RULE_TYPE ${RULE_TYPE} PARENT_SCOPE)
   set(RULE_DEFAULT ${RULE_DEFAULT} PARENT_SCOPE)
+  set(IS_IMPLEMENTED ${IS_IMPLEMENTED} PARENT_SCOPE)
 endfunction()
 
 function (ExtractSectionNameFromFileName _RELATIVE_RULE_FILE _SECTION_NAME _SECTION_NAME_UPPER)
@@ -120,7 +128,7 @@ function(Main)
     MATH(EXPR RULE_COUNT "${RULE_COUNT}-1")
 
     foreach(RULE_INDEX RANGE ${RULE_COUNT})
-      if (${RULE_INDEX} GREATER 0)
+      if(${RULE_INDEX} GREATER 0)
         # rules-nco.cpp
         string(APPEND RULE_PROCESS_CODE "\n         ")
         string(APPEND RULE_EXPORT_CODE "\n         ")
@@ -135,18 +143,30 @@ function(Main)
       ResolveRuleValue("${RULE_DEFAULT}" RULE_VALUE)
 
       string(APPEND RULE_PROCESS_CODE ".Load(${RULE_DEFINE}).With_Default(${RULE_VALUE})")
-
       string(APPEND RULE_EXPORT_CODE ".template Save<${RULE_TYPE}>(${RULE_DEFINE})")
+
+      if(${RULE_INDEX} EQUAL ${RULE_COUNT})
+        # close call chain for section
+        string(APPEND RULE_PROCESS_CODE ";")
+        string(APPEND RULE_EXPORT_CODE ";")
+      endif()
+
+      if(${IS_IMPLEMENTED} STREQUAL "OFF")
+        # add TODO if not implemented yet
+        string(APPEND RULE_PROCESS_CODE " // TODO: implement")
+        string(APPEND RULE_EXPORT_CODE " // TODO: implement")
+      endif()
+
+      if(${RULE_INDEX} EQUAL ${RULE_COUNT})
+        # close section lambda parameter and With method call
+        string(APPEND RULE_PROCESS_CODE "\n    });")
+        string(APPEND RULE_EXPORT_CODE "\n    });")
+      endif()
 
       # rulekeys.h rule defines
       message(STATUS "Generating code for rule: [${SECTION_NAME}] => ${RULE_NAME}")
       string(APPEND RULE_KEYS_DEFINES "\n#define ${RULE_DEFINE} \"${RULE_NAME}\"")
     endforeach()
-
-    # rules-nco.cpp
-    string(APPEND RULE_PROCESS_CODE ";\n    });")
-
-    string(APPEND RULE_EXPORT_CODE ";\n    });")
   endforeach()
 
   # render templates

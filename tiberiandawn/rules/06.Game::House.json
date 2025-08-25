@@ -33,7 +33,8 @@
     {
       "name": "OnlyGdiCanUseIonCannon",
       "type": "bool",
-      "default": true
+      "default": true,
+      "implemented": false
     }
   ]
 }
